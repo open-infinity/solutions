@@ -15,11 +15,20 @@
  */
 package org.openinfinity.tagcloud.domain.repository;
 
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openinfinity.tagcloud.domain.entity.Tag;
+import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.service.TagSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -39,29 +48,78 @@ public class TagRepositoryIntegrationTests {
 	@Autowired
 	TagSpecification tagSpecification;
 	
+	@Autowired
+	MongoTemplate mongoTemplate;
+	
 	@Before
 	public void setUp() throws Exception {}
 
 	@After
-	public void tearDown() throws Exception {}
-/*
-	@Test
-	public void givenKnownProductWhenStoringToBackendRepositoryThenProductMustBeFound() {
-		Tag expected = createTag();
-		Tag tag = tagRepository.create(expected);
-		Tag actual = tagRepository.loadById(product.getId());
-		assertEquals(expected.getName(), actual.getName());
-		assertEquals(expected.getCompany(), actual.getCompany());
-		assertEquals(expected.getDescription(), actual.getDescription());
-		assertNotNull(actual.getId());		
+	public void tearDown() throws Exception {
+		mongoTemplate.dropCollection(Tag.class);
 	}
 
-	private Tag createTag() {
+	@Test
+	public void testCreateTag() {
+		Tag expected = createTestTag();
+		Tag tag = tagRepository.create(expected);
+		Tag actual = tagRepository.loadById(tag.getId());
+		assertEquals(expected.getText(), actual.getText());
+		assertEquals(expected.getTargets().iterator().next().getName(), actual.getTargets().iterator().next().getName());
+		assertNotNull(actual.getId());
+	}
+	
+	@Test
+	public void testUpdateTag() {
+		Tag tag = createTestTag();
+		tagRepository.create(tag);
+		String updatedText = "testi2";
+		tag.setText(updatedText);
+		tagRepository.update(tag);
+		assertAmountOfTags(1);
+		assertEquals(updatedText, tagRepository.loadById(tag.getId()).getText());
+	}
+	
+	@Test
+	public void testDeleteTag() {
+		Tag tag1 = createTestTag();
+		tagRepository.create(tag1);
+		assertAmountOfTags(1);
+		Tag tag2 = createTestTag();
+		tagRepository.create(tag2);
+		assertAmountOfTags(2);
+		tagRepository.delete(tag1);
+		assertAmountOfTags(1);
+		assertNotNull(tagRepository.loadById(tag2.getId()));
+		assertNull(tagRepository.loadById(tag1.getId()));
+	}
+
+	@Test
+	public void testFindByText() {
+		Tag expected = createTestTag();
+		Tag tag = tagRepository.create(expected);
+		Collection<Tag> actual = tagRepository.loadByText(tag.getText());
+		assertEquals(1, actual.size());
+		assertEquals(expected.getText(), actual.iterator().next().getText());
+	}
+	
+	
+	private void assertAmountOfTags(int amount) {
+		assertEquals(amount, tagRepository.loadAll().size());
+	}
+	
+
+	private Tag createTestTag() {
 		Tag expected = new Tag();
-		expected.s
+		expected.setText("testi");
+		Collection<Target> targets = new ArrayList<Target>();
+		Target target = new Target();
+		target.setName("testitarget");
+		targets.add(target);
+		expected.setTargets(targets);
 		return expected;
 	}
-	*/
+
 //	@Test @Ignore
 //	public void testFail() {
 //		fail("Not yet implemented");

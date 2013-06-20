@@ -17,7 +17,4 @@ package org.openinfinity.tagcloud.domain.repository;
 
 import org.openinfinity.tagcloud.domain.entity.Profile;
 
-public interface ProfileRepository extends AbstractCrudRepositoryInterface<Profile> {
-	
-	public Profile loadById(String id);
-}
+public interface ProfileRepository extends AbstractCrudRepositoryInterface<Profile, String> {}

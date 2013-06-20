@@ -18,17 +18,17 @@ package org.openinfinity.tagcloud.domain.repository;
 import java.math.BigInteger;
 import java.util.Collection;
 
-public  interface AbstractCrudRepositoryInterface<T> /**extends Repository<T, BigInteger>*/ {
+public interface AbstractCrudRepositoryInterface<T, IDTYPE> {
 
-	public T create(T product);
+	public T create(T entity);
 	
-	public void update(T product);
+	public void update(T entity);
 	
 	public Collection<T> loadAll();
 	
-	public T loadById(BigInteger id);
+	public T loadById(IDTYPE id);
 	
-	public void delete (T product);
+	public void delete (T entity);
 	
 	public Collection<T> loadByText(String text);
 	

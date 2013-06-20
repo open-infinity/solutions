@@ -15,6 +15,8 @@
  */
 package org.openinfinity.tagcloud.domain.repository;
 
+import java.math.BigInteger;
+
 import org.openinfinity.tagcloud.domain.entity.Tag;
 
-public interface TagRepository extends AbstractCrudRepositoryInterface<Tag> {}
+public interface TagRepository extends AbstractCrudRepositoryInterface<Tag, BigInteger> {}

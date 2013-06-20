@@ -15,7 +15,9 @@
  */
 package org.openinfinity.tagcloud.domain.repository;
 
+import java.math.BigInteger;
+
 import org.openinfinity.tagcloud.domain.entity.Score;
 import org.openinfinity.tagcloud.domain.service.AbstractLocalizedExceptionCrudServiceInterface;
 
-public interface ScoreRepository extends AbstractLocalizedExceptionCrudServiceInterface<Score> {}
+public interface ScoreRepository extends AbstractCrudRepositoryInterface<Score, BigInteger> {}
