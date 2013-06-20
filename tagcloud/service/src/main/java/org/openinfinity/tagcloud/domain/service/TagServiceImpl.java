@@ -62,7 +62,7 @@ public class TagServiceImpl implements TagService {
 			ExceptionUtil.throwBusinessViolationException(
 				"Entity does not exist: " + entity.getText(), 
 				ExceptionLevel.ERROR, 
-				ProductService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
+				TagService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}
 		tagRepository.update(entity);
 	}

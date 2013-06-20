@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openinfinity.tagcloud.web.model;
+/*package org.openinfinity.tagcloud.web.model;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.openinfinity.tagcloud.domain.entity.Product;
-
+*/
 /**
  * Product model for exposing product domain to view. 
  * 
  * @author Ilkka Leinonen
- */
+ *//*
 public class ProductModel extends Product {
 
 	private Product product;
@@ -59,4 +59,4 @@ public class ProductModel extends Product {
 		return product;
 	}
 	
-}
+}*/

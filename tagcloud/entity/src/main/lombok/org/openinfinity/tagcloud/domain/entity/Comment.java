@@ -25,4 +25,6 @@ public class Comment implements Serializable {
 
 	private Profile profile;
 
+	
+	
 }

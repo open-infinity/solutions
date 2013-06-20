@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openinfinity.tagcloud.web.controller;
+/*package org.openinfinity.tagcloud.web.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,14 +49,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+*/
 /**
  * 
  * Product controller for m-v-c binding and service orchestration.
  * 
  * @author Ilkka Leinonen
  */
-@Controller
+/*@Controller
 @RequestMapping(value = "/productModel")
 public class ProductController {
 
@@ -129,3 +129,4 @@ public class ProductController {
 	}
 	
 }
+*/

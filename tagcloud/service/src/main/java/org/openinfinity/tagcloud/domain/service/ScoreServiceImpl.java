@@ -21,8 +21,6 @@ import java.util.Collection;
 import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.exception.ExceptionLevel;
-import org.openinfinity.core.exception.ApplicationException;
-import org.openinfinity.core.exception.BusinessViolationException;
 import org.openinfinity.core.util.ExceptionUtil;
 import org.openinfinity.tagcloud.domain.entity.Score;
 import org.openinfinity.tagcloud.domain.repository.ScoreRepository;
@@ -58,7 +56,7 @@ public class ScoreServiceImpl implements ScoreService {
 			ExceptionUtil.throwBusinessViolationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.ERROR, 
-				ProductService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
+				ScoreService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}
 		scoreRepository.update(entity);
 	}

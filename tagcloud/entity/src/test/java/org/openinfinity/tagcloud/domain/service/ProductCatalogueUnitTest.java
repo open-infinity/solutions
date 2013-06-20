@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 the original author or authors.
+/* * Copyright (c) 2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openinfinity.tagcloud.domain.service;
+/*package org.openinfinity.tagcloud.domain.service;
 
 import static org.junit.Assert.assertFalse;
 
@@ -30,7 +30,7 @@ import org.openinfinity.tagcloud.domain.entity.Product;
  * 
  * @author Ilkka Leinonen
  */
-public class ProductCatalogueUnitTest {
+/*public class ProductCatalogueUnitTest {
 
 	private Collection<Product> products = new ArrayList<Product>();
 	
@@ -58,4 +58,4 @@ public class ProductCatalogueUnitTest {
 		assertFalse(expectedFalse);
 	}
 	
-}
+}*/
