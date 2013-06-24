@@ -49,6 +49,11 @@ public abstract class AbstractCrudRepositoryMongoDBImpl<T, IDTYPE> implements Ab
 		return mongoTemplate.find(query, getGenericClassType());
 	}
 
+	@Override
+	public void dropCollection() {
+		mongoTemplate.dropCollection(getGenericClassType());
+	}
+	
 	private Class<T> getGenericClassType(){
         return GenericTypeResolver.resolveTypeArguments(getClass(), AbstractCrudRepositoryMongoDBImpl.class)[0];
     }

@@ -31,5 +31,7 @@ public interface AbstractCrudRepositoryInterface<T, IDTYPE> {
 	public void delete (T entity);
 	
 	public Collection<T> loadByText(String text);
+
+	void dropCollection();
 	
 }

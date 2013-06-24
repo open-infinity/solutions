@@ -17,8 +17,12 @@
 package org.openinfinity.tagcloud.domain.repository;
 
 import java.math.BigInteger;
+import java.util.Collection;
 
 import org.openinfinity.tagcloud.domain.entity.Location;
+import org.springframework.data.mongodb.core.geo.Point;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -27,4 +31,20 @@ import org.springframework.stereotype.Repository;
  * @author Joosa Kurvinen
  */
 @Repository
-public class LocationRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Location, BigInteger> implements LocationRepository {}
+public class LocationRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Location, BigInteger> implements LocationRepository {
+	
+	
+	
+	@Override
+	public Location create(Location entity) {
+		Location location = super.create(entity);
+		return location;
+	}
+
+	@Override
+	public Collection<Location> loadByCoordinates(double longitude, double latitude, double radius) {
+		Query query = new Query(Criteria.where("location").nearSphere(new Point(longitude, latitude)).maxDistance(radius/6371000));
+		return mongoTemplate.find(query, Location.class);
+	}
+
+}

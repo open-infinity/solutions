@@ -25,6 +25,9 @@ import org.openinfinity.core.util.ExceptionUtil;
 import org.openinfinity.tagcloud.domain.entity.Location;
 import org.openinfinity.tagcloud.domain.repository.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 /**
@@ -44,7 +47,7 @@ public class LocationServiceImpl implements LocationService {
 	@Log
 	@AuditTrail
 	public Location create(Location entity) {
-		// FIX ME: Verify that entity does not allready exists.
+		// FIX ME: Verify that entity does not already exists.
 		locationRepository.create(entity);
 		return entity;
 	}
@@ -77,6 +80,8 @@ public class LocationServiceImpl implements LocationService {
 		}
 		return entity; 
 	}
+	
+	
 	
 	@Log
 	@AuditTrail

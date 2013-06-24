@@ -16,7 +16,11 @@
 package org.openinfinity.tagcloud.domain.repository;
 
 import java.math.BigInteger;
+import java.util.Collection;
 
 import org.openinfinity.tagcloud.domain.entity.Location;
 
-public interface LocationRepository extends AbstractCrudRepositoryInterface<Location, BigInteger> {}
+public interface LocationRepository extends AbstractCrudRepositoryInterface<Location, BigInteger> {
+
+	public abstract Collection<Location> loadByCoordinates(double longitude, double latitude,
+			double radius);}

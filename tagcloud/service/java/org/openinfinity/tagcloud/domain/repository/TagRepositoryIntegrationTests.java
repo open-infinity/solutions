@@ -45,19 +45,22 @@ public class TagRepositoryIntegrationTests {
 	@Autowired
 	TagRepository tagRepository;
 	
+	@Autowired
+	MongoTemplate mongoTemplate;
+	
 	@Before
 	public void setUp() throws Exception {}
 
 	@After
 	public void tearDown() throws Exception {
-		tagRepository.dropCollection();
+		mongoTemplate.dropCollection(Tag.class);
 	}
 
 	@Test
 	public void testCreateTag() {
 		Tag expected = createTestTag();
 		Tag tag = tagRepository.create(expected);
-		Tag actual = tagRepository.loadById(tag.getId());		
+		Tag actual = tagRepository.loadById(tag.getId());
 		assertEquals(expected.getText(), actual.getText());
 		assertEquals(expected.getTargets().iterator().next().getName(), actual.getTargets().iterator().next().getName());
 		assertNotNull(actual.getId());
@@ -106,10 +109,11 @@ public class TagRepositoryIntegrationTests {
 	private Tag createTestTag() {
 		Tag expected = new Tag();
 		expected.setText("testi");
-		//Collection<Target> targets = new ArrayList<Target>();
+		Collection<Target> targets = new ArrayList<Target>();
 		Target target = new Target();
 		target.setName("testitarget");
-		expected.getTargets().add(target);
+		targets.add(target);
+		expected.setTargets(targets);
 		return expected;
 	}
 

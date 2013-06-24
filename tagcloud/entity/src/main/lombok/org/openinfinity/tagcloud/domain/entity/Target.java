@@ -2,8 +2,11 @@ package org.openinfinity.tagcloud.domain.entity;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
@@ -17,13 +20,14 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
-public class Target implements Serializable {
+public class Target implements Entity {
 
-	private Collection<Tag> tags;
+	private List<Tag> tags = new ArrayList<Tag>();
 
+	@Id
 	private BigInteger id;
 
-	private Collection<Score> scores;
+	private List<Score> scores = new ArrayList<Score>();
 
 	@NonNull
 	private Location location;
@@ -31,6 +35,6 @@ public class Target implements Serializable {
 	@NonNull
 	private String name;
 
-	private Collection<Comment> comments;
+	private List<Comment> comments = new ArrayList<Comment>();
 
 }
