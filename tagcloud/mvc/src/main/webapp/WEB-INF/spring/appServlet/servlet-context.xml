@@ -31,12 +31,12 @@
 	</aop:aspectj-autoproxy>
 
 	<beans:bean id="exceptionTranslatorAspect"
-		class="org.openinfinity.tagcloud.core.aspect.ExceptionTranslatorAspect" />
+		class="org.openinfinity.core.aspect.ExceptionTranslatorAspect" />
 
 	<beans:bean id="auditTrailAspect"
-		class="org.openinfinity.tagcloud.core.aspect.AuditTrailAspect" />
+		class="org.openinfinity.core.aspect.AuditTrailAspect" />
 
-	<beans:bean id="logAspect" class="org.openinfinity.tagcloud.core.aspect.LogAspect">
+	<beans:bean id="logAspect" class="org.openinfinity.core.aspect.LogAspect">
 		<beans:property name="defaultLogLevel" value="${logging.level}" />
 	</beans:bean>
 

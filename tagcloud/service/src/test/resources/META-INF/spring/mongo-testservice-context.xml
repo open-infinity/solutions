@@ -16,7 +16,7 @@
 
 	<mongo:repositories base-package="org.openinfinity.tagcloud.domain.repository" />
 
-	<mongo:db-factory host="10.33.208.108" port="27017" dbname="test-repository-joosa" />
+	<mongo:db-factory host="10.33.208.108" port="27017" dbname="kavan_test_db" />
 
 	<beans:bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
 	  <beans:constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
