@@ -32,7 +32,7 @@ private Target target;
 		Target target = new Target();
 		target.setId(super.getId());
 		target.setLocation(super.getLocation()[0], super.getLocation()[1]);
-		target.setName(super.getName());
+		target.setText(super.getText());
 		target.setTags(super.getTags());
 		target.setScores(super.getScores());
 		target.setComments(super.getComments());

@@ -22,6 +22,7 @@ import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.exception.ExceptionLevel;
 import org.openinfinity.core.util.ExceptionUtil;
 import org.openinfinity.tagcloud.domain.entity.Profile;
+import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,14 @@ public class ProfileServiceImpl implements ProfileService {
 	@Log
 	@AuditTrail
 	public Profile create(Profile entity) {
-		// FIX ME: Verify that entity does not already exists.
+		Collection<Profile> entities = profileRepository.loadAll();
+		if (profileSpecification.isNotEligibleForCreation(entity, entities)) {
+			ExceptionUtil.throwApplicationException(
+				"Entity already exists: " + entity.toString(), 
+				ExceptionLevel.INFORMATIVE, 
+				TagService.UNIQUE_EXCEPTION_ENTITY_ALREADY_EXISTS);
+		}
+		
 		profileRepository.create(entity);
 		return entity;
 	}

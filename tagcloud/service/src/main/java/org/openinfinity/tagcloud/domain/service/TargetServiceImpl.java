@@ -47,7 +47,13 @@ public class TargetServiceImpl implements TargetService {
 	@Log
 	@AuditTrail
 	public Target create(Target entity) {
-		// FIX ME: Verify that entity does not allready exists.
+		Collection<Target> entities = targetRepository.loadByText(entity.getText());
+		if (targetSpecification.isNotEligibleForCreation(entity, entities)) {
+			ExceptionUtil.throwApplicationException(
+				"Entity already exists: " + entity.getText(), 
+				ExceptionLevel.INFORMATIVE, 
+				TagService.UNIQUE_EXCEPTION_ENTITY_ALREADY_EXISTS);
+		}
 		targetRepository.create(entity);
 		return entity;
 	}
@@ -57,7 +63,7 @@ public class TargetServiceImpl implements TargetService {
 	public void update(Target entity) {
 		if (targetRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwBusinessViolationException(
-				"Entity does not exist: " + entity.getName(), 
+				"Entity does not exist: " + entity.getText(), 
 				ExceptionLevel.ERROR, 
 				TargetService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}

@@ -71,7 +71,7 @@ public class TargetRepositoryIntegrationTests {
 	private Target createTestTarget(double lon, double lat) {
 		Target target = new Target();
 		target.setLocation(lon, lat);
-		target.setName("testi");
+		target.setText("testi");
 		return target;
 	}
 	

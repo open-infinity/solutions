@@ -45,10 +45,8 @@ public class TagServiceImpl implements TagService {
 	@AuditTrail
 	@Override
 	public Tag create(Tag entity) {
-		System.out.println("jee toimii");
 		Collection<Tag> entities = tagRepository.loadByText(entity.getText());
 		if (tagSpecification.isNotEligibleForCreation(entity, entities)) {
-			System.out.println("Throwing exception");
 			ExceptionUtil.throwApplicationException(
 				"Entity already exists: " + entity.getText(), 
 				ExceptionLevel.INFORMATIVE, 

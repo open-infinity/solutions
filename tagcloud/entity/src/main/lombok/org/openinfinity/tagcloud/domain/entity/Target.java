@@ -31,7 +31,7 @@ public class Target implements Entity<BigInteger> {
 	private List<Score> scores = new ArrayList<Score>();
 
 	@NonNull
-	private String name;
+	private String text;
 
 	private List<Comment> comments = new ArrayList<Comment>();
 
@@ -45,6 +45,6 @@ public class Target implements Entity<BigInteger> {
 	
 	@Override
 	public String toString() {
-		return "Target, id="+id+", name="+name;
+		return "Target, id="+id+", text="+text;
 	}
 }

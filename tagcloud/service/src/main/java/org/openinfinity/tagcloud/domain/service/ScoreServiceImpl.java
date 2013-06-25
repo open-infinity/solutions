@@ -23,6 +23,7 @@ import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.exception.ExceptionLevel;
 import org.openinfinity.core.util.ExceptionUtil;
 import org.openinfinity.tagcloud.domain.entity.Score;
+import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.repository.ScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,13 @@ public class ScoreServiceImpl implements ScoreService {
 	@Log
 	@AuditTrail
 	public Score create(Score entity) {
-		// FIX ME: Verify that entity does not allready exists.
+		Collection<Score> entities = scoreRepository.loadAll();
+		if (scoreSpecification.isNotEligibleForCreation(entity, entities)) {
+			ExceptionUtil.throwApplicationException(
+				"Entity already exists: " + entity.toString(), 
+				ExceptionLevel.INFORMATIVE, 
+				TagService.UNIQUE_EXCEPTION_ENTITY_ALREADY_EXISTS);
+		}
 		scoreRepository.create(entity);
 		return entity;
 	}
