@@ -43,7 +43,9 @@ public class TagServiceImpl implements TagService {
 	
 	@Log
 	@AuditTrail
+	@Override
 	public Tag create(Tag entity) {
+		System.out.println("jee toimii");
 		Collection<Tag> entities = tagRepository.loadByText(entity.getText());
 		if (tagSpecification.isNotEligibleForCreation(entity, entities)) {
 			System.out.println("Throwing exception");
@@ -97,4 +99,5 @@ public class TagServiceImpl implements TagService {
 		tagRepository.delete(entity);
 	}
 	
+
 }

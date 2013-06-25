@@ -92,5 +92,5 @@ public class TargetServiceImpl implements TargetService {
 		}
 		targetRepository.delete(entity);
 	}
-	
+
 }

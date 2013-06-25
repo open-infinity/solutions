@@ -26,7 +26,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @ContextConfiguration(locations={"classpath*:**/test-service-context.xml"})
-//@ContextConfiguration({"file:src/test/resources/test-service-context.xml"})	
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TagServiceImplTest {
 	

@@ -15,21 +15,15 @@
  */
 package org.openinfinity.tagcloud.domain.service;
 
-import java.math.BigInteger;
 import java.util.Collection;
 
 import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.exception.ExceptionLevel;
 import org.openinfinity.core.util.ExceptionUtil;
-import org.openinfinity.tagcloud.domain.entity.Location;
 import org.openinfinity.tagcloud.domain.entity.Profile;
-import org.openinfinity.tagcloud.domain.repository.LocationRepository;
 import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 /**
@@ -61,7 +55,7 @@ public class ProfileServiceImpl implements ProfileService {
 			ExceptionUtil.throwBusinessViolationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.ERROR, 
-				LocationService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
+				ProfileService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}
 		profileRepository.update(entity);
 	}
@@ -78,7 +72,7 @@ public class ProfileServiceImpl implements ProfileService {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + id, 
 				ExceptionLevel.WARNING, 
-				LocationService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
+				ProfileService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}
 		return entity; 
 	}
@@ -92,7 +86,7 @@ public class ProfileServiceImpl implements ProfileService {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.INFORMATIVE, 
-				LocationService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
+				ProfileService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}
 		profileRepository.delete(entity);
 	}

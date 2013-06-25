@@ -45,6 +45,7 @@ public class CommentServiceImpl implements CommentService {
 	
 	@Log
 	@AuditTrail
+	@Override
 	public Comment create(Comment entity) {
 		Collection<Comment> entities = commentRepository.loadByText(entity.getText());
 		if (commentSpecification.isNotEligibleForCreation(entity, entities)) {
