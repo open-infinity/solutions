@@ -22,7 +22,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
-public class Tag implements Entity {
+public class Tag implements Entity<BigInteger> {
 
 	@Id
 	private BigInteger id;
@@ -32,7 +32,10 @@ public class Tag implements Entity {
 
 	private List<Target> targets = new ArrayList<Target>();
 	
-
+	@Override
+	public String toString() {
+		return "Tag, id="+id+", text="+text;
+	}
 	
 	
 }

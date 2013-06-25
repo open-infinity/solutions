@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
-public class Comment implements Entity {
+public class Comment implements Entity<BigInteger> {
 
 	@Id
 	private BigInteger id;
@@ -27,6 +27,9 @@ public class Comment implements Entity {
 
 	private Profile profile;
 
-	
+	@Override
+	public String toString() {
+		return "Comment, id="+id+", profile-id="+profile.getId();
+	}
 	
 }

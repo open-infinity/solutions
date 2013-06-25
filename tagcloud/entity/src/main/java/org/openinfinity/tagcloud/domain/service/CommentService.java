@@ -1,5 +1,7 @@
 package org.openinfinity.tagcloud.domain.service;
 
-import org.openinfinity.tagcloud.domain.entity.Comment;
+import java.math.BigInteger;
 
-public interface CommentService extends AbstractLocalizedExceptionCrudServiceInterface<Comment> {}
+import org.openinfinity.tagcloud.domain.entity.*;
+
+public interface CommentService extends AbstractCrudServiceInterface<Comment, BigInteger> {}

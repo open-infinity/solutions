@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
-public class Score implements Entity {
+public class Score implements Entity<BigInteger> {
 
 	@Id
 	private BigInteger id;
@@ -25,4 +25,8 @@ public class Score implements Entity {
 	@NonNull
 	private Integer stars;
 
+	@Override
+	public String toString() {
+		return "Score, id="+id+", stars="+stars;
+	}
 }

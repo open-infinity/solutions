@@ -22,9 +22,14 @@ import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.exception.ExceptionLevel;
 import org.openinfinity.core.util.ExceptionUtil;
-import org.openinfinity.tagcloud.domain.entity.Tag;
-import org.openinfinity.tagcloud.domain.repository.TagRepository;
+import org.openinfinity.tagcloud.domain.entity.Location;
+import org.openinfinity.tagcloud.domain.entity.Profile;
+import org.openinfinity.tagcloud.domain.repository.LocationRepository;
+import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 /**
@@ -33,68 +38,63 @@ import org.springframework.stereotype.Service;
  * @author Ilkka Leinonen
  */
 @Service
-public class TagServiceImpl implements TagService {
+public class ProfileServiceImpl implements ProfileService {
 
 	@Autowired
-	private TagSpecification tagSpecification;
+	private ProfileSpecification profileSpecification;
 	
 	@Autowired
-	private TagRepository tagRepository;
+	private ProfileRepository profileRepository;
 	
 	@Log
 	@AuditTrail
-	public Tag create(Tag entity) {
-		Collection<Tag> entities = tagRepository.loadByText(entity.getText());
-		if (tagSpecification.isNotEligibleForCreation(entity, entities)) {
-			System.out.println("Throwing exception");
-			ExceptionUtil.throwApplicationException(
-				"Entity already exists: " + entity.getText(), 
-				ExceptionLevel.INFORMATIVE, 
-				TagService.UNIQUE_EXCEPTION_ENTITY_ALREADY_EXISTS);
-		}
-		tagRepository.create(entity);
+	public Profile create(Profile entity) {
+		// FIX ME: Verify that entity does not already exists.
+		profileRepository.create(entity);
 		return entity;
 	}
 	
 	@Log
 	@AuditTrail
-	public void update(Tag entity) {
-		if (tagRepository.loadById(entity.getId()) == null) {
+	public void update(Profile entity) {
+		if (profileRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwBusinessViolationException(
-				"Entity does not exist: " + entity.getText(), 
+				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.ERROR, 
-				TagService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
+				LocationService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}
-		tagRepository.update(entity);
+		profileRepository.update(entity);
 	}
 	
-	public Collection<Tag> loadAll() {
-		return tagRepository.loadAll();
+	public Collection<Profile> loadAll() {
+		return profileRepository.loadAll();
 	}
 	
 	@Log
 	@AuditTrail
-	public Tag loadById(BigInteger id) {
-		Tag entity = tagRepository.loadById(id);
+	public Profile loadById(String id) {
+		Profile entity = profileRepository.loadById(id);
 		if (entity == null) {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + id, 
 				ExceptionLevel.WARNING, 
-				TagService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
+				LocationService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}
 		return entity; 
 	}
 	
+	
+	
 	@Log
 	@AuditTrail
-	public void delete (Tag entity) {
-		if (tagRepository.loadById(entity.getId()) == null) {
+	public void delete (Profile entity) {
+		if (profileRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.INFORMATIVE, 
-				TagService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
+				LocationService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}
-		tagRepository.delete(entity);
+		profileRepository.delete(entity);
 	}
 	
 }

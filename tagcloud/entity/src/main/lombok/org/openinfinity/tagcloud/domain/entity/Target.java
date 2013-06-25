@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
-public class Target implements Entity {
+public class Target implements Entity<BigInteger> {
 
 	private List<Tag> tags = new ArrayList<Tag>();
 
@@ -37,4 +37,8 @@ public class Target implements Entity {
 
 	private List<Comment> comments = new ArrayList<Comment>();
 
+	@Override
+	public String toString() {
+		return "Target, id="+id+", name="+name;
+	}
 }

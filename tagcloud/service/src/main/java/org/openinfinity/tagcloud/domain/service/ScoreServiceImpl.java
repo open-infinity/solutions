@@ -52,7 +52,7 @@ public class ScoreServiceImpl implements ScoreService {
 	@Log
 	@AuditTrail
 	public void update(Score entity) {
-		if (scoreRepository.loadById(entity.getId()) != null) {
+		if (scoreRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwBusinessViolationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.ERROR, 
@@ -81,7 +81,7 @@ public class ScoreServiceImpl implements ScoreService {
 	@Log
 	@AuditTrail
 	public void delete (Score entity) {
-		if (scoreRepository.loadById(entity.getId()) != null) {
+		if (scoreRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.INFORMATIVE, 

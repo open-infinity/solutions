@@ -56,13 +56,13 @@ public class LocationRepositoryIntegrationTests {
 
 	@Test
 	public void testLoadByCoordinates() {
-		Location loc1 = createTestLocation(60.162458,24.931491);
-		Location loc2 = createTestLocation(60.165938,24.941705);
-		double distance = 800; //meters, about
+		Location loc1 = createTestLocation(30, 40);
+		Location loc2 = createTestLocation(30.001, 40.001);
+		double distance = 150; //meters
 		locationRepository.create(loc1);
-		Collection<Location> locations = locationRepository.loadByCoordinates(loc2.getLocation()[0], loc2.getLocation()[1], distance*1.4);
+		Collection<Location> locations = locationRepository.loadByCoordinates(loc2.getLocation()[0], loc2.getLocation()[1], distance*1.1);
 		assertEquals(1, locations.size());
-		locations = locationRepository.loadByCoordinates(loc2.getLocation()[0], loc2.getLocation()[1], distance/1.4);
+		locations = locationRepository.loadByCoordinates(loc2.getLocation()[0], loc2.getLocation()[1], distance/1.1);
 		assertEquals(0, locations.size());
 		
 	}

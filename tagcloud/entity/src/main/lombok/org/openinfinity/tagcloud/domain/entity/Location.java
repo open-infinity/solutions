@@ -14,14 +14,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
-public class Location implements Entity {
+public class Location implements Entity<BigInteger> {
 
 	@Id
 	private BigInteger id;
 
 	private Target target;
 
-	@GeoSpatialIndexed
+	@GeoSpatialIndexed(bits=30)
 	private double[] location = new double[2];
 
+	@Override
+	public String toString() {
+		return "Location, id="+id+", ["+location[0]+", "+location[1]+"]";
+	}
 }

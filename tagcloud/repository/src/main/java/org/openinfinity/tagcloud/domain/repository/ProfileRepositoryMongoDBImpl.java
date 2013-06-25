@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2013 the original author or authors.
  *
@@ -15,8 +16,13 @@
  */
 package org.openinfinity.tagcloud.domain.repository;
 
-import java.math.BigInteger;
+import org.openinfinity.tagcloud.domain.entity.Profile;
+import org.springframework.stereotype.Repository;
 
-import org.openinfinity.tagcloud.domain.entity.Score;
-
-public interface ScoreRepository extends AbstractCrudRepositoryInterface<Score, BigInteger> {}
+/**
+ * TagRepository repository implementation.
+ * 
+ * @author Joosa Kurvinen
+ */
+@Repository
+public class ProfileRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Profile, String> implements ProfileRepository {}

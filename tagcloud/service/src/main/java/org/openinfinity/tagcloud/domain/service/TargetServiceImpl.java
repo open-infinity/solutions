@@ -55,7 +55,7 @@ public class TargetServiceImpl implements TargetService {
 	@Log
 	@AuditTrail
 	public void update(Target entity) {
-		if (targetRepository.loadById(entity.getId()) != null) {
+		if (targetRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwBusinessViolationException(
 				"Entity does not exist: " + entity.getName(), 
 				ExceptionLevel.ERROR, 
@@ -84,7 +84,7 @@ public class TargetServiceImpl implements TargetService {
 	@Log
 	@AuditTrail
 	public void delete (Target entity) {
-		if (targetRepository.loadById(entity.getId()) != null) {
+		if (targetRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.INFORMATIVE, 

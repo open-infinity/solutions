@@ -55,7 +55,7 @@ public class LocationServiceImpl implements LocationService {
 	@Log
 	@AuditTrail
 	public void update(Location entity) {
-		if (locationRepository.loadById(entity.getId()) != null) {
+		if (locationRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwBusinessViolationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.ERROR, 
@@ -86,7 +86,7 @@ public class LocationServiceImpl implements LocationService {
 	@Log
 	@AuditTrail
 	public void delete (Location entity) {
-		if (locationRepository.loadById(entity.getId()) != null) {
+		if (locationRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.INFORMATIVE, 

@@ -60,7 +60,7 @@ public class CommentServiceImpl implements CommentService {
 	@Log
 	@AuditTrail
 	public void update(Comment entity) {
-		if (commentRepository.loadById(entity.getId()) != null) {
+		if (commentRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwBusinessViolationException(
 				"Entity does not exist: " + entity.getText(), 
 				ExceptionLevel.ERROR, 
@@ -89,7 +89,7 @@ public class CommentServiceImpl implements CommentService {
 	@Log
 	@AuditTrail
 	public void delete (Comment entity) {
-		if (commentRepository.loadById(entity.getId()) != null) {
+		if (commentRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.INFORMATIVE, 

@@ -17,12 +17,17 @@
 package org.openinfinity.tagcloud.domain.repository;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.openinfinity.tagcloud.domain.entity.Location;
+import org.springframework.data.mongodb.core.geo.Distance;
+import org.springframework.data.mongodb.core.geo.GeoResult;
+import org.springframework.data.mongodb.core.geo.GeoResults;
+import org.springframework.data.mongodb.core.geo.Metrics;
 import org.springframework.data.mongodb.core.geo.Point;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -43,8 +48,20 @@ public class LocationRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDB
 
 	@Override
 	public Collection<Location> loadByCoordinates(double longitude, double latitude, double radius) {
-		Query query = new Query(Criteria.where("location").nearSphere(new Point(longitude, latitude)).maxDistance(radius/6371000));
-		return mongoTemplate.find(query, Location.class);
+		//Query query = new Query(Criteria.where("location").near(new Point(longitude, latitude))..maxDistance(radius/6371000));
+		//return mongoTemplate.find(query, Location.class);
+		Point location = new Point(longitude, latitude);
+		NearQuery query = NearQuery.near(location).maxDistance(new Distance(radius/1000, Metrics.KILOMETERS));
+		GeoResults<Location> locations = mongoTemplate.geoNear(query, Location.class);
+		return getContentFromGeoResults(locations);
 	}
 
+	private List<Location> getContentFromGeoResults(GeoResults<Location> grs) {
+		List<Location> list = new ArrayList<Location>();
+		for (GeoResult<Location> result : grs.getContent()) {
+			list.add(result.getContent());
+		}
+		return list;
+	}
+	
 }
