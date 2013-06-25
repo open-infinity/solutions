@@ -2,11 +2,13 @@ package org.openinfinity.tagcloud.web.controller;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.oauth2.GrantType;
 import org.springframework.social.oauth2.OAuth2Operations;
@@ -23,11 +25,16 @@ import org.springframework.web.context.request.WebRequest;
 @Controller
 public class LoginController {
 
-	    private final String client_id = "1376730172543858";
-	    private final String client_secret = "6677a69b0b098cff417ed826ef1f63ca";
-	    private final String app_namespace = "tieto-tagcloud";
+		@Value("${facebook.client_id}")
+	    private String client_id; 
+		@Value("${facebook.client_secret}")
+		private String client_secret; 
+		@Value("${facebook.namespace}")
+		private String app_namespace;
+	  
+	    
 	    private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
-	
+	    
 	    @RequestMapping(value = "/test-auth", method = RequestMethod.GET)
 	    public @ResponseBody String authTest(HttpServletResponse response) {
 	        String authurl = createAuthUrl(), error = "";
@@ -56,7 +63,7 @@ public class LoginController {
 	    		
 	    		
 	    	}
-	    	
+
 	        return list;
 	    }
 	
@@ -72,5 +79,6 @@ public class LoginController {
 
 	        return authorizeUrl;
 	    }
+
 }
 
