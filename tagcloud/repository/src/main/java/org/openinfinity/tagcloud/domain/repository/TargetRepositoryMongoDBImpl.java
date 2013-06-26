@@ -22,14 +22,19 @@ import java.util.Collection;
 import java.util.List;
 
 import org.openinfinity.tagcloud.domain.entity.Location;
+import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.springframework.data.mongodb.core.geo.Distance;
 import org.springframework.data.mongodb.core.geo.GeoResult;
 import org.springframework.data.mongodb.core.geo.GeoResults;
 import org.springframework.data.mongodb.core.geo.Metrics;
 import org.springframework.data.mongodb.core.geo.Point;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.NearQuery;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+
+import com.mongodb.QueryBuilder;
 
 /**
  * TargetRepository repository implementation.
@@ -53,5 +58,18 @@ public class TargetRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBIm
 		}
 		return list;
 	}
-
+	
+	
+	@Override 
+	public Collection<Target> loadByTag(Tag tag){
+		Query query = new Query(Criteria.where("tags").elemMatch(Criteria.where("text").is(tag.getText())));
+		return mongoTemplate.find(query, Target.class);
+	}
+	
+	public Collection<Target> loadByQuery(List<Tag> required, double longitude, double latitude, double radius) {
+		Query query = new Query(); //FIX
+		return mongoTemplate.find(query, Target.class);
+	}
+		
+	
 }

@@ -24,6 +24,7 @@ import org.openinfinity.core.exception.ExceptionLevel;
 import org.openinfinity.core.util.ExceptionUtil;
 import org.openinfinity.tagcloud.domain.entity.Score;
 import org.openinfinity.tagcloud.domain.entity.Tag;
+import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.ScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,5 +97,17 @@ public class ScoreServiceImpl implements ScoreService {
 		}
 		scoreRepository.delete(entity);
 	}
+
 	
+	@Override
+	public boolean contains(Score score) {
+		if(score==null || score.getId()==null) return false;
+		try {
+			loadById(score.getId());
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
 }

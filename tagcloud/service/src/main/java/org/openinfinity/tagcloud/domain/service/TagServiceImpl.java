@@ -97,5 +97,15 @@ public class TagServiceImpl implements TagService {
 		tagRepository.delete(entity);
 	}
 	
+	@Override
+	public boolean contains(Tag tag) {
+		if(tag==null || tag.getId()==null) return false;
+		try {
+			loadById(tag.getId());
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
 
 }

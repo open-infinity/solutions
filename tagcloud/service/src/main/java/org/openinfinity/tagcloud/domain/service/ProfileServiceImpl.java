@@ -23,6 +23,7 @@ import org.openinfinity.core.exception.ExceptionLevel;
 import org.openinfinity.core.util.ExceptionUtil;
 import org.openinfinity.tagcloud.domain.entity.Profile;
 import org.openinfinity.tagcloud.domain.entity.Tag;
+import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,5 +99,16 @@ public class ProfileServiceImpl implements ProfileService {
 		}
 		profileRepository.delete(entity);
 	}
-	
+
+	@Override
+	public boolean contains(Profile profile) {
+		if(profile==null || profile.getId()==null) return false;
+		try {
+			loadById(profile.getId());
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
 }

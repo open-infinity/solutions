@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.Collection;
 
 import org.openinfinity.tagcloud.domain.entity.Entity;
+import org.openinfinity.tagcloud.domain.entity.Tag;
 
 public abstract interface AbstractCrudServiceInterface<T extends Entity<ID_TYPE>, ID_TYPE> {
 
@@ -20,5 +21,7 @@ public abstract interface AbstractCrudServiceInterface<T extends Entity<ID_TYPE>
 	public static final String UNIQUE_EXCEPTION_ENTITY_ALREADY_EXISTS = "localized.exception.entity.already.exists";
 
 	public static final String UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST = "localized.exception.entity.does.not.exist";
+
+	boolean contains(T entity);
 
 }

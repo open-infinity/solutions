@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.BusinessViolationException;
+import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class TargetServiceImplTest {
 	
 	@Autowired
 	TargetService targetService;
+	
+	@Autowired
+	TagService tagService;
 	
 	@Autowired
 	TargetRepository targetRepository;
@@ -105,7 +109,38 @@ public class TargetServiceImplTest {
 		targetService.loadById(new BigInteger("3928102983740"));
 	}
 	
+
+	@Test
+	public void testAddTagToTarget() {
+		Target target = new Target();
+		target.setText("test target");
+		target = targetService.create(target);
+		
+		Tag tag = new Tag();
+		tag.setText("test tag");
+		targetService.addTagToTarget(tag, target);
+		assertEquals(1, tagService.loadAll().size());
+		assertEquals("test tag", targetService.loadById(target.getId()).getTags().iterator().next().getText());
+	}
 	
+	@Test
+	public void testLoadByTag() {
+		Target target = new Target();
+		target.setText("testi");
+		targetService.create(target);
+		
+		Tag tag = new Tag();
+		tag.setText("cool");
+		Tag differentTag = new Tag();
+		differentTag.setText("not cool");
+		
+		targetService.addTagToTarget(tag, target);
+		
+		assertEquals(1, targetService.loadByTag(tag).size());
+		assertEquals(0, targetService.loadByTag(differentTag).size());
+		
+	}
+		
 
 	private Target createTestTarget() {
 		Target expected = new Target();
@@ -117,6 +152,6 @@ public class TargetServiceImplTest {
 		assertEquals(amount, targetRepository.loadAll().size());
 	}
 	
-
+	
 	
 }

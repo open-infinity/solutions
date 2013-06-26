@@ -25,6 +25,7 @@ import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.BusinessViolationException;
 import org.openinfinity.core.util.ExceptionUtil;
 import org.openinfinity.tagcloud.domain.entity.Comment;
+import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,5 +99,16 @@ public class CommentServiceImpl implements CommentService {
 		}
 		commentRepository.delete(entity);
 	}
-	
+
+	@Override
+	public boolean contains(Comment comment) {
+		if(comment==null || comment.getId()==null) return false;
+		try {
+			loadById(comment.getId());
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
 }

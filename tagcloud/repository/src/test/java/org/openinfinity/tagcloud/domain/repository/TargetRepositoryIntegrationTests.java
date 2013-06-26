@@ -46,6 +46,7 @@ public class TargetRepositoryIntegrationTests {
 	@Autowired
 	TargetRepository targetRepository;
 	
+	
 	@Before
 	public void setUp() throws Exception {}
 
@@ -67,6 +68,7 @@ public class TargetRepositoryIntegrationTests {
 		assertEquals(0, targets.size());
 		
 	}
+	
 	
 	private Target createTestTarget(double lon, double lat) {
 		Target target = new Target();
