@@ -25,6 +25,7 @@ import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.BusinessViolationException;
 import org.openinfinity.core.util.ExceptionUtil;
 import org.openinfinity.tagcloud.domain.entity.Comment;
+import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,7 @@ public class CommentServiceImpl implements CommentService {
 	
 	@Log
 	@AuditTrail
+	@Override
 	public Comment create(Comment entity) {
 		Collection<Comment> entities = commentRepository.loadByText(entity.getText());
 		if (commentSpecification.isNotEligibleForCreation(entity, entities)) {
@@ -60,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
 	@Log
 	@AuditTrail
 	public void update(Comment entity) {
-		if (commentRepository.loadById(entity.getId()) != null) {
+		if (commentRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwBusinessViolationException(
 				"Entity does not exist: " + entity.getText(), 
 				ExceptionLevel.ERROR, 
@@ -89,7 +91,7 @@ public class CommentServiceImpl implements CommentService {
 	@Log
 	@AuditTrail
 	public void delete (Comment entity) {
-		if (commentRepository.loadById(entity.getId()) != null) {
+		if (commentRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.INFORMATIVE, 
@@ -97,5 +99,16 @@ public class CommentServiceImpl implements CommentService {
 		}
 		commentRepository.delete(entity);
 	}
-	
+
+	@Override
+	public boolean contains(Comment comment) {
+		if(comment==null || comment.getId()==null) return false;
+		try {
+			loadById(comment.getId());
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
 }

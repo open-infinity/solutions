@@ -41,42 +41,41 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @ContextConfiguration(locations={"classpath*:**/test-repository-context.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
-public class LocationRepositoryIntegrationTests {
+public class TargetRepositoryIntegrationTests {
 
 	@Autowired
-	LocationRepository locationRepository;
+	TargetRepository targetRepository;
+	
 	
 	@Before
 	public void setUp() throws Exception {}
 
 	@After
 	public void tearDown() throws Exception {
-		locationRepository.dropCollection();
+		targetRepository.dropCollection();
 	}
 
 	@Test
 	public void testLoadByCoordinates() {
-		Location loc1 = createTestLocation(60.162458,24.931491);
-		Location loc2 = createTestLocation(60.165938,24.941705);
-		double distance = 800; //meters, about
-		locationRepository.create(loc1);
-		Collection<Location> locations = locationRepository.loadByCoordinates(loc2.getLocation()[0], loc2.getLocation()[1], distance*1.4);
-		assertEquals(1, locations.size());
-		locations = locationRepository.loadByCoordinates(loc2.getLocation()[0], loc2.getLocation()[1], distance/1.4);
-		assertEquals(0, locations.size());
+		Target target = createTestTarget(30, 40);
+		double searchLongitude = 30.001;
+		double searchLatitude = 40.001;
+		double distance = 150; //distance between target and search location as meters
+		targetRepository.create(target);
+		Collection<Target> targets = targetRepository.loadByCoordinates(searchLongitude, searchLatitude, distance*1.1);
+		assertEquals(1, targets.size());
+		targets = targetRepository.loadByCoordinates(searchLongitude, searchLatitude, distance/1.1);
+		assertEquals(0, targets.size());
 		
 	}
 	
-	private Location createTestLocation(double lon, double lat) {
-		Location location = new Location();
-		location.getLocation()[0] = lon;
-		location.getLocation()[1] = lat;
-		return location;
+	
+	private Target createTestTarget(double lon, double lat) {
+		Target target = new Target();
+		target.setLocation(lon, lat);
+		target.setText("testi");
+		return target;
 	}
-
-//	@Test @Ignore
-//	public void testFail() {
-//		fail("Not yet implemented");
-//	}	
+	
 
 }

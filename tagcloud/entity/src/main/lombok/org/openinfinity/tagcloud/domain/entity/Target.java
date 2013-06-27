@@ -7,6 +7,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Reference;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
@@ -20,21 +23,33 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
-public class Target implements Entity {
-
-	private List<Tag> tags = new ArrayList<Tag>();
+public class Target implements Entity<BigInteger> {
 
 	@Id
 	private BigInteger id;
 
+	@NonNull
+	private String text;
+
+	//@DBRef
+	private List<Tag> tags = new ArrayList<Tag>();
+
 	private List<Score> scores = new ArrayList<Score>();
-
-	@NonNull
-	private Location location;
-
-	@NonNull
-	private String name;
 
 	private List<Comment> comments = new ArrayList<Comment>();
 
+	@GeoSpatialIndexed(bits=30)
+	private double[] location = new double[2];
+	
+
+	
+	public void setLocation(double longitude, double latitude) {
+		location[0] = longitude;
+		location[1] = latitude;
+	}
+	
+	@Override
+	public String toString() {
+		return "Target, id="+id+", text="+text;
+	}
 }

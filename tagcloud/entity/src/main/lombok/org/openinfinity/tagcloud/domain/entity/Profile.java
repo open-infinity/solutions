@@ -20,7 +20,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
-public class Profile implements Entity {
+public class Profile implements Entity<String> {
 	
 	private List<Tag> tags = new ArrayList<Tag>();
 	
@@ -32,4 +32,8 @@ public class Profile implements Entity {
 	@Id @NonNull
 	private String id;
 
+	@Override
+	public String toString() {
+		return "Profile, id="+id;
+	}
 }

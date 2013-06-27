@@ -59,7 +59,6 @@ public class TagRepositoryIntegrationTests {
 		Tag tag = tagRepository.create(expected);
 		Tag actual = tagRepository.loadById(tag.getId());		
 		assertEquals(expected.getText(), actual.getText());
-		assertEquals(expected.getTargets().iterator().next().getName(), actual.getTargets().iterator().next().getName());
 		assertNotNull(actual.getId());
 	}
 	
@@ -80,6 +79,7 @@ public class TagRepositoryIntegrationTests {
 		tagRepository.create(tag1);
 		assertAmountOfTags(1);
 		Tag tag2 = createTestTag();
+		tag2.setText("different text");
 		tagRepository.create(tag2);
 		assertAmountOfTags(2);
 		tagRepository.delete(tag1);
@@ -106,16 +106,7 @@ public class TagRepositoryIntegrationTests {
 	private Tag createTestTag() {
 		Tag expected = new Tag();
 		expected.setText("testi");
-		//Collection<Target> targets = new ArrayList<Target>();
-		Target target = new Target();
-		target.setName("testitarget");
-		expected.getTargets().add(target);
 		return expected;
 	}
-
-//	@Test @Ignore
-//	public void testFail() {
-//		fail("Not yet implemented");
-//	}	
 
 }

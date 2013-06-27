@@ -23,6 +23,8 @@ import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.exception.ExceptionLevel;
 import org.openinfinity.core.util.ExceptionUtil;
 import org.openinfinity.tagcloud.domain.entity.Score;
+import org.openinfinity.tagcloud.domain.entity.Tag;
+import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.ScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,7 +46,13 @@ public class ScoreServiceImpl implements ScoreService {
 	@Log
 	@AuditTrail
 	public Score create(Score entity) {
-		// FIX ME: Verify that entity does not allready exists.
+		Collection<Score> entities = scoreRepository.loadAll();
+		if (scoreSpecification.isNotEligibleForCreation(entity, entities)) {
+			ExceptionUtil.throwApplicationException(
+				"Entity already exists: " + entity.toString(), 
+				ExceptionLevel.INFORMATIVE, 
+				TagService.UNIQUE_EXCEPTION_ENTITY_ALREADY_EXISTS);
+		}
 		scoreRepository.create(entity);
 		return entity;
 	}
@@ -52,7 +60,7 @@ public class ScoreServiceImpl implements ScoreService {
 	@Log
 	@AuditTrail
 	public void update(Score entity) {
-		if (scoreRepository.loadById(entity.getId()) != null) {
+		if (scoreRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwBusinessViolationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.ERROR, 
@@ -81,7 +89,7 @@ public class ScoreServiceImpl implements ScoreService {
 	@Log
 	@AuditTrail
 	public void delete (Score entity) {
-		if (scoreRepository.loadById(entity.getId()) != null) {
+		if (scoreRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.INFORMATIVE, 
@@ -89,5 +97,17 @@ public class ScoreServiceImpl implements ScoreService {
 		}
 		scoreRepository.delete(entity);
 	}
+
 	
+	@Override
+	public boolean contains(Score score) {
+		if(score==null || score.getId()==null) return false;
+		try {
+			loadById(score.getId());
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
 }

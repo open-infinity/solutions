@@ -15,19 +15,17 @@
  */
 package org.openinfinity.tagcloud.domain.service;
 
-import java.math.BigInteger;
 import java.util.Collection;
 
 import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.exception.ExceptionLevel;
 import org.openinfinity.core.util.ExceptionUtil;
-import org.openinfinity.tagcloud.domain.entity.Location;
-import org.openinfinity.tagcloud.domain.repository.LocationRepository;
+import org.openinfinity.tagcloud.domain.entity.Profile;
+import org.openinfinity.tagcloud.domain.entity.Tag;
+import org.openinfinity.tagcloud.domain.entity.Target;
+import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 /**
@@ -36,47 +34,54 @@ import org.springframework.stereotype.Service;
  * @author Ilkka Leinonen
  */
 @Service
-public class LocationServiceImpl implements LocationService {
+public class ProfileServiceImpl implements ProfileService {
 
 	@Autowired
-	private LocationSpecification locationSpecification;
+	private ProfileSpecification profileSpecification;
 	
 	@Autowired
-	private LocationRepository locationRepository;
+	private ProfileRepository profileRepository;
 	
 	@Log
 	@AuditTrail
-	public Location create(Location entity) {
-		// FIX ME: Verify that entity does not already exists.
-		locationRepository.create(entity);
+	public Profile create(Profile entity) {
+		Collection<Profile> entities = profileRepository.loadAll();
+		if (profileSpecification.isNotEligibleForCreation(entity, entities)) {
+			ExceptionUtil.throwApplicationException(
+				"Entity already exists: " + entity.toString(), 
+				ExceptionLevel.INFORMATIVE, 
+				TagService.UNIQUE_EXCEPTION_ENTITY_ALREADY_EXISTS);
+		}
+		
+		profileRepository.create(entity);
 		return entity;
 	}
 	
 	@Log
 	@AuditTrail
-	public void update(Location entity) {
-		if (locationRepository.loadById(entity.getId()) != null) {
+	public void update(Profile entity) {
+		if (profileRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwBusinessViolationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.ERROR, 
-				LocationService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
+				ProfileService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}
-		locationRepository.update(entity);
+		profileRepository.update(entity);
 	}
 	
-	public Collection<Location> loadAll() {
-		return locationRepository.loadAll();
+	public Collection<Profile> loadAll() {
+		return profileRepository.loadAll();
 	}
 	
 	@Log
 	@AuditTrail
-	public Location loadById(BigInteger id) {
-		Location entity = locationRepository.loadById(id);
+	public Profile loadById(String id) {
+		Profile entity = profileRepository.loadById(id);
 		if (entity == null) {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + id, 
 				ExceptionLevel.WARNING, 
-				LocationService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
+				ProfileService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}
 		return entity; 
 	}
@@ -85,14 +90,25 @@ public class LocationServiceImpl implements LocationService {
 	
 	@Log
 	@AuditTrail
-	public void delete (Location entity) {
-		if (locationRepository.loadById(entity.getId()) != null) {
+	public void delete (Profile entity) {
+		if (profileRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.INFORMATIVE, 
-				LocationService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
+				ProfileService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}
-		locationRepository.delete(entity);
+		profileRepository.delete(entity);
 	}
-	
+
+	@Override
+	public boolean contains(Profile profile) {
+		if(profile==null || profile.getId()==null) return false;
+		try {
+			loadById(profile.getId());
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
 }

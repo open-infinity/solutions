@@ -29,6 +29,7 @@ import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Product service implementation with specification.
@@ -42,55 +43,128 @@ public class TargetServiceImpl implements TargetService {
 	private TargetSpecification targetSpecification;
 	
 	@Autowired
+	private TagService tagService;
+	
+	@Autowired
 	private TargetRepository targetRepository;
 	
 	@Log
 	@AuditTrail
+	@Override
+	@Transactional
 	public Target create(Target entity) {
-		// FIX ME: Verify that entity does not allready exists.
+		Collection<Target> entities = targetRepository.loadByText(entity.getText());
+		if (targetSpecification.isNotEligibleForCreation(entity, entities)) {
+			ExceptionUtil.throwApplicationException(
+				"Entity already exists: " + entity.getText(), 
+				ExceptionLevel.INFORMATIVE, 
+				TargetService.UNIQUE_EXCEPTION_ENTITY_ALREADY_EXISTS);
+		}
 		targetRepository.create(entity);
 		return entity;
 	}
 	
 	@Log
 	@AuditTrail
+	@Override
+	@Transactional
 	public void update(Target entity) {
-		if (targetRepository.loadById(entity.getId()) != null) {
+		if (targetRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwBusinessViolationException(
-				"Entity does not exist: " + entity.getName(), 
+				"Entity does not exist: " + entity.getText(), 
 				ExceptionLevel.ERROR, 
 				TargetService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}
 		targetRepository.update(entity);
 	}
 	
+	@Override
 	public Collection<Target> loadAll() {
 		return targetRepository.loadAll();
 	}
 	
 	@Log
 	@AuditTrail
+	@Override
 	public Target loadById(BigInteger id) {
 		Target entity = targetRepository.loadById(id);
 		if (entity == null) {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + id, 
 				ExceptionLevel.WARNING, 
-				TagService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
+				TargetService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}
 		return entity; 
 	}
 	
 	@Log
 	@AuditTrail
+	@Override
+	@Transactional
 	public void delete (Target entity) {
-		if (targetRepository.loadById(entity.getId()) != null) {
+		if (targetRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.INFORMATIVE, 
-				TagService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
+				TargetService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}
 		targetRepository.delete(entity);
 	}
+
+	@Log
+	@AuditTrail
+	@Override
+	@Transactional
+	public void addTagToTarget(Tag tag, Target target) {
+		for (Tag oldTag : target.getTags()) {
+			if(oldTag.getText().equals(tag.getText())) 
+				ExceptionUtil.throwBusinessViolationException(
+						"Tag with the same name already exists in the target", 
+						ExceptionLevel.INFORMATIVE,
+						TargetService.UNIQUE_EXCEPTION_TAG_ALREADY_INCLUDED);
+		}
+		
+		if(!tagService.contains(tag)) 
+			tag = tagService.create(tag);
+		
+		target.getTags().add(tag);
+		update(target);
+	}
 	
+	@Log
+	@AuditTrail
+	@Override
+	@Transactional
+	public void removeTagFromTarget(Tag tag, Target target) {
+		if(!target.getTags().contains(tag))
+			ExceptionUtil.throwApplicationException(
+					"Target does not contain the tag that is to be removed", 
+					ExceptionLevel.WARNING,
+					TargetService.UNIQUE_EXCEPTION_TAG_NOT_INCLUDED);
+		
+		target.getTags().remove(tag);
+		update(target);
+		
+		//fixme
+//		tag.getTargets().remove(target);
+//		if(tag.getTargets().size() > 0) tagService.update(tag);
+//		else tagService.delete(tag);
+	}
+
+	@Override
+	public boolean contains(Target target) {
+		if(target==null || target.getId()==null) return false;
+		try {
+			loadById(target.getId());
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public Collection<Target> loadByTag(Tag tag) {
+		return targetRepository.loadByTag(tag);
+	}
+
 }

@@ -31,8 +31,8 @@ private Target target;
 	public Target getTarget() {
 		Target target = new Target();
 		target.setId(super.getId());
-		target.setLocation(super.getLocation());
-		target.setName(super.getName());
+		target.setLocation(super.getLocation()[0], super.getLocation()[1]);
+		target.setText(super.getText());
 		target.setTags(super.getTags());
 		target.setScores(super.getScores());
 		target.setComments(super.getComments());

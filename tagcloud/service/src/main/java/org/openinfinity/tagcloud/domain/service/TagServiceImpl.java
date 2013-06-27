@@ -43,10 +43,10 @@ public class TagServiceImpl implements TagService {
 	
 	@Log
 	@AuditTrail
+	@Override
 	public Tag create(Tag entity) {
 		Collection<Tag> entities = tagRepository.loadByText(entity.getText());
 		if (tagSpecification.isNotEligibleForCreation(entity, entities)) {
-			System.out.println("Throwing exception");
 			ExceptionUtil.throwApplicationException(
 				"Entity already exists: " + entity.getText(), 
 				ExceptionLevel.INFORMATIVE, 
@@ -59,7 +59,7 @@ public class TagServiceImpl implements TagService {
 	@Log
 	@AuditTrail
 	public void update(Tag entity) {
-		if (tagRepository.loadById(entity.getId()) != null) {
+		if (tagRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwBusinessViolationException(
 				"Entity does not exist: " + entity.getText(), 
 				ExceptionLevel.ERROR, 
@@ -88,7 +88,7 @@ public class TagServiceImpl implements TagService {
 	@Log
 	@AuditTrail
 	public void delete (Tag entity) {
-		if (tagRepository.loadById(entity.getId()) != null) {
+		if (tagRepository.loadById(entity.getId()) == null) {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + entity.getId(), 
 				ExceptionLevel.INFORMATIVE, 
@@ -97,4 +97,15 @@ public class TagServiceImpl implements TagService {
 		tagRepository.delete(entity);
 	}
 	
+	@Override
+	public boolean contains(Tag tag) {
+		if(tag==null || tag.getId()==null) return false;
+		try {
+			loadById(tag.getId());
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
 }

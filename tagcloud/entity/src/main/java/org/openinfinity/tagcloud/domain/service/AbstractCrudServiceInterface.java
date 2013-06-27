@@ -3,16 +3,25 @@ package org.openinfinity.tagcloud.domain.service;
 import java.math.BigInteger;
 import java.util.Collection;
 
-public abstract interface AbstractCrudServiceInterface<T extends Object> {
+import org.openinfinity.tagcloud.domain.entity.Entity;
+import org.openinfinity.tagcloud.domain.entity.Tag;
 
-	public T create(T product);
+public abstract interface AbstractCrudServiceInterface<T extends Entity<ID_TYPE>, ID_TYPE> {
+
+	public T create(T entity);
 	
-	public void update(T product);
+	public void update(T entity);
 	
 	public Collection<T> loadAll();
 	
-	public T loadById(BigInteger id);
+	public T loadById(ID_TYPE id);
 	
-	public void delete (T product);
+	public void delete (T entity);
 	
+	public static final String UNIQUE_EXCEPTION_ENTITY_ALREADY_EXISTS = "localized.exception.entity.already.exists";
+
+	public static final String UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST = "localized.exception.entity.does.not.exist";
+
+	boolean contains(T entity);
+
 }

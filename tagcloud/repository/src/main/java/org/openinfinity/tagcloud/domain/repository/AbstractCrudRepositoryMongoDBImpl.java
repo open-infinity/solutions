@@ -2,6 +2,7 @@ package org.openinfinity.tagcloud.domain.repository;
 
 import java.util.Collection;
 
+import org.openinfinity.tagcloud.domain.entity.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -13,7 +14,7 @@ import org.springframework.data.mongodb.core.query.Query;
  * 
  * @author Joosa Kurvinen
  */
-public abstract class AbstractCrudRepositoryMongoDBImpl<T, IDTYPE> implements AbstractCrudRepositoryInterface<T, IDTYPE> {
+public abstract class AbstractCrudRepositoryMongoDBImpl<T extends Entity<ID_TYPE>, ID_TYPE> implements AbstractCrudRepositoryInterface<T, ID_TYPE> {
 	@Autowired
 	MongoTemplate mongoTemplate;
 
@@ -34,7 +35,7 @@ public abstract class AbstractCrudRepositoryMongoDBImpl<T, IDTYPE> implements Ab
     }
 
     @Override
-    public T loadById(IDTYPE id) {
+    public T loadById(ID_TYPE id) {
         return mongoTemplate.findById(id, getGenericClassType());
     }
 
