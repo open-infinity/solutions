@@ -38,7 +38,7 @@ public class Target implements Entity<BigInteger> {
 
 	private List<Comment> comments = new ArrayList<Comment>();
 
-	@GeoSpatialIndexed(bits=30)
+	@GeoSpatialIndexed(bits=30, collection="target")
 	private double[] location = new double[2];
 	
 

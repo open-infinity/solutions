@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -28,8 +29,10 @@ import org.openinfinity.tagcloud.domain.entity.Location;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.service.TagSpecification;
+import org.openinfinity.tagcloud.domain.service.TargetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.geo.GeoResults;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -46,7 +49,6 @@ public class TargetRepositoryIntegrationTests {
 	@Autowired
 	TargetRepository targetRepository;
 	
-	
 	@Before
 	public void setUp() throws Exception {}
 
@@ -62,13 +64,12 @@ public class TargetRepositoryIntegrationTests {
 		double searchLatitude = 40.001;
 		double distance = 150; //distance between target and search location as meters
 		targetRepository.create(target);
-		Collection<Target> targets = targetRepository.loadByCoordinates(searchLongitude, searchLatitude, distance*1.1);
+		List<Target> targets = targetRepository.loadByCoordinates(searchLongitude, searchLatitude, distance*1.1);
 		assertEquals(1, targets.size());
 		targets = targetRepository.loadByCoordinates(searchLongitude, searchLatitude, distance/1.1);
 		assertEquals(0, targets.size());
 		
 	}
-	
 	
 	private Target createTestTarget(double lon, double lat) {
 		Target target = new Target();

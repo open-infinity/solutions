@@ -2,9 +2,11 @@ package org.openinfinity.tagcloud.domain.service;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.List;
 
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
+import org.openinfinity.tagcloud.domain.entity.query.Result;
 
 public interface TargetService extends AbstractCrudServiceInterface<Target, BigInteger> {
 	
@@ -18,5 +20,7 @@ public interface TargetService extends AbstractCrudServiceInterface<Target, BigI
 
 	Collection<Target> loadByTag(Tag tag);
 
+	List<Result> loadByQuery(List<Tag> required, List<Tag> preferred,
+			List<Tag> nearby, double longitude, double latitude, double radius);
 	
 }
