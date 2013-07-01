@@ -18,7 +18,7 @@
 	
 	<div id="productForm" class="span-12 last">
 		<div id="targetForm" class="span-12 last">
-			<form:form modelAttribute="targetModel" action="createTarget" method="post">
+			<form:form modelAttribute="targetModel" action="target/createTarget" method="post">
 				<table id="targetTable">
 					<tr>
 						<td><form:label for="text" path="text" cssErrorClass="error">Name</form:label></td>

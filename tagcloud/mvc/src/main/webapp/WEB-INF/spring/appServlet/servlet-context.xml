@@ -21,6 +21,9 @@
 				<beans:value>
 					classpath:/META-INF/properties/facebook_app.properties
 				</beans:value>
+				<beans:value>
+					classpath:/META-INF/properties/session.properties
+				</beans:value>
 			</beans:list>
 		</beans:property>
 		<beans:property name="ignoreUnresolvablePlaceholders"

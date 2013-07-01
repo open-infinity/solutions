@@ -24,10 +24,14 @@ public class Tag implements Entity<BigInteger> {
 	@NonNull
 	private String text;
 
+	
+	
 	@Override
 	public String toString() {
 		return "Tag, id="+id+", text="+text;
 	}
+
+
 	
 	
 }

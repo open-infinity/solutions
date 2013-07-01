@@ -1,3 +1,4 @@
+
 package org.openinfinity.tagcloud.web.controller;
 
 import java.util.ArrayList;
@@ -98,7 +99,7 @@ public class TargetController {
 		
 		@Log
 		@AuditTrail(argumentStrategy=ArgumentStrategy.ALL) 
-		@RequestMapping(method = RequestMethod.POST) //headers = "Content-type: application/json"
+		@RequestMapping(method = RequestMethod.POST, headers = "Content-type: application/json")
 		public @ResponseBody Map<String, ? extends Object> create(@Valid @RequestBody TargetModel targetModel, HttpServletResponse response) {
 			Set<ConstraintViolation<TargetModel>> failures = validator.validate(targetModel);
 			if (failures.isEmpty()) {
@@ -110,22 +111,7 @@ public class TargetController {
 				return getValidationMessages(failures);
 			}
 		}
-		
-//		@Log
-//		@AuditTrail(argumentStrategy=ArgumentStrategy.ALL) 
-//		@RequestMapping(method = RequestMethod.POST, value="target")
-//		public @ResponseBody Map<String, ? extends Object> create(@Valid @RequestBody TargetModel targetModel, HttpServletResponse response) {
-//		
-//			Set<ConstraintViolation<TargetModel>> failures = validator.validate(targetModel);
-//			if (failures.isEmpty()) {
-//				Target target = targetService.create(targetModel.getTarget());
-//				return new ModelMap("id", target.getId());
-//			} else {
-//				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//				return getValidationMessages(failures);
-//			}
-//		}
-//		
+
 		private Map<String, String> getValidationMessages(Set<ConstraintViolation<TargetModel>> failures) {
 			Map<String, String> failureMessages = new HashMap<String, String>();
 			for (ConstraintViolation<TargetModel> failure : failures) {
@@ -135,3 +121,4 @@ public class TargetController {
 		}
 		
 }
+

@@ -5,17 +5,23 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.BusinessViolationException;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
+import org.openinfinity.tagcloud.domain.repository.TagRepository;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
+import org.openinfinity.tagcloud.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.StaticListableBeanFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -32,34 +38,39 @@ public class TargetServiceImplTest {
 	@Autowired
 	TargetRepository targetRepository;
 	
+	@Autowired
+	TagRepository tagRepository;
+	
 	@Before
 	public void setUp() throws Exception {}
 
 	@After
 	public void tearDown() throws Exception {
 		targetRepository.dropCollection();
+		tagRepository.dropCollection();
 	}
 
+	
 	@Test 
 	public void testCreateTarget() {
 		Target expected = createTestTarget();
-		Target target = targetService.create(expected);
-		Target actual = targetService.loadById(target.getId());
+		Target actual = targetService.loadById(expected.getId());
 		assertEquals(expected.getText(), actual.getText());
 		assertNotNull(actual.getId());
 	}
 
-	@Test(expected=ApplicationException.class)
+
+
+	@Test(expected=ApplicationException.class) 
 	public void testCreateTargetFailsWhenTargetAlreadyExists() {	
-		Target expected = createTestTarget();
-		Target createdTarget = targetService.create(expected);
-		targetService.create(createdTarget);
+		Target target = createTestTarget();
+		targetService.create(target);
 	}
+	
 	
 	@Test 
 	public void testUpdateTarget() {
 		Target target = createTestTarget();
-		targetService.create(target);
 		target = targetService.loadById(target.getId());
 		target.setText("changed");
 		targetService.update(target);
@@ -67,21 +78,19 @@ public class TargetServiceImplTest {
 		assertEquals(1, targetService.loadAll().size());
 	}
 	
-	@Test(expected=BusinessViolationException.class)
+	@Test(expected=BusinessViolationException.class) 
 	public void testUpdateTargetFailsWhenTargetDoesNotExistYet() {
-		Target target = createTestTarget();
+		Target target = new Target();
+		target.setText("test");
 		targetService.update(target);
 	}
 	
 	
-	@Test
+	@Test 
 	public void testDeleteTarget() {
 		Target target1 = createTestTarget();
-		targetService.create(target1);
 		assertAmountOfTargets(1);
 		Target target2 = createTestTarget();
-		target2.setText("other text");
-		targetService.create(target2);
 		assertAmountOfTargets(2);
 		targetService.delete(target1);
 		assertAmountOfTargets(1);
@@ -90,44 +99,39 @@ public class TargetServiceImplTest {
 	}
 
 	
-	@Test(expected=ApplicationException.class)
+	@Test(expected=ApplicationException.class) 
 	public void testDeleteTargetFailsWhenTargetDoesNotExist() {
-		Target target = createTestTarget();
+		Target target = new Target();
+		target.setText("test");
 		targetService.delete(target);
 	}
 	
-	@Test
+	@Test 
 	public void testLoadById() {
 		Target expected = createTestTarget();
-		targetService.create(expected);
 		Target actual = targetService.loadById(expected.getId());
 		assertEquals(expected, actual);
 	}
 	
-	@Test(expected=ApplicationException.class)
+	@Test(expected=ApplicationException.class) 
 	public void testLoadByIdFailsWhenTargetDoesNotExist() {
 		targetService.loadById(new BigInteger("3928102983740"));
 	}
 	
 
-	@Test
+	@Test 
 	public void testAddTagToTarget() {
-		Target target = new Target();
-		target.setText("test target");
-		target = targetService.create(target);
+		Target target = createTestTarget();
 		
-		Tag tag = new Tag();
-		tag.setText("test tag");
+		Tag tag = new Tag("test tag");
 		targetService.addTagToTarget(tag, target);
 		assertEquals(1, tagService.loadAll().size());
 		assertEquals("test tag", targetService.loadById(target.getId()).getTags().iterator().next().getText());
 	}
 	
-	@Test
+	@Test 
 	public void testLoadByTag() {
-		Target target = new Target();
-		target.setText("testi");
-		targetService.create(target);
+		Target target = createTestTarget();
 		
 		Tag tag = new Tag();
 		tag.setText("cool");
@@ -138,16 +142,62 @@ public class TargetServiceImplTest {
 		
 		assertEquals(1, targetService.loadByTag(tag).size());
 		assertEquals(0, targetService.loadByTag(differentTag).size());
-		
 	}
 		
+	
+	@Test 
+	public void testLoadByQueryBasic() {
+		Tag tag1 = new Tag("t1");
+		Tag tag2 = new Tag("t2");
+		Tag tag3 = new Tag("t3");
+		createTestTarget(Utils.createList(tag1, tag2));
+		
+		List<Tag> testListOk = new ArrayList<Tag>();
+		testListOk.add(tag1);
+		testListOk.add(tag2);
+		assertEquals(1, targetService.loadByQuery(testListOk, new ArrayList<Tag>(), new ArrayList<Tag>(), 0, 0, 200).size());
+		
+		List<Tag> testListFail = new ArrayList<Tag>();
+		testListFail.add(tag1);
+		testListFail.add(tag3);
+		assertEquals(0, targetService.loadByQuery(testListFail, new ArrayList<Tag>(), new ArrayList<Tag>(), 0, 0, 200).size());
+	}
+	
+	
+	
+	
+	private final String UNIQUE_RANDOM_NAME = "unique.random.name";
+	private Target createTestTarget(String text, List<Tag> tags, double longitude, double latitude) {
+		Target target = new Target();
+		if(text.equals(UNIQUE_RANDOM_NAME)) {
+			target.setText("name"+Math.random()+System.currentTimeMillis());
+		}
+		else target.setText(text);
+		target.setLocation(longitude, latitude);
+		targetService.create(target);
+		
+		for(Tag tag : tags) {
+			targetService.addTagToTarget(tag, target);
+		}
+		
+		return target;
+	}
 
 	private Target createTestTarget() {
-		Target expected = new Target();
-		expected.setText("testi");
-		return expected;
+		return createTestTarget(UNIQUE_RANDOM_NAME, new ArrayList<Tag>(), 0, 0);
+	}
+	
+	private Target createTestTarget(double longitude, double latitude) {
+		return createTestTarget(UNIQUE_RANDOM_NAME, new ArrayList<Tag>(), longitude, latitude);
+	}
+	
+	private Target createTestTarget(List<Tag> tags) {
+		return createTestTarget(UNIQUE_RANDOM_NAME, tags, 0, 0);
 	}
 
+	
+	
+	
 	private void assertAmountOfTargets(int amount) {
 		assertEquals(amount, targetRepository.loadAll().size());
 	}
