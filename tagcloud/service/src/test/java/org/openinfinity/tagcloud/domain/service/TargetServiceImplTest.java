@@ -17,6 +17,8 @@ import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.BusinessViolationException;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
+import org.openinfinity.tagcloud.domain.entity.query.NearbyTarget;
+import org.openinfinity.tagcloud.domain.entity.query.Result;
 import org.openinfinity.tagcloud.domain.repository.TagRepository;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.utils.Utils;
@@ -163,6 +165,32 @@ public class TargetServiceImplTest {
 		assertEquals(0, targetService.loadByQuery(testListFail, new ArrayList<Tag>(), new ArrayList<Tag>(), 0, 0, 200).size());
 	}
 	
+	
+	@Test 
+	public void testLoadByNearQuery1() {
+		Tag shop = new Tag("shop");
+		Tag gym = new Tag("gym");
+		double[] aLoc = Utils.calcLocation(30, 40, -1.1*NearbyTarget.MAX_DISTANCE, 0);
+		Target a = createTestTarget("a", Utils.createList(shop), aLoc[0], aLoc[1]);
+		double[] bLoc = Utils.calcLocation(30, 40, -0.9*NearbyTarget.MAX_DISTANCE, 0);
+		Target b = createTestTarget("b", Utils.createList(shop), bLoc[0], bLoc[1]);
+		Target c = createTestTarget("c", Utils.createList(gym), 30, 40);
+		double[] dLoc = Utils.calcLocation(30, 40, 2*NearbyTarget.MAX_DISTANCE, 0);
+		Target d = createTestTarget("d", Utils.createList(shop, gym), dLoc[0], dLoc[1]);
+		
+		List<Result> results = targetService.loadByQuery(Utils.createList(shop), new ArrayList<Tag>(), Utils.createList(gym), 30, 40, 5000);
+		assertEquals(false, resultsContainsTarget(results, a));
+		assertEquals(true, resultsContainsTarget(results, b));
+		assertEquals(false, resultsContainsTarget(results, c));
+		assertEquals(true, resultsContainsTarget(results, d));
+	}
+	
+	private boolean resultsContainsTarget(List<Result> results, Target target) {
+		for(Result result : results) {
+			if (result.getTarget().equals(target)) return true;
+		}
+		return false;
+	}
 	
 	
 	

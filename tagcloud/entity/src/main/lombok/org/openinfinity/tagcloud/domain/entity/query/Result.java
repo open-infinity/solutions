@@ -40,4 +40,10 @@ public class Result implements Comparable<Result> {
 		return 0;
 	}
 	
+	public void updateNearbyTargetList() {
+		for(String tag : nearbyTargetsMap.keySet()) {
+			nearbyTargetsList.add(nearbyTargetsMap.get(tag));
+		}
+	}
+	
 }

@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
@@ -181,13 +182,10 @@ public class TargetServiceImpl implements TargetService {
 			double longitude, double latitude, double radius) {
 		
 		List<Target> targets = targetRepository.loadByCoordinates(longitude, latitude, radius);
-		System.out.println(targets.size());
 		List<Result> results = requireTags(targets, requiredTags, nearbyTags);
-		
 		if(nearbyTags.size()>0) {
-			results = nearbySearch(targetRepository.loadByCoordinates(longitude, latitude, 2*radius), results, nearbyTags);
+			results = nearbySearch(targetRepository.loadByCoordinates(longitude, latitude, radius+NearbyTarget.MAX_DISTANCE), results, nearbyTags);
 		}
-
 		return results;
 	}
 
@@ -217,34 +215,34 @@ public class TargetServiceImpl implements TargetService {
 			}
 			if(foundNearbyTags.size()==0) continue;
 			
-			Iterator<Result> resultIterator = results.iterator();
+			ListIterator<Result> resultIterator = results.listIterator(0);
 			while(resultIterator.hasNext()) {
 				Result result = resultIterator.next();
 				for(Tag tag : foundNearbyTags) {
-					if(!target.getTags().contains(tag)) continue;
 					NearbyTarget nearbyTarget = result.getNearbyTargetsMap().get(tag.getText());
-					double distance = calcRelativeDistance(result.getTarget(), target); 
+					double distance = calcRelativeDistance(result.getTarget(), target);
 					if(distance < nearbyTarget.getDistance()) {
 						nearbyTarget.setTarget(target);
 						nearbyTarget.setDistance(distance);
 					}
 				}
-				//remove result if some of the nearby tags can not be found close enough
-				for(String tagName : result.getNearbyTargetsMap().keySet()) {
-					if(result.getNearbyTargetsMap().get(tagName).getTarget() == null ||
-							calcDistance(result.getTarget(), result.getNearbyTargetsMap().get(tagName).getTarget()) > NearbyTarget.MAX_DISTANCE) {
-						resultIterator.remove();
-						break;
-					}
-				}
+				result.updateNearbyTargetList();
 			}
 		}
 		
-		//update correct absolute distances
-		for(Result result : results) {
+		//update correct absolute distances and remove ones too far away
+		ListIterator<Result> resultIterator = results.listIterator(0);
+		while(resultIterator.hasNext()) {
+			Result result = resultIterator.next();
+			
 			for(NearbyTarget nearbyTarget : result.getNearbyTargetsList()) {
 				nearbyTarget.setDistance(calcDistance(result.getTarget(), nearbyTarget.getTarget()));
+				if(nearbyTarget.getDistance() > NearbyTarget.MAX_DISTANCE) {
+					resultIterator.remove();
+					break;
+				}
 			}
+			
 		}
 		
 		return results;
