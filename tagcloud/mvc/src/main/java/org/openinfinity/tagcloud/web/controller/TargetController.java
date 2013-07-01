@@ -22,6 +22,7 @@ import org.openinfinity.core.exception.BusinessViolationException;
 import org.openinfinity.core.exception.SystemException;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
+import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.domain.service.TargetService;
 import org.openinfinity.tagcloud.web.model.TargetModel;
 import org.openinfinity.tagcloud.web.support.SerializerUtil;
@@ -42,6 +43,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/target")
 public class TargetController {
 
+		@Autowired
+		private TargetRepository targetRepository;
+	
 		@Autowired
 		private TargetService targetService;
 		
@@ -88,6 +92,12 @@ public class TargetController {
 			return "target/createTarget";
 		}
 		
+		@RequestMapping(method = RequestMethod.GET, value="reset")
+		public String resetTargetDB() {
+			targetRepository.dropCollection();
+			return "redirect:/target/loadAll";
+		}
+		
 		@Log
 		@AuditTrail(argumentStrategy=ArgumentStrategy.ALL)
 		@RequestMapping(method = RequestMethod.GET, value="loadAll")
@@ -99,7 +109,7 @@ public class TargetController {
 		
 		@Log
 		@AuditTrail(argumentStrategy=ArgumentStrategy.ALL) 
-		@RequestMapping(method = RequestMethod.POST, headers = "Content-type: application/json")
+		@RequestMapping(method = RequestMethod.POST)
 		public @ResponseBody Map<String, ? extends Object> create(@Valid @RequestBody TargetModel targetModel, HttpServletResponse response) {
 			Set<ConstraintViolation<TargetModel>> failures = validator.validate(targetModel);
 			if (failures.isEmpty()) {

@@ -18,7 +18,7 @@
 	
 	<div id="productForm" class="span-12 last">
 		<div id="targetForm" class="span-12 last">
-			<form:form modelAttribute="targetModel" action="target/createTarget" method="post">
+			<form:form modelAttribute="targetModel" action="target" method="post">
 				<table id="targetTable">
 					<tr>
 						<td><form:label for="text" path="text" cssErrorClass="error">Name</form:label></td>
@@ -54,6 +54,8 @@
 </div>
 
 <c:set var="model" value="targetModel" />
+<c:set var="action" value="/tagcloud/target" />
+
 
 <%@ include file="/WEB-INF/views/common/validation_scripts.jsp"%>
 <%@ include file="/WEB-INF/views/common/footer.jsp"%>

@@ -3,7 +3,7 @@
 	$(document).ready(function() {
 		$("#${model}").submit(function() {
 			var request = $(this).serializeObject();
-			$.postJSON("${model}", request, 
+			$.postJSON("${action}", request, 
 			function(request) {
 				setStatusField("Product registered successfully!");
 				$.each($('#${model}').serializeArray(), function(i, field) {
