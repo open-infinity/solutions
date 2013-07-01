@@ -26,31 +26,27 @@
 						<td><form:errors path="text" /></td>
 					</tr>
 					<tr>
-						<td><form:label for="latitude" path="latitude"
-								cssErrorClass="error">Latitude</form:label></td>
-						<td><form:input path="latitude" /></td>
-						<td><form:errors path="latitude" /></td>
+						<form:hidden id="latitude" path="latitude" />
 					</tr>
 					<tr>
-						<td><form:label for="longitude" path="longitude"
-								cssErrorClass="error">Longitude</form:label></td>
-						<td><form:input path="longitude" /></td>
-						<td><form:errors path="longitude" /></td>
+						<form:hidden id="longitude" path="longitude" />
 					</tr>
-
+					<tr>
 					<td>
 						<p>
 							<input id="save" type="submit" value="Save" />
 
 						</p>
-					</td>
-					<td></td>
-					<td></td>
+					</td>			
 					</tr>
 				</table>
 			</form:form>
+			
 		</div>
 	</div>
+	
+	<div id="map-canvas"></div>
+	
 </div>
 
 <c:set var="model" value="targetModel" />

@@ -1,16 +1,25 @@
+html{
+height: 100%;
+background-color: #F8F8FF;
+}
+
 body {
-background-attachment: fixed;
-background-repeat: repeat-x;
-background-color: #0f701f;
+height: 100%;
+width: 100%;
 font-size: 16px;
 text-align: center;
 margin: 0px;
 }
 
+#map-canvas {
+height: 100%;
+width: 100%
+}
+
 .container {
 margin: 0 auto;
    width: 744px;
-   height: auto;
+   height: 100%;
 
 }
 

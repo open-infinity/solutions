@@ -2,13 +2,10 @@ var map;
 var marker;
 var markers = [];
 var infoWindow;
+var lat;
+var lng;
 
-var infoWindowContent   = "<b>Add new target</b><br />"
-                        + "<form id='addTargetForm'>"
-                        + "Name: <input id='targetName' type='text' />"
-                        + "<input type='submit' value='Add' />"
-                        + "</form>";
-	 
+var infoWindowContent   = "Target's location";
 
 
 function initialize() {
@@ -30,6 +27,12 @@ function initialize() {
   google.maps.event.addListener(map, 'click', function(event){
 	removePreviousMarker();
     placeNewMarker(event.latLng);
+    
+	var myLatLng = event.latLng;
+    lat = myLatLng.lat();
+    lng = myLatLng.lng();
+    
+    populateCoordinates(location);
   });
 }
 
@@ -41,16 +44,18 @@ function removePreviousMarker() {
 		}
 };
 
+function populateCoordinates(){
+	document.getElementById("latitude").setAttribute("value", lat);
+	document.getElementById("longitude").setAttribute("value", lng);
+}
+
 function placeNewMarker(location) {
-	
+
   marker = new google.maps.Marker({
       position: location,
       map: map
   });
 
   markers.push(marker);
-  
   infoWindow.open(map,marker);
 }
-
-//google.maps.event.addDomListener(window, 'load', initialize);

@@ -26,7 +26,7 @@
 			</thead>
 			<c:forEach var="target" items="${targets}">
 				<tr>
-					<td><spring:url value="targetModel/{id}" var="id">
+					<td><spring:url value="{id}" var="id">
 							<spring:param name="id" value="${target.id}" />
 						</spring:url> <a href="${fn:escapeXml(id)}">${target.id}</a>
 					</td>

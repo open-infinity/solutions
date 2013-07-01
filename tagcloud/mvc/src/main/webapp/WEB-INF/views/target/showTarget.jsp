@@ -6,26 +6,38 @@
 
 <div class="container">
 	<br />
-	<h2>Target</h2>
+	<h2>${target.text}</h2>
 	<br />
 	<div class="sub_menu">
 		<b>Target information</b>
 	</div>
-	<br />
-	<div id="statusbox"></div>
-	<br />
 	
-	
-				<c:forEach var="target" items="${targets}">
+	<h3> </h3>
+	<table>
+	<tr>
+	<td>Coordinates:</td>
+	<td>${target.location[1]}, ${target.location[0]}</td>
+	</tr>
+	<tr>
+	<td>Score:</td>
+	</tr>
+	<tr>
+	<td>Tags:</td>
+	</tr>
+	<tr>
+	<td>Comments:</td>
+	</tr>
+	<tr>
+	<td>
+	<c:forEach var="comment" items="${comments}">
 				<tr>
-					<td><spring:url value="targetModel/{id}" var="id">
-							<spring:param name="id" value="${target.id}" />
-						</spring:url> <a href="${fn:escapeXml(id)}">${target.id}</a>
-					</td>
-					<td>${target.text}</td>
+					<td> </td>
 				</tr>
-			</c:forEach>
-
+	</c:forEach>
+	</td>
+	</tr>
+	
+	</table>
 	
 		</div>
 	</div>

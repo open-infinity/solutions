@@ -4,19 +4,22 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Data;
-
+import org.openinfinity.core.annotation.NotScript;
 import org.openinfinity.tagcloud.domain.entity.Target;
+
+
+import javax.validation.constraints.Size;
 
 
 public class TargetModel {
 	
 	private Map<String, Collection<String>> errorStatuses = new HashMap<String, Collection<String>>();
 
+	@NotScript
+	@Size(min=2,max=50)
 	private String text;
-	
+
 	private double latitude;
-	
 	private double longitude;
 	
 

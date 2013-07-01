@@ -1,6 +1,7 @@
 
 package org.openinfinity.tagcloud.web.controller;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -108,6 +110,15 @@ public class TargetController {
 		}
 		
 		@Log
+		@AuditTrail(argumentStrategy=ArgumentStrategy.ALL)
+		@RequestMapping(method = RequestMethod.GET, value="{id}")
+		public String showTarget(Model model, @PathVariable BigInteger id) {
+			Target target = targetService.loadById(id);
+			model.addAttribute("target", target);
+			return "target/showTarget";
+		}
+		
+		@Log
 		@AuditTrail(argumentStrategy=ArgumentStrategy.ALL) 
 		@RequestMapping(method = RequestMethod.POST)
 		public @ResponseBody Map<String, ? extends Object> create(@Valid @RequestBody TargetModel targetModel, HttpServletResponse response) {
@@ -121,6 +132,7 @@ public class TargetController {
 				return getValidationMessages(failures);
 			}
 		}
+	
 
 		private Map<String, String> getValidationMessages(Set<ConstraintViolation<TargetModel>> failures) {
 			Map<String, String> failureMessages = new HashMap<String, String>();
