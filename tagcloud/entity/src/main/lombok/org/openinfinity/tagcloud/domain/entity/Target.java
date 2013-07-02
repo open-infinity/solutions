@@ -1,22 +1,22 @@
 package org.openinfinity.tagcloud.domain.entity;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Reference;
-import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+
+import org.openinfinity.core.annotation.NotScript;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 @Data
@@ -29,6 +29,8 @@ public class Target implements Entity<BigInteger> {
 	private BigInteger id;
 
 	@NonNull
+	@NotScript
+	@Size(min=2, max=50)
 	private String text;
 
 	//@DBRef
@@ -37,8 +39,9 @@ public class Target implements Entity<BigInteger> {
 	private List<Score> scores = new ArrayList<Score>();
 
 	private List<Comment> comments = new ArrayList<Comment>();
+	
 
-	@GeoSpatialIndexed(bits=30)
+	@GeoSpatialIndexed(bits=30, collection="target")
 	private double[] location = new double[2];
 	
 
@@ -48,8 +51,12 @@ public class Target implements Entity<BigInteger> {
 		location[1] = latitude;
 	}
 	
+	
 	@Override
 	public String toString() {
 		return "Target, id="+id+", text="+text;
 	}
+
+
+
 }

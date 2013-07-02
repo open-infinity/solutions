@@ -29,6 +29,7 @@ import org.springframework.data.mongodb.core.geo.GeoResult;
 import org.springframework.data.mongodb.core.geo.GeoResults;
 import org.springframework.data.mongodb.core.geo.Metrics;
 import org.springframework.data.mongodb.core.geo.Point;
+import org.springframework.data.mongodb.core.index.GeospatialIndex;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.core.query.Query;
@@ -44,7 +45,7 @@ import com.mongodb.QueryBuilder;
 @Repository
 public class TargetRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Target, BigInteger> implements TargetRepository {
 	@Override
-	public Collection<Target> loadByCoordinates(double longitude, double latitude, double radius) {
+	public List<Target> loadByCoordinates(double longitude, double latitude, double radius) {
 		Point location = new Point(longitude, latitude);
 		NearQuery query = NearQuery.near(location).maxDistance(new Distance(radius/1000, Metrics.KILOMETERS));
 		GeoResults<Target> targets = mongoTemplate.geoNear(query, Target.class);
@@ -65,11 +66,16 @@ public class TargetRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBIm
 		Query query = new Query(Criteria.where("tags").elemMatch(Criteria.where("text").is(tag.getText())));
 		return mongoTemplate.find(query, Target.class);
 	}
-	
-	public Collection<Target> loadByQuery(List<Tag> required, double longitude, double latitude, double radius) {
-		Query query = new Query(); //FIX
-		return mongoTemplate.find(query, Target.class);
-	}
+
+	@Override
+	public void dropCollection() {
+		mongoTemplate.indexOps(Target.class).dropAllIndexes();
+		mongoTemplate.dropCollection(Target.class);
+		mongoTemplate.indexOps(Target.class).ensureIndex(new GeospatialIndex("location"));
 		
+		
+	}
+	
+	
 	
 }

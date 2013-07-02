@@ -6,9 +6,6 @@
 				</div>
 		</div>
 		<br />
-		<div>
-				<img src="<spring:url value="/resources/images/open-infinity-logo.png" />" />
-		</div>
 
 		</div> 
 		<br />
