@@ -3,12 +3,13 @@ package org.openinfinity.tagcloud.web.controller;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.openinfinity.tagcloud.web.connection.CachedRequest;
+import org.openinfinity.tagcloud.web.connection.ConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,13 +21,11 @@ import org.springframework.social.oauth2.GrantType;
 import org.springframework.social.oauth2.OAuth2Operations;
 import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.WebRequest;
 
-/*
+/**
  * @author: Kavan Soleimanbeigi
  */
 @Controller
@@ -42,9 +41,11 @@ public class LoginController {
 	String auth_scope;
 	@Value("${webapp.session_cookie_name}")
 	private String session_cookieKey;
+	@Value("${facebook.auth_redirect_link}")
+	private String auth_redirect_link;
 	String oauthurl = "";
 
-	public final static HashMap<String, AccessGrant> session_map = new HashMap<String, AccessGrant>();
+	private ConnectionManager cmanager = new ConnectionManager();
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(LoginController.class);
@@ -67,8 +68,7 @@ public class LoginController {
 	public @ResponseBody
 	List<String> loginTest(HttpServletRequest req) {
 		List<String> logList = new LinkedList<String>();
-		String session_id = null;
-		if (isUserLoggedIn(req.getCookies(), session_map)) {
+		if (cmanager.isUserLoggedIn(req.getSession().getId())) {
 			logList.add("you're logged in");
 		} else {
 			logList.add("you're not logged in");
@@ -77,31 +77,76 @@ public class LoginController {
 		return logList;
 	}
 
+	@RequestMapping(value = "/redx", method = RequestMethod.GET)
+	public @ResponseBody
+	List<String> redTest(HttpServletRequest req, HttpServletResponse response) {
+		List<String> logList = new LinkedList<String>();
+
+		if (cmanager.isUserLoggedIn(req.getSession().getId())) {
+			CachedRequest cache = cmanager.retrieveCachedRequest(req
+					.getSession().getId());
+			logList.add("now, let's do our thing!");
+
+			if (cache != null) {
+
+				logList.add("your cached query string: "
+						+ cache.getQuerryString());
+				logList.add("your cached uri was: " + cache.getRequestURI());
+				logList.add("your cached url was: " + cache.getRequestURL());
+
+			} else {
+
+				logList.add("your query string was: " + req.getQueryString());
+				logList.add("your uri was: " + req.getRequestURI());
+				logList.add("your url was: " + req.getRequestURL());
+			}
+
+		} else {
+			try {
+				cmanager.cacheThisRequest(req);
+				response.sendRedirect("/tagcloud/fb-login");
+			} catch (Exception ex) {
+				logList.add("redirect to login page failed!");
+			}
+		}
+
+		return logList;
+	}
+
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String doLogout(HttpServletRequest req) {
 
-		logout(req, session_map);
+		cmanager.logout(req.getSession().getId());
 		return "redirect:/check-login";
 	}
 
 	@RequestMapping(value = "/auth-response", method = RequestMethod.GET)
 	public @ResponseBody
-	List<String> auth_response(WebRequest req, HttpServletResponse response,
-			HttpServletRequest req2) {
+	List<String> auth_response(HttpServletRequest request,
+			HttpServletResponse response) {
 		List<String> logList = new LinkedList<String>();
-		String result = "", auth_code = getFacebookAuthorizationCode(req,
-				logList);
+		String auth_code = getFacebookAuthorizationCode(request, logList);
 		if (auth_code != null
-				&& createFacebookSession(response, auth_code, logList)) {
+				&& createFacebookSession(request, auth_code, logList)) {
 			logList.add(oauthurl);
 			logList.add("Facebook login session created successfully!");
+
 		} else {
 			logList.add("creating facebook session failed!");
+		}
+		try {
+			if (cmanager.isRedirectNeeded(request.getSession().getId())) {
+				cmanager.redirectToOriginal(request, response, logList);
+			}
+
+		} catch (Exception e) {
+			logList.add("redirect to redx failed");
+
 		}
 		return logList;
 	}
 
-	private String getFacebookAuthorizationCode(WebRequest req,
+	private String getFacebookAuthorizationCode(HttpServletRequest req,
 			List<String> logList) {
 
 		if (req.getParameter("error") == null
@@ -123,37 +168,35 @@ public class LoginController {
 
 	@RequestMapping(value = "/update-status", method = RequestMethod.GET)
 	public @ResponseBody
-	List<String> postToWall(HttpServletRequest req,
+	List<String> postToWall(HttpServletRequest request,
 			HttpServletResponse response) {
-		String message = req.getParameter("message");
-		List<String> list = new LinkedList<String>();
-		if (isUserLoggedIn(req.getCookies(), session_map)) {
+		String message = request.getParameter("message");
+		List<String> logList = new LinkedList<String>();
+		if (cmanager.isUserLoggedIn(request.getSession().getId())) {
 			try {
-				AccessGrant accessGrant = null;
-				for (Cookie cookie : req.getCookies()) {
-					if (cookie.getName().equalsIgnoreCase(session_cookieKey)) {
-						accessGrant = session_map.get(cookie.getValue());
-						break;
-					}
-				}
-				Connection<Facebook> connection = new FacebookConnectionFactory(
-						client_id, client_secret).createConnection(accessGrant);
-				Facebook facebook = connection.getApi();
-				if (message != null && !message.equalsIgnoreCase("")){
+				Facebook facebook = cmanager.getFacebook(request.getSession()
+						.getId(), client_id, client_secret);
+				if (message != null && !message.equalsIgnoreCase("")) {
 					facebook.feedOperations().updateStatus(message);
-					list.add(" Your status update, " + message +
-							" posted to your facbook wall successfully!");
-				}else{
-					list.add("status update message should not be null or empty");
+					logList.add(" Your status update, " + message
+							+ " posted to your facbook wall successfully!");
+				} else {
+					logList.add("status update message should not be null or empty");
 				}
-	
+
 			} catch (Exception e) {
-				list.add(e.toString());
+				logList.add(e.toString());
 			}
 		} else {
-			list.add("sorry, you should login first");
+			cmanager.cacheThisRequest(request);
+			try {
+				response.sendRedirect("/tagcloud/fb-login");
+			} catch (Exception e) {
+				logList.add("sorry, rquired login failed!");
+			}
+			// logList.add("sorry, you should login first");
 		}
-		return list;
+		return logList;
 	}
 
 	private String createAuthUrl() {
@@ -164,68 +207,29 @@ public class LoginController {
 				.getOAuthOperations();
 		OAuth2Parameters params = new OAuth2Parameters();
 		params.add("scope", auth_scope);
-		params.setRedirectUri("http://www.solxiom.info/tagcloud/auth-response");
+		params.setRedirectUri(auth_redirect_link);
 		String authorizeUrl = oauthOperations.buildAuthorizeUrl(
 				GrantType.AUTHORIZATION_CODE, params);
 
 		return authorizeUrl;
 	}
 
-	private boolean createFacebookSession(HttpServletResponse response,
+	private boolean createFacebookSession(HttpServletRequest request,
 			String auth_code, List<String> logList) {
-		String session_id = UUID.randomUUID().toString();
+		String session_id = request.getSession().getId();
 		try {
 
 			FacebookConnectionFactory connectionFactory = new FacebookConnectionFactory(
 					client_id, client_secret);
 			OAuth2Operations oauth2 = connectionFactory.getOAuthOperations();
 			AccessGrant accessGrant = oauth2.exchangeForAccess(auth_code,
-					"http://www.solxiom.info/tagcloud/auth-response", null);
-			session_map.put(session_id, accessGrant);
-			response.addCookie(new Cookie("tagcloud_session_id", session_id));
+					auth_redirect_link, null);
+			cmanager.login(session_id, accessGrant);
 			return true;
 
 		} catch (Exception e) {
 			logList.add(e.toString() + " ---> " + e.getMessage());
 			return false;
-		}
-	}
-
-	private boolean isUserLoggedIn(Cookie[] cookies,
-			HashMap<String, AccessGrant> map) {
-		String session_id = null;
-		if (cookies != null) {
-
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equalsIgnoreCase(session_cookieKey)) {
-					session_id = cookie.getValue();
-				}
-			}
-
-			if (session_id != null && map.containsKey(session_id)
-					&& map.get(session_id) != null) {
-				return true;
-
-			}
-		}
-		return false;
-	}
-
-	private void logout(HttpServletRequest req, HashMap<String, AccessGrant> map) {
-		Cookie[] cookies = req.getCookies();
-		String session_id = null;
-		if (cookies != null) {
-
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equalsIgnoreCase(session_cookieKey)) {
-					session_id = cookie.getValue();
-					cookie.setValue(null);
-				}
-			}
-		}
-
-		if (session_id != null && map.containsKey(session_id)) {
-			map.remove(session_id);
 		}
 	}
 
