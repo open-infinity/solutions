@@ -18,12 +18,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @EqualsAndHashCode(exclude = { "id" })
 public class Tag implements Entity<BigInteger> {
 
-	@Id
-	private BigInteger id;
 
 	@NonNull
 	private String text;
 
+	@Id
+	private BigInteger id;
 	
 	
 	@Override
