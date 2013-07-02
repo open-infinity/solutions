@@ -30,6 +30,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -42,9 +43,9 @@ public class TagController {
 		private TagService tagService;
 		
 		@RequestMapping(method = RequestMethod.GET, value="autocomplete")
-		public @ResponseBody Collection<TagModel> getAutocompleteSuggestions() {
+		public @ResponseBody Collection<TagModel> getAutocompleteSuggestions(@RequestParam(value="q") String q) {
 			List<TagModel> tagModels = new ArrayList<TagModel>();
-			for(Tag tag : tagService.loadAll()) {
+			for(Tag tag : tagService.searchLike(q)) {
 				tagModels.add(new TagModel(tag.getId().toString(), tag.getText()));
 			}
 			return tagModels;

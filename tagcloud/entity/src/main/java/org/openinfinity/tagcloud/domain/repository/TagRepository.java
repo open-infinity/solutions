@@ -16,7 +16,12 @@
 package org.openinfinity.tagcloud.domain.repository;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import org.openinfinity.tagcloud.domain.entity.Tag;
 
-public interface TagRepository extends AbstractCrudRepositoryInterface<Tag, BigInteger> {}
+public interface TagRepository extends AbstractCrudRepositoryInterface<Tag, BigInteger> {
+
+	public List<Tag> searchLike(String input);
+	
+}

@@ -17,6 +17,7 @@ package org.openinfinity.tagcloud.domain.service;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.List;
 
 import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
@@ -108,4 +109,9 @@ public class TagServiceImpl implements TagService {
 		return true;
 	}
 
+	@Override
+	public List<Tag> searchLike(String input){
+		return tagRepository.searchLike(input);
+	}
+	
 }

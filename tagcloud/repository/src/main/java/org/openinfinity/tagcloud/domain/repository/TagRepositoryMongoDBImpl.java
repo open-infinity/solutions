@@ -17,9 +17,16 @@
 package org.openinfinity.tagcloud.domain.repository;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import org.openinfinity.tagcloud.domain.entity.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+
+import com.mongodb.QueryBuilder;
 
 /**
  * TagRepository repository implementation.
@@ -27,4 +34,14 @@ import org.springframework.stereotype.Repository;
  * @author Joosa Kurvinen
  */
 @Repository
-public class TagRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Tag, BigInteger> implements TagRepository {}
+public class TagRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Tag, BigInteger> implements TagRepository {
+	
+	@Autowired
+	MongoTemplate mongoTemplate;
+
+	@Override
+	public List<Tag> searchLike(String input) {
+		Query query = new Query(Criteria.where("text").regex("\\.*"+input+"\\.*", "i"));
+		return mongoTemplate.find(query, Tag.class);
+	}
+}
