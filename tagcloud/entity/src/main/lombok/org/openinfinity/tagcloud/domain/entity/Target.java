@@ -23,7 +23,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
-public class Target implements Entity {
+public class Target implements TextEntity {
 
 	@Id
 	private String id;

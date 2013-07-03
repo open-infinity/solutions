@@ -34,84 +34,12 @@ import org.springframework.stereotype.Service;
  * @author Ilkka Leinonen
  */
 @Service
-public class TagServiceImpl implements TagService {
+public class TagServiceImpl extends AbstractTextEntityCrudServiceImpl<Tag> implements TagService {
 
-	@Autowired
-	private TagSpecification tagSpecification;
-	
 	@Autowired
 	private TagRepository tagRepository;
 	
-	@Log
-	@AuditTrail
 	@Override
-	public Tag create(Tag entity) {
-		Collection<Tag> entities = tagRepository.loadByText(entity.getText());
-		if (tagSpecification.isNotEligibleForCreation(entity, entities)) {
-			ExceptionUtil.throwApplicationException(
-				"Entity already exists: " + entity.getText(), 
-				ExceptionLevel.INFORMATIVE, 
-				TagService.UNIQUE_EXCEPTION_ENTITY_ALREADY_EXISTS);
-		}
-		tagRepository.create(entity);
-		return entity;
-	}
-	
-	@Log
-	@AuditTrail
-	public void update(Tag entity) {
-		if (tagRepository.loadById(entity.getId()) == null) {
-			ExceptionUtil.throwBusinessViolationException(
-				"Entity does not exist: " + entity.getText(), 
-				ExceptionLevel.ERROR, 
-				TagService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
-		}
-		tagRepository.update(entity);
-	}
-	
-	public Collection<Tag> loadAll() {
-		return tagRepository.loadAll();
-	}
-	
-	@Log
-	@AuditTrail
-	public Tag loadById(String id) {
-		Tag entity = tagRepository.loadById(id);
-		if (entity == null) {
-			ExceptionUtil.throwApplicationException(
-				"Entity does not exist: " + id, 
-				ExceptionLevel.WARNING, 
-				TagService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
-		}
-		return entity; 
-	}
-	
-	@Log
-	@AuditTrail
-	public void delete (Tag entity) {
-		if (tagRepository.loadById(entity.getId()) == null) {
-			ExceptionUtil.throwApplicationException(
-				"Entity does not exist: " + entity.getId(), 
-				ExceptionLevel.INFORMATIVE, 
-				TagService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
-		}
-		tagRepository.delete(entity);
-	}
-	
-	@Override
-	public boolean contains(Tag tag) {
-		if(tag==null || tag.getId()==null) return false;
-		try {
-			loadById(tag.getId());
-		} catch (Exception e) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
-	public List<Tag> searchLike(String input){
+	public List<Tag> searchLike(String input) {
 		return tagRepository.searchLike(input);
-	}
-	
-}
+	}}

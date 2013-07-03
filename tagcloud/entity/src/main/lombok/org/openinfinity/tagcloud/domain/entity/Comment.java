@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
-public class Comment implements Entity {
+public class Comment implements TextEntity {
 
 	@Id
 	private String id;

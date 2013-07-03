@@ -22,6 +22,6 @@ public abstract interface AbstractCrudServiceInterface<T extends Entity> {
 
 	public static final String UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST = "localized.exception.entity.does.not.exist";
 
-	boolean contains(T entity);
+	public boolean contains(T entity);
 
 }

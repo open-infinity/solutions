@@ -15,19 +15,14 @@
  */
 package org.openinfinity.tagcloud.domain.service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
 import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.exception.ExceptionLevel;
-import org.openinfinity.core.exception.ApplicationException;
-import org.openinfinity.core.exception.BusinessViolationException;
 import org.openinfinity.core.util.ExceptionUtil;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
@@ -36,8 +31,6 @@ import org.openinfinity.tagcloud.domain.entity.query.Result;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.geo.GeoResult;
-import org.springframework.data.mongodb.core.geo.GeoResults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,80 +40,15 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Ilkka Leinonen
  */
 @Service
-public class TargetServiceImpl implements TargetService {
+public class TargetServiceImpl extends AbstractTextEntityCrudServiceImpl<Target> implements TargetService {
 
 	@Autowired
-	private TargetSpecification targetSpecification;
+	private TargetRepository targetRepository;
 	
 	@Autowired
 	private TagService tagService;
 	
-	@Autowired
-	private TargetRepository targetRepository;
 	
-	@Log
-	@AuditTrail
-	@Override
-	@Transactional
-	public Target create(Target entity) {
-		Collection<Target> entities = targetRepository.loadByText(entity.getText());
-		if (targetSpecification.isNotEligibleForCreation(entity, entities)) {
-			ExceptionUtil.throwApplicationException(
-				"Entity already exists: " + entity.getText(), 
-				ExceptionLevel.INFORMATIVE, 
-				TargetService.UNIQUE_EXCEPTION_ENTITY_ALREADY_EXISTS);
-		}
-		targetRepository.create(entity);
-		return entity;
-	}
-	
-	@Log
-	@AuditTrail
-	@Override
-	@Transactional
-	public void update(Target entity) {
-		if (targetRepository.loadById(entity.getId()) == null) {
-			ExceptionUtil.throwBusinessViolationException(
-				"Entity does not exist: " + entity.getText(), 
-				ExceptionLevel.ERROR, 
-				TargetService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
-		}
-		targetRepository.update(entity);
-	}
-	
-	@Override
-	public Collection<Target> loadAll() {
-		return targetRepository.loadAll();
-	}
-	
-	@Log
-	@AuditTrail
-	@Override
-	public Target loadById(String id) {
-		Target entity = targetRepository.loadById(id);
-		if (entity == null) {
-			ExceptionUtil.throwApplicationException(
-				"Entity does not exist: " + id, 
-				ExceptionLevel.WARNING, 
-				TargetService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
-		}
-		return entity; 
-	}
-	
-	@Log
-	@AuditTrail
-	@Override
-	@Transactional
-	public void delete (Target entity) {
-		if (targetRepository.loadById(entity.getId()) == null) {
-			ExceptionUtil.throwApplicationException(
-				"Entity does not exist: " + entity.getId(), 
-				ExceptionLevel.INFORMATIVE, 
-				TargetService.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
-		}
-		targetRepository.delete(entity);
-	}
-
 	@Log
 	@AuditTrail
 	@Override
@@ -154,23 +82,8 @@ public class TargetServiceImpl implements TargetService {
 		
 		target.getTags().remove(tag);
 		update(target);
-		
-		//fixme
-//		tag.getTargets().remove(target);
-//		if(tag.getTargets().size() > 0) tagService.update(tag);
-//		else tagService.delete(tag);
 	}
 
-	@Override
-	public boolean contains(Target target) {
-		if(target==null || target.getId()==null) return false;
-		try {
-			loadById(target.getId());
-		} catch (Exception e) {
-			return false;
-		}
-		return true;
-	}
 
 	@Override
 	public Collection<Target> loadByTag(Tag tag) {

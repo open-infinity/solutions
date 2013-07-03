@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
-public class Tag implements Entity {
+public class Tag implements TextEntity {
 
 
 	@NonNull
