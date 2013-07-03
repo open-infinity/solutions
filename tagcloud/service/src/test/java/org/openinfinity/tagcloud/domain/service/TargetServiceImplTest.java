@@ -117,7 +117,7 @@ public class TargetServiceImplTest {
 	
 	@Test(expected=ApplicationException.class) 
 	public void testLoadByIdFailsWhenTargetDoesNotExist() {
-		targetService.loadById(new BigInteger("3928102983740"));
+		targetService.loadById("testcommentnotexisting");
 	}
 	
 

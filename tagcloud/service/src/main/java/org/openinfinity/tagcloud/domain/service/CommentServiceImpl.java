@@ -77,7 +77,7 @@ public class CommentServiceImpl implements CommentService {
 	
 	@Log
 	@AuditTrail
-	public Comment loadById(BigInteger id) {
+	public Comment loadById(String id) {
 		Comment entity = commentRepository.loadById(id);
 		if (entity == null) {
 			ExceptionUtil.throwApplicationException(

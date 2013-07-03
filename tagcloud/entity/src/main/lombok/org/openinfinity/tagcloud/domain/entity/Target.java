@@ -23,10 +23,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
-public class Target implements Entity<BigInteger> {
+public class Target implements Entity {
 
 	@Id
-	private BigInteger id;
+	private String id;
 
 	@NonNull
 	@NotScript

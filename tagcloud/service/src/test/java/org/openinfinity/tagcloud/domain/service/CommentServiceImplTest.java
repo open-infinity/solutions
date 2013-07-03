@@ -102,7 +102,7 @@ public class CommentServiceImplTest {
 	
 	@Test(expected=ApplicationException.class)
 	public void testLoadByIdFailsWhenCommentDoesNotExist() {
-		commentService.loadById(new BigInteger("3928102983740"));
+		commentService.loadById("testcommentnotexisting");
 	}
 	
 	

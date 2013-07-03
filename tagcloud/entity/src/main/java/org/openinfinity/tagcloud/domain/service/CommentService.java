@@ -4,4 +4,4 @@ import java.math.BigInteger;
 
 import org.openinfinity.tagcloud.domain.entity.*;
 
-public interface CommentService extends AbstractCrudServiceInterface<Comment, BigInteger> {}
+public interface CommentService extends AbstractCrudServiceInterface<Comment> {}

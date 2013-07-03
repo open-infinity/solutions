@@ -75,7 +75,7 @@ public class ScoreServiceImpl implements ScoreService {
 	
 	@Log
 	@AuditTrail
-	public Score loadById(BigInteger id) {
+	public Score loadById(String id) {
 		Score entity = scoreRepository.loadById(id);
 		if (entity == null) {
 			ExceptionUtil.throwApplicationException(

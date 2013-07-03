@@ -75,7 +75,7 @@ public class TagServiceImpl implements TagService {
 	
 	@Log
 	@AuditTrail
-	public Tag loadById(BigInteger id) {
+	public Tag loadById(String id) {
 		Tag entity = tagRepository.loadById(id);
 		if (entity == null) {
 			ExceptionUtil.throwApplicationException(

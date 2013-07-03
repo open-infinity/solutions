@@ -14,10 +14,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
-public class Location implements Entity<BigInteger> {
+public class Location implements Entity {
 
 	@Id
-	private BigInteger id;
+	private String id;
 
 	private Target target;
 

@@ -27,4 +27,4 @@ import org.springframework.stereotype.Repository;
  * @author Joosa Kurvinen
  */
 @Repository
-public class ScoreRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Score, BigInteger> implements ScoreRepository {}
+public class ScoreRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Score> implements ScoreRepository {}

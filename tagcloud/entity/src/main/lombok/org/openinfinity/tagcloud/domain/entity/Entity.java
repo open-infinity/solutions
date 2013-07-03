@@ -4,6 +4,6 @@ import java.io.Serializable;
 
 import org.openinfinity.tagcloud.domain.service.AbstractSpecification;
 
-public interface Entity<ID_TYPE> extends Serializable {
-	public ID_TYPE getId();
+public interface Entity extends Serializable {
+	public String getId();
 }

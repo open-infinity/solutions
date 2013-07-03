@@ -96,7 +96,7 @@ public class TargetServiceImpl implements TargetService {
 	@Log
 	@AuditTrail
 	@Override
-	public Target loadById(BigInteger id) {
+	public Target loadById(String id) {
 		Target entity = targetRepository.loadById(id);
 		if (entity == null) {
 			ExceptionUtil.throwApplicationException(

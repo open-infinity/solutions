@@ -112,7 +112,7 @@ public class TargetController {
 		@Log
 		@AuditTrail(argumentStrategy=ArgumentStrategy.ALL)
 		@RequestMapping(method = RequestMethod.GET, value="{id}")
-		public String showTarget(Model model, @PathVariable BigInteger id) {
+		public String showTarget(Model model, @PathVariable String id) {
 			Target target = targetService.loadById(id);
 			model.addAttribute("target", target);
 			return "target/showTarget";

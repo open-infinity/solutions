@@ -17,10 +17,10 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
-public class Comment implements Entity<BigInteger> {
+public class Comment implements Entity {
 
 	@Id
-	private BigInteger id;
+	private String id;
 
 	@NonNull
 	private String text;

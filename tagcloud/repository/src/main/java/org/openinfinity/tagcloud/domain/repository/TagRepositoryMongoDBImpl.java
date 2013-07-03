@@ -34,7 +34,7 @@ import com.mongodb.QueryBuilder;
  * @author Joosa Kurvinen
  */
 @Repository
-public class TagRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Tag, BigInteger> implements TagRepository {
+public class TagRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Tag> implements TagRepository {
 	
 	@Autowired
 	MongoTemplate mongoTemplate;
