@@ -4,16 +4,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.openinfinity.tagcloud.web.connection.config.Config;
+import org.openinfinity.tagcloud.web.connection.config.DefaultConfig;
 import org.openinfinity.tagcloud.web.connection.exception.InvalidConnectionCredentialException;
 import org.openinfinity.tagcloud.web.connection.exception.NullAccessGrantException;
 import org.openinfinity.tagcloud.web.connection.exception.NullActiveConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.FacebookProfile;
 import org.springframework.stereotype.Controller;
@@ -22,28 +22,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
+ * 
+ * 
  * @author: Kavan Soleimanbeigi
  */
 @Controller
 public class ConnectionController {
 
-	@Value("${facebook.client_id}")
-	private String client_id;
-	@Value("${facebook.client_secret}")
-	private String client_secret;
-	@Value("${facebook.namespace}")
-	private String app_namespace;
-	@Value("${facebook.auth_scope}")
-	String auth_scope;
-	@Value("${facebook.auth_redirect_link}")
-	private String auth_redirect_link;
-	@Value("${facebook.logout_redirect_link}")
-	private String logout_redirect_link;
-	@Value("${webapp.default_redirect_path}")
-	private String default_redirect_path;
 	@Autowired
 	private ConnectionManager connection_manager;
-	// *** start c p area
+	@Autowired
+	private Config config;
 	private final String check_connection_path = "/check/connection";
 	private final String connect_path = "/connect";
 	private final String login_path = "/login";
@@ -65,8 +54,9 @@ public class ConnectionController {
 
 		List<String> logList = new LinkedList<String>();
 		logList.add("Connecting...");
-		ConnectionCredential credential = this
+		ConnectionCredential credential = config
 				.buildDefaultConnectionCredential();
+		connection_manager.setLoggingPolicy(config.getDefaultLoggingPolicy());
 		try {
 			connection_manager.setConnectionCredential(credential);
 			connection_manager.connect(request, response);
@@ -188,16 +178,5 @@ public class ConnectionController {
 		return logList;
 	}
 
-	public ConnectionCredential buildDefaultConnectionCredential() {
-		return new ConnectionCredentialBuilder().setClient_id(client_id)
-				.setClient_secret(client_secret)
-				.setApp_namespace(app_namespace)
-				.setAuth_redirect_link(auth_redirect_link)
-				.setAuth_scope(auth_scope)
-				.setLogout_redirect_link(logout_redirect_link)
-				.setDefault_redirect_path(default_redirect_path).build();
-	}
-
-	// ** end c p area
 
 }

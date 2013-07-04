@@ -8,9 +8,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.openinfinity.tagcloud.web.connection.config.Config;
 import org.openinfinity.tagcloud.web.connection.exception.InvalidConnectionCredentialException;
 import org.openinfinity.tagcloud.web.connection.exception.NullAccessGrantException;
 import org.openinfinity.tagcloud.web.connection.exception.NullActiveConnectionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
@@ -26,18 +28,30 @@ public class ConnectionManagerImpl implements ConnectionManager {
 	private HashMap<String, ActiveConnection> connection_map;
 	private List<String> connectionLog;
 	private ConnectionCredential credential;
+	private LoggingPolicy loggingPolicy;
 
 	public ConnectionManagerImpl() {
 		this.connection_map = new HashMap<String, ActiveConnection>();
 		credential = null;
 		connectionLog = new LinkedList<String>();
+		this.loggingPolicy = null;
+	}
+
+	@Override
+	public LoggingPolicy getLoggingPolicy() {
+		return this.loggingPolicy;
+	}
+
+	@Override
+	public void setLoggingPolicy(LoggingPolicy policy) {
+		this.loggingPolicy = policy;
 	}
 
 	@Override
 	public CachedRequest requireLogin(HttpServletRequest request,
 			HttpServletResponse response) {
 		// connectionLog.clear();
-
+		this.doPrePublicLoggingActions();
 		if (!this.isUserLoggedIn(request.getSession().getId())) {
 			this.cacheThisRequest(request);
 			try {
@@ -55,6 +69,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 	public void connect(HttpServletRequest request, HttpServletResponse response)
 			throws InvalidConnectionCredentialException,
 			NullActiveConnectionException, NullAccessGrantException {
+		this.doPrePublicLoggingActions();
 		if (this.isUserLoggedIn(request.getSession().getId())) {
 			this.handlePostConnectionRedirections(request, response);
 		}
@@ -77,15 +92,15 @@ public class ConnectionManagerImpl implements ConnectionManager {
 	private void handlePostConnectionRedirections(HttpServletRequest request,
 			HttpServletResponse response) {
 		try {
-			if (this.isRedirectNeeded(request.getSession()
-					.getId())) {
+			if (this.isRedirectNeeded(request.getSession().getId())) {
 				this.redirectToOriginal(request, response);
 			} else {
 				this.redirectToDefault(request, response);
 			}
 
 		} catch (Exception e) {
-			connectionLog.add("Exception on post connection Redirection  " + e.toString());
+			connectionLog.add("Exception on post connection Redirection  "
+					+ e.toString());
 
 		}
 
@@ -104,7 +119,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 	@Override
 	public String disconnect(HttpServletRequest request,
 			HttpServletResponse response, boolean facebook_logout) {
-
+		this.doPrePublicLoggingActions();
 		String facebookAccessToken = this.getSessionFacebookAccessGrant(
 				request.getSession().getId()).getAccessToken();
 		if (this.isUserLoggedIn(request.getSession().getId())) {
@@ -153,7 +168,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Facebook getSessionFacebook(String session_id) {
 		ActiveConnection conn = this.connection_map.get(session_id);
@@ -179,6 +194,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		}
 		return false;
 	}
+
 	private void cacheThisRequest(HttpServletRequest request) {
 		String session_id = request.getSession().getId();
 		ActiveConnection conn = this.connection_map.get(session_id);
@@ -205,7 +221,6 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		return null;
 	}
 
-	
 	private void redirectToOriginal(HttpServletRequest req,
 			HttpServletResponse response) {
 
@@ -224,7 +239,6 @@ public class ConnectionManagerImpl implements ConnectionManager {
 			}
 		}
 	}
-
 
 	private void redirectToDefault(HttpServletRequest req,
 			HttpServletResponse response) {
@@ -425,5 +439,20 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		}
 
 		return true;
+	}
+
+	private void doPrePublicLoggingActions(){
+		if(this.loggingPolicy != null && (
+				this.loggingPolicy == LoggingPolicy.CLEAR_ON_PUBLIC_CALL 
+				|| this.loggingPolicy == LoggingPolicy.CLEAR_ON_PUBLIC_CALL_AND_GET_LOGGER)){
+			this.connection_map.clear();
+		}
+	}
+	private void doAferGetLoggingActions(){
+		if(this.loggingPolicy != null && (
+				this.loggingPolicy == LoggingPolicy.CLEAR_ON_GET_LOGGER 
+				|| this.loggingPolicy == LoggingPolicy.CLEAR_ON_PUBLIC_CALL_AND_GET_LOGGER)){
+			this.connection_map.clear();
+		}
 	}
 }

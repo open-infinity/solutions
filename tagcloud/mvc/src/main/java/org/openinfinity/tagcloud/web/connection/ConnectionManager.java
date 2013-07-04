@@ -11,6 +11,12 @@ import org.openinfinity.tagcloud.web.connection.exception.NullActiveConnectionEx
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.oauth2.AccessGrant;
 
+
+/**
+ * 
+ * @author Kavan Soleimanbeigi
+ *
+ */
 public interface ConnectionManager {
 
 	public CachedRequest requireLogin(HttpServletRequest request,
@@ -37,5 +43,9 @@ public interface ConnectionManager {
 	public Facebook getSessionFacebook(String session_id);
 
 	public boolean isUserLoggedIn(String session_id);
+	
+	public LoggingPolicy getLoggingPolicy();
+
+	public void setLoggingPolicy(LoggingPolicy policy);
 
 }

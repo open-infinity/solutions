@@ -69,38 +69,38 @@ public class HomeController {
 	private Validator validator;
 
 
-	
-	/**
-	 * Simply selects the home view to render by returning its name.
-	 */
-	@RequestMapping(method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
-		LOGGER.error("\n\n!!!!!!!!!Welcome home! the client locale is "+ locale.toString()+"!!!!!!!!!!!\n\n");
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		String formattedDate = dateFormat.format(date);
-		model.addAttribute("serverTime", formattedDate );
-		model.addAttribute("searchModel", new SearchModel());
-		return "home";
-	}
-
-//	@RequestMapping(value = "/", method = RequestMethod.GET)
-//	public @ResponseBody
-//	String  home() {
 //	
-//
-//		return "Welcome to TagCloud";
+//	/**
+//	 * Simply selects the home view to render by returning its name.
+//	 */
+//	@RequestMapping(method = RequestMethod.GET)
+//	public String home(Locale locale, Model model) {
+//		LOGGER.error("\n\n!!!!!!!!!Welcome home! the client locale is "+ locale.toString()+"!!!!!!!!!!!\n\n");
+//		Date date = new Date();
+//		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
+//		String formattedDate = dateFormat.format(date);
+//		model.addAttribute("serverTime", formattedDate );
+//		model.addAttribute("searchModel", new SearchModel());
+//		return "home";
 //	}
+
+	@RequestMapping(method = RequestMethod.GET)
+	public @ResponseBody
+	String  home() {
 	
 
-
-	@Log
-	@AuditTrail(argumentStrategy=ArgumentStrategy.ALL) 
-	@RequestMapping(method = RequestMethod.POST)
-	public @ResponseBody Map<String, ? extends Object> create(@RequestBody SearchModel searchModel) {
-		LOGGER.error(searchModel.getRequired()[0].getId());
-		return new ModelMap("id", 0);
+		return "Welcome to TagCloud";
 	}
+	
+
+//
+//	@Log
+//	@AuditTrail(argumentStrategy=ArgumentStrategy.ALL) 
+//	@RequestMapping(method = RequestMethod.POST)
+//	public @ResponseBody Map<String, ? extends Object> create(@RequestBody SearchModel searchModel) {
+//		LOGGER.error(searchModel.getRequired()[0].getId());
+//		return new ModelMap("id", 0);
+//	}
 
 
 }
