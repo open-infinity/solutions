@@ -14,6 +14,7 @@ import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.BusinessViolationException;
 import org.openinfinity.tagcloud.domain.entity.Comment;
 import org.openinfinity.tagcloud.domain.entity.Profile;
+import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -57,9 +58,9 @@ public class ProfileServiceImplTest {
 		Profile profile = createTestProfile();
 		profileService.create(profile);
 		profile = profileService.loadById(profile.getId());
-		profile.getComments().add(new Comment());
+		profile.getMyScoredTargets().add(new Target("asdf",0,0));
 		profileService.update(profile);
-		assertEquals(1, profileService.loadById(profile.getId()).getComments().size());
+		assertEquals(1, profileService.loadById(profile.getId()).getMyScoredTargets().size());
 		assertEquals(1, profileService.loadAll().size());
 	}
 	
@@ -76,7 +77,7 @@ public class ProfileServiceImplTest {
 		profileService.create(profile1);
 		assertAmountOfProfiles(1);
 		Profile profile2 = createTestProfile();
-		profile2.getComments().add(new Comment());
+		profile2.getMyScoredTargets().add(new Target("asdf",0,0));
 		profileService.create(profile2);
 		assertAmountOfProfiles(2);
 		profileService.delete(profile1);
@@ -108,7 +109,7 @@ public class ProfileServiceImplTest {
 	
 
 	private Profile createTestProfile() {
-		Profile expected = new Profile();
+		Profile expected = new Profile("testId");
 		return expected;
 	}
 

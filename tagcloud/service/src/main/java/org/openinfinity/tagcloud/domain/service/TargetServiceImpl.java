@@ -24,6 +24,7 @@ import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.exception.ExceptionLevel;
 import org.openinfinity.core.util.ExceptionUtil;
+import org.openinfinity.tagcloud.domain.entity.Profile;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.NearbyTarget;
@@ -48,12 +49,14 @@ public class TargetServiceImpl extends AbstractTextEntityCrudServiceImpl<Target>
 	@Autowired
 	private TagService tagService;
 	
+	@Autowired 
+	private ProfileService profileService;
 	
 	@Log
 	@AuditTrail
 	@Override
 	@Transactional
-	public void addTagToTarget(Tag tag, Target target) {
+	public void addTagToTarget(Tag tag, Target target, Profile profile) {
 		for (Tag oldTag : target.getTags()) {
 			if(oldTag.getText().equals(tag.getText())) 
 				ExceptionUtil.throwBusinessViolationException(
@@ -67,6 +70,9 @@ public class TargetServiceImpl extends AbstractTextEntityCrudServiceImpl<Target>
 		
 		target.getTags().add(tag);
 		update(target);
+		
+		profile.addTag(tag, target);
+		profileService.update(profile);
 	}
 	
 	@Log

@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.BusinessViolationException;
+import org.openinfinity.tagcloud.domain.entity.Profile;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.NearbyTarget;
@@ -43,6 +44,9 @@ public class TargetServiceImplTest {
 	@Autowired
 	TagRepository tagRepository;
 	
+	@Autowired
+	ProfileService profileService;
+	
 	@Before
 	public void setUp() throws Exception {}
 
@@ -61,15 +65,15 @@ public class TargetServiceImplTest {
 		assertNotNull(actual.getId());
 	}
 
-
-
-	@Test(expected=ApplicationException.class) 
-	public void testCreateTargetFailsWhenTargetAlreadyExists() {	
-		Target target = createTestTarget();
-		targetService.create(target);
+	@Test 
+	public void testCreateTargetWithSameText() {
+		Target expected = createTestTarget("abc", new ArrayList<Tag>(), 0, 0);
+		createTestTarget("abc", new ArrayList<Tag>(), 20, 20);
+		assertEquals(2, targetService.loadByText(expected.getText()).size());
 	}
+
 	
-	
+
 	@Test 
 	public void testUpdateTarget() {
 		Target target = createTestTarget();
@@ -82,7 +86,7 @@ public class TargetServiceImplTest {
 	
 	@Test(expected=BusinessViolationException.class) 
 	public void testUpdateTargetFailsWhenTargetDoesNotExistYet() {
-		Target target = new Target();
+		Target target = new Target("asdf",0,0);
 		target.setText("test");
 		targetService.update(target);
 	}
@@ -103,7 +107,7 @@ public class TargetServiceImplTest {
 	
 	@Test(expected=ApplicationException.class) 
 	public void testDeleteTargetFailsWhenTargetDoesNotExist() {
-		Target target = new Target();
+		Target target = new Target("asdf",0,0);
 		target.setText("test");
 		targetService.delete(target);
 	}
@@ -126,21 +130,36 @@ public class TargetServiceImplTest {
 		Target target = createTestTarget();
 		
 		Tag tag = new Tag("test tag");
-		targetService.addTagToTarget(tag, target);
+		Profile profile = new Profile("testId");
+		profile = profileService.create(profile);
+		
+		targetService.addTagToTarget(tag, target, profile);
 		assertEquals(1, tagService.loadAll().size());
 		assertEquals("test tag", targetService.loadById(target.getId()).getTags().iterator().next().getText());
+		assertEquals(true, profileService.loadById(profile.getId()).getMyTags().get(target.getId()).contains(tag));
+	}
+	
+	@Test(expected=BusinessViolationException.class)  
+	public void testAddTagToTargetFailsIfTagAlreadyExists() {
+		Target target = createTestTarget();
+		
+		Profile profile = new Profile("testId");
+		profile = profileService.create(profile);
+		
+		targetService.addTagToTarget(new Tag("test"), target, profile);
+		targetService.addTagToTarget(new Tag("test"), target, profile);
 	}
 	
 	@Test 
 	public void testLoadByTag() {
 		Target target = createTestTarget();
 		
-		Tag tag = new Tag();
-		tag.setText("cool");
-		Tag differentTag = new Tag();
-		differentTag.setText("not cool");
+		Tag tag = new Tag("testi");
+		Tag differentTag = new Tag("testi2");
 		
-		targetService.addTagToTarget(tag, target);
+		Profile profile = profileService.create(new Profile("testId"));
+		
+		targetService.addTagToTarget(tag, target, profile);
 		
 		assertEquals(1, targetService.loadByTag(tag).size());
 		assertEquals(0, targetService.loadByTag(differentTag).size());
@@ -196,7 +215,7 @@ public class TargetServiceImplTest {
 	
 	private final String UNIQUE_RANDOM_NAME = "unique.random.name";
 	private Target createTestTarget(String text, List<Tag> tags, double longitude, double latitude) {
-		Target target = new Target();
+		Target target = new Target(text,longitude,latitude);
 		if(text.equals(UNIQUE_RANDOM_NAME)) {
 			target.setText("name"+Math.random()+System.currentTimeMillis());
 		}
@@ -204,8 +223,9 @@ public class TargetServiceImplTest {
 		target.setLocation(longitude, latitude);
 		targetService.create(target);
 		
+		Profile profile = profileService.create(new Profile("testId"));
 		for(Tag tag : tags) {
-			targetService.addTagToTarget(tag, target);
+			targetService.addTagToTarget(tag, target, profile);
 		}
 		
 		return target;

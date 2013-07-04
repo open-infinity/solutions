@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.BusinessViolationException;
 import org.openinfinity.tagcloud.domain.entity.Comment;
+import org.openinfinity.tagcloud.domain.entity.Profile;
 import org.openinfinity.tagcloud.domain.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -38,23 +39,32 @@ public class CommentServiceImplTest {
 
 	@Test 
 	public void testCreateComment() {
-		Comment expected = createTestComment();
+		Comment expected = newTestComment();
 		Comment comment = commentService.create(expected);
 		Comment actual = commentService.loadById(comment.getId());
 		assertEquals(expected.getText(), actual.getText());
 		assertNotNull(actual.getId());
 	}
 
+	@Test 
+	public void testCreateCommentWithSameText() {
+		Comment comment = commentService.create(newTestComment());
+		commentService.create(newTestComment());
+		assertEquals(2, commentService.loadByText(comment.getText()).size());
+	}
+
+	
+
 	@Test(expected=ApplicationException.class)
-	public void testCreateCommentFailsWhenCommentAlreadyExists() {	
-		Comment expected = createTestComment();
-		Comment createdComment = commentService.create(expected);
-		commentService.create(createdComment);
+	public void testCreateCommentFailsWhenCommentAlreadyExists() {
+		Comment comment = newTestComment();
+		commentService.create(comment);
+		commentService.create(comment);
 	}
 	
 	@Test 
 	public void testUpdateComment() {
-		Comment comment = createTestComment();
+		Comment comment = newTestComment();
 		commentService.create(comment);
 		comment = commentService.loadById(comment.getId());
 		comment.setText("changed");
@@ -65,17 +75,17 @@ public class CommentServiceImplTest {
 	
 	@Test(expected=BusinessViolationException.class)
 	public void testUpdateCommentFailsWhenCommentDoesNotExistYet() {
-		Comment comment = createTestComment();
+		Comment comment = newTestComment();
 		commentService.update(comment);
 	}
 	
 	
 	@Test
 	public void testDeleteComment() {
-		Comment comment1 = createTestComment();
+		Comment comment1 = newTestComment();
 		commentService.create(comment1);
 		assertAmountOfComments(1);
-		Comment comment2 = createTestComment();
+		Comment comment2 = newTestComment();
 		comment2.setText("other text");
 		commentService.create(comment2);
 		assertAmountOfComments(2);
@@ -88,13 +98,13 @@ public class CommentServiceImplTest {
 	
 	@Test(expected=ApplicationException.class)
 	public void testDeleteCommentFailsWhenCommentDoesNotExist() {
-		Comment comment = createTestComment();
+		Comment comment = newTestComment();
 		commentService.delete(comment);
 	}
 	
 	@Test
 	public void testLoadById() {
-		Comment expected = createTestComment();
+		Comment expected = newTestComment();
 		commentService.create(expected);
 		Comment actual = commentService.loadById(expected.getId());
 		assertEquals(expected, actual);
@@ -107,10 +117,9 @@ public class CommentServiceImplTest {
 	
 	
 
-	private Comment createTestComment() {
-		Comment expected = new Comment();
-		expected.setText("testi");
-		return expected;
+	private Comment newTestComment() {
+		Profile profile = new Profile("testId"); 
+		return new Comment("testi", profile);
 	}
 
 	private void assertAmountOfComments(int amount) {

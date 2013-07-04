@@ -45,7 +45,7 @@ public class TagServiceImplTest {
 
 	@Test 
 	public void testCreateTag() {
-		Tag expected = createTestTag();
+		Tag expected = new Tag("testi");
 		Tag tag = tagService.create(expected);
 		Tag actual = tagService.loadById(tag.getId());
 		assertEquals(expected.getText(), actual.getText());
@@ -54,14 +54,22 @@ public class TagServiceImplTest {
 
 	@Test(expected=ApplicationException.class)
 	public void testCreateTagFailsWhenTagAlreadyExists() {	
-		Tag expected = createTestTag();
+		Tag expected = new Tag("testi");
 		Tag createdTag = tagService.create(expected);
 		tagService.create(createdTag);
 	}
 	
+	@Test(expected=ApplicationException.class)
+	public void testCreateTagFailsWhenTagAlreadyExistsWithSameText() {	
+		tagService.create(new Tag("testi"));
+		tagService.create(new Tag("testi"));
+	}
+	
+	
+	
 	@Test 
 	public void testUpdateTag() {
-		Tag tag = createTestTag();
+		Tag tag = new Tag("testi");
 		tagService.create(tag);
 		tag = tagService.loadById(tag.getId());
 		tag.setText("changed");
@@ -72,18 +80,17 @@ public class TagServiceImplTest {
 	
 	@Test(expected=BusinessViolationException.class)
 	public void testUpdateTagFailsWhenTagDoesNotExistYet() {
-		Tag tag = createTestTag();
+		Tag tag = new Tag("testi");
 		tagService.update(tag);
 	}
 	
 	
 	@Test
 	public void testDeleteTag() {
-		Tag tag1 = createTestTag();
+		Tag tag1 = new Tag("testi");
 		tagService.create(tag1);
 		assertAmountOfTags(1);
-		Tag tag2 = createTestTag();
-		tag2.setText("other text");
+		Tag tag2 = new Tag("testi2");
 		tagService.create(tag2);
 		assertAmountOfTags(2);
 		tagService.delete(tag1);
@@ -95,13 +102,13 @@ public class TagServiceImplTest {
 	
 	@Test(expected=ApplicationException.class)
 	public void testDeleteTagFailsWhenTagDoesNotExist() {
-		Tag tag = createTestTag();
+		Tag tag = new Tag("testi");
 		tagService.delete(tag);
 	}
 	
 	@Test
 	public void testLoadById() {
-		Tag expected = createTestTag();
+		Tag expected = new Tag("testi");
 		tagService.create(expected);
 		Tag actual = tagService.loadById(expected.getId());
 		assertEquals(expected, actual);
@@ -113,11 +120,6 @@ public class TagServiceImplTest {
 	}
 	
 
-	private Tag createTestTag() {
-		Tag expected = new Tag();
-		expected.setText("testi");
-		return expected;
-	}
 
 	private void assertAmountOfTags(int amount) {
 		assertEquals(amount, tagRepository.loadAll().size());

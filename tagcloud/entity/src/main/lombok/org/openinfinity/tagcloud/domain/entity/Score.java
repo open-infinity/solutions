@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
-@EqualsAndHashCode(exclude = { "id" })
+@EqualsAndHashCode
 public class Score implements Entity {
 
 	@Id

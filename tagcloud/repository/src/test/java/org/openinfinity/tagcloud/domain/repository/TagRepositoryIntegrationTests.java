@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
-import org.openinfinity.tagcloud.domain.service.TagSpecification;
+import org.openinfinity.tagcloud.domain.specification.TagSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -55,7 +55,7 @@ public class TagRepositoryIntegrationTests {
 
 	@Test
 	public void testCreateTag() {
-		Tag expected = createTestTag();
+		Tag expected = new Tag("testi");
 		Tag tag = tagRepository.create(expected);
 		Tag actual = tagRepository.loadById(tag.getId());		
 		assertEquals(expected.getText(), actual.getText());
@@ -64,7 +64,7 @@ public class TagRepositoryIntegrationTests {
 	
 	@Test
 	public void testUpdateTag() {
-		Tag tag = createTestTag();
+		Tag tag = new Tag("testi");
 		tagRepository.create(tag);
 		String updatedText = "testi2";
 		tag.setText(updatedText);
@@ -75,11 +75,10 @@ public class TagRepositoryIntegrationTests {
 	
 	@Test
 	public void testDeleteTag() {
-		Tag tag1 = createTestTag();
+		Tag tag1 = new Tag("testi");
 		tagRepository.create(tag1);
 		assertAmountOfTags(1);
-		Tag tag2 = createTestTag();
-		tag2.setText("different text");
+		Tag tag2 = new Tag("testi2");
 		tagRepository.create(tag2);
 		assertAmountOfTags(2);
 		tagRepository.delete(tag1);
@@ -90,7 +89,7 @@ public class TagRepositoryIntegrationTests {
 
 	@Test
 	public void testFindByText() {
-		Tag expected = createTestTag();
+		Tag expected = new Tag("testi");
 		Tag tag = tagRepository.create(expected);
 		Collection<Tag> actual = tagRepository.loadByText(tag.getText());
 		assertEquals(1, actual.size());
@@ -103,10 +102,5 @@ public class TagRepositoryIntegrationTests {
 	}
 	
 
-	private Tag createTestTag() {
-		Tag expected = new Tag();
-		expected.setText("testi");
-		return expected;
-	}
 
 }

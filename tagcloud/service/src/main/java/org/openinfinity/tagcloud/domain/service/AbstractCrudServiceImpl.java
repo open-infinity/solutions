@@ -6,10 +6,12 @@ import javax.annotation.PostConstruct;
 
 import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
+import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.ExceptionLevel;
 import org.openinfinity.core.util.ExceptionUtil;
 import org.openinfinity.tagcloud.domain.entity.Entity;
 import org.openinfinity.tagcloud.domain.repository.AbstractCrudRepositoryInterface;
+import org.openinfinity.tagcloud.domain.specification.AbstractSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,14 +34,12 @@ public abstract class AbstractCrudServiceImpl<T extends Entity> implements Abstr
 	@AuditTrail
 	@Transactional
 	@Override
-	public T create(T entity) {
+	public T create(T entity) throws ApplicationException {
 		Collection<T> entities = repository.loadAll();
-		if (entitySpecification.isNotEligibleForCreation(entity, entities)) {
-			ExceptionUtil.throwApplicationException(
-				"Entity already exists: " + entity.getId(), 
-				ExceptionLevel.INFORMATIVE, 
-				AbstractCrudServiceInterface.UNIQUE_EXCEPTION_ENTITY_ALREADY_EXISTS);
+		if(entity.getId()!=null) {
+			ExceptionUtil.throwApplicationException("Trying to create entity which already has id");
 		}
+		entitySpecification.testIfEligibleForCreation(entity, entities);
 		repository.create(entity);
 		return entity;
 	}
@@ -71,7 +71,7 @@ public abstract class AbstractCrudServiceImpl<T extends Entity> implements Abstr
 		if (entity == null) {
 			ExceptionUtil.throwApplicationException(
 				"Entity does not exist: " + id, 
-				ExceptionLevel.WARNING, 
+				ExceptionLevel.ERROR, 
 				AbstractCrudServiceInterface.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
 		}
 		return entity; 
