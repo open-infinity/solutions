@@ -6,6 +6,6 @@ import java.util.List;
 
 import org.openinfinity.tagcloud.domain.entity.*;
 
-public interface CommentService extends AbstractCrudServiceInterface<Comment> {
+public interface CommentService extends AbstractTextEntityCrudServiceInterface<Comment> {
 
 	Collection<Comment> loadByText(String text);}

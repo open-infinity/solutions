@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
-@EqualsAndHashCode(exclude = { "id" })
+@EqualsAndHashCode
 public class Comment implements TextEntity {
 
 	@Id
@@ -25,11 +25,13 @@ public class Comment implements TextEntity {
 	@NonNull
 	private String text;
 
+	@NonNull
 	private Profile profile;
 
 	@Override
 	public String toString() {
-		return "Comment, id="+id+", profile-id="+profile.getId();
+		String string = "Comment, id="+id+", profile-id="+profile.getId();
+		return string;
 	}
 	
 }

@@ -4,13 +4,14 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 
+import org.openinfinity.tagcloud.domain.entity.Profile;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.Result;
 
-public interface TargetService extends AbstractCrudServiceInterface<Target> {
+public interface TargetService extends AbstractTextEntityCrudServiceInterface<Target> {
 	
-	public void addTagToTarget(Tag tag, Target target);
+	void addTagToTarget(Tag tag, Target target, Profile profile);
 	
 	void removeTagFromTarget(Tag tag, Target target);
 
@@ -22,5 +23,6 @@ public interface TargetService extends AbstractCrudServiceInterface<Target> {
 
 	List<Result> loadByQuery(List<Tag> required, List<Tag> preferred,
 			List<Tag> nearby, double longitude, double latitude, double radius);
+
 	
 }

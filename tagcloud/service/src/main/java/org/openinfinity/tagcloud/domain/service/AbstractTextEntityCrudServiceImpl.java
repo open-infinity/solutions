@@ -17,22 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 public abstract class AbstractTextEntityCrudServiceImpl<T extends TextEntity> extends AbstractCrudServiceImpl<T> implements AbstractTextEntityCrudServiceInterface<T>{
 
-	@Log
-	@AuditTrail
-	@Transactional
-	@Override
-	public T create(T entity) {
-		Collection<T> entities = repository.loadByText(entity.getText());
-		if (entitySpecification.isNotEligibleForCreation(entity, entities)) {
-			ExceptionUtil.throwApplicationException(
-				"Entity already exists: " + entity.getId(), 
-				ExceptionLevel.INFORMATIVE, 
-				AbstractCrudServiceInterface.UNIQUE_EXCEPTION_ENTITY_ALREADY_EXISTS);
-		}
-		repository.create(entity);
-		return entity;
-	}
-
 	@Override
 	public Collection<T> loadByText(String text) {
 		return repository.loadByText(text);
