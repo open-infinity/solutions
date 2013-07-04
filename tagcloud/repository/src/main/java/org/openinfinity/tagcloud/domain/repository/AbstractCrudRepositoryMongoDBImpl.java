@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.query.Query;
  * 
  * @author Joosa Kurvinen
  */
-public abstract class AbstractCrudRepositoryMongoDBImpl<T extends Entity<ID_TYPE>, ID_TYPE> implements AbstractCrudRepositoryInterface<T, ID_TYPE> {
+public abstract class AbstractCrudRepositoryMongoDBImpl<T extends Entity> implements AbstractCrudRepositoryInterface<T> {
 	@Autowired
 	MongoTemplate mongoTemplate;
 
@@ -35,7 +35,7 @@ public abstract class AbstractCrudRepositoryMongoDBImpl<T extends Entity<ID_TYPE
     }
 
     @Override
-    public T loadById(ID_TYPE id) {
+    public T loadById(String id) {
         return mongoTemplate.findById(id, getGenericClassType());
     }
 

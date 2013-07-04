@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.openinfinity.tagcloud.domain.entity.Entity;
 
-public interface AbstractCrudRepositoryInterface<T extends Entity<ID_TYPE>, ID_TYPE> {
+public interface AbstractCrudRepositoryInterface<T extends Entity> {
 
 	public T create(T entity);
 	
@@ -28,7 +28,7 @@ public interface AbstractCrudRepositoryInterface<T extends Entity<ID_TYPE>, ID_T
 	
 	public Collection<T> loadAll();
 	
-	public T loadById(ID_TYPE id);
+	public T loadById(String id);
 	
 	public void delete (T entity);
 	

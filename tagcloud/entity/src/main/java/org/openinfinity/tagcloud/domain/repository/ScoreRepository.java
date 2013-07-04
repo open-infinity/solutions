@@ -19,4 +19,4 @@ import java.math.BigInteger;
 
 import org.openinfinity.tagcloud.domain.entity.Score;
 
-public interface ScoreRepository extends AbstractCrudRepositoryInterface<Score, BigInteger> {}
+public interface ScoreRepository extends AbstractCrudRepositoryInterface<Score> {}

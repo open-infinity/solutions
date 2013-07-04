@@ -27,4 +27,4 @@ import org.springframework.stereotype.Repository;
  * @author Joosa Kurvinen
  */
 @Repository
-public class CommentRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Comment, BigInteger> implements CommentRepository {}
+public class CommentRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Comment> implements CommentRepository {}

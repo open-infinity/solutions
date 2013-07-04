@@ -25,4 +25,4 @@ import org.springframework.stereotype.Repository;
  * @author Joosa Kurvinen
  */
 @Repository
-public class ProfileRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Profile, String> implements ProfileRepository {}
+public class ProfileRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Profile> implements ProfileRepository {}

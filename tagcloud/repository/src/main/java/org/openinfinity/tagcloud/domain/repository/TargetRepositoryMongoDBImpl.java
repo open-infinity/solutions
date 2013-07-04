@@ -16,12 +16,10 @@
  */
 package org.openinfinity.tagcloud.domain.repository;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.openinfinity.tagcloud.domain.entity.Location;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.springframework.data.mongodb.core.geo.Distance;
@@ -35,15 +33,13 @@ import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.mongodb.QueryBuilder;
-
 /**
  * TargetRepository repository implementation.
  * 
  * @author Joosa Kurvinen
  */
 @Repository
-public class TargetRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Target, BigInteger> implements TargetRepository {
+public class TargetRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Target> implements TargetRepository {
 	@Override
 	public List<Target> loadByCoordinates(double longitude, double latitude, double radius) {
 		Point location = new Point(longitude, latitude);

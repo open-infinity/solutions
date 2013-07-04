@@ -21,7 +21,6 @@ import org.openinfinity.core.exception.AbstractCoreException;
 import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.BusinessViolationException;
 import org.openinfinity.core.exception.SystemException;
-import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.domain.service.TargetService;
@@ -33,7 +32,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -109,10 +107,12 @@ public class TargetController {
 			return "target/listTargets";
 		}
 		
+		
+		
 		@Log
 		@AuditTrail(argumentStrategy=ArgumentStrategy.ALL)
 		@RequestMapping(method = RequestMethod.GET, value="{id}")
-		public String showTarget(Model model, @PathVariable BigInteger id) {
+		public String showTarget(Model model, @PathVariable String id) {
 			Target target = targetService.loadById(id);
 			model.addAttribute("target", target);
 			return "target/showTarget";
@@ -141,6 +141,8 @@ public class TargetController {
 			}
 			return failureMessages;
 		}
+
+		
 		
 }
 

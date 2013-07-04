@@ -3,19 +3,19 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 	<!-- Appenders -->
 	<appender name="log" class="org.apache.log4j.FileAppender">
-		<param name="File" value="/opt/openinfinity/1.0-SNAPSHOT/tomcat/logs/logging.log" />
+		<param name="File" value="/opt/openinfinity/2.0.0/tomcat/logs/logging.log" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
 		</layout>
 	</appender>
 	<appender name="audittrail" class="org.apache.log4j.FileAppender">
-		<param name="File" value="/opt/openinfinity/1.0-SNAPSHOT/tomcat/logs/audittrail.log" />
+		<param name="File" value="/opt/openinfinity/2.0.0/tomcat/logs/audittrail.log" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
 		</layout>
 	</appender>
 	<appender name="exception" class="org.apache.log4j.FileAppender">
-		<param name="File" value="/opt/openinfinity/1.0-SNAPSHOT/tomcat/logs/exception.log" />
+		<param name="File" value="/opt/openinfinity/2.0.0/tomcat/logs/exception.log" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
 		</layout>

@@ -16,14 +16,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(exclude = { "id" })
-public class Tag implements Entity<BigInteger> {
+public class Tag implements TextEntity {
 
-	@Id
-	private BigInteger id;
 
 	@NonNull
 	private String text;
 
+	@Id
+	private String id;
 	
 	
 	@Override

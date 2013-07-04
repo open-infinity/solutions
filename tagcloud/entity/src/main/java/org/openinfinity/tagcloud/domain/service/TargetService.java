@@ -8,7 +8,7 @@ import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.Result;
 
-public interface TargetService extends AbstractCrudServiceInterface<Target, BigInteger> {
+public interface TargetService extends AbstractCrudServiceInterface<Target> {
 	
 	public void addTagToTarget(Tag tag, Target target);
 	

@@ -109,7 +109,7 @@ public class TagServiceImplTest {
 	
 	@Test(expected=ApplicationException.class)
 	public void testLoadByIdFailsWhenTagDoesNotExist() {
-		tagService.loadById(new BigInteger("3928102983740"));
+		tagService.loadById("testcommentnotexisting");
 	}
 	
 

@@ -102,7 +102,7 @@ public class ScoreServiceImplTest {
 	
 	@Test(expected=ApplicationException.class)
 	public void testLoadByIdFailsWhenScoreDoesNotExist() {
-		scoreService.loadById(new BigInteger("3928102983740"));
+		scoreService.loadById("testcommentnotexisting");
 	}
 	
 	
