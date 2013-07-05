@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,12 +30,19 @@ public class ConnectionManagerImpl implements ConnectionManager {
 	private List<String> connectionLog;
 	private ConnectionCredential credential;
 	private LoggingPolicy loggingPolicy;
+	@Autowired
+	private Config config;
 
 	public ConnectionManagerImpl() {
+
+	}
+
+	@PostConstruct
+	public void init() {
 		this.connection_map = new HashMap<String, ActiveConnection>();
-		credential = null;
+		credential = config.buildDefaultConnectionCredential();
 		connectionLog = new LinkedList<String>();
-		this.loggingPolicy = null;
+		this.loggingPolicy = config.getDefaultLoggingPolicy();
 	}
 
 	@Override
@@ -50,35 +58,32 @@ public class ConnectionManagerImpl implements ConnectionManager {
 	@Override
 	public CachedRequest requireLogin(HttpServletRequest request,
 			HttpServletResponse response) {
-		// connectionLog.clear();
-		this.doPrePublicLoggingActions();
-		if (!this.isUserLoggedIn(request.getSession().getId())) {
-			this.cacheThisRequest(request);
+		this.cacheThisRequest(request);
+		if (!this.isUserLoggedIn(request.getSession().getId())) {			
 			try {
 				response.sendRedirect(request.getContextPath() + "/connect");
 			} catch (Exception e) {
-				connectionLog.add("require_login: " + e.toString());
+				connectionLog.add("ConnectionManager/requireLogin> error on redirect to /connect path: " + e.toString());
 			}
-		} else {
-			return this.retrieveCachedRequest(request.getSession().getId());
-		}
-		return null;
+		} 
+		return this.retrieveCachedRequest(request.getSession().getId());
+		
 	}
 
 	@Override
 	public void connect(HttpServletRequest request, HttpServletResponse response)
 			throws InvalidConnectionCredentialException,
 			NullActiveConnectionException, NullAccessGrantException {
-		this.doPrePublicLoggingActions();
+		String auth_code = this.getFacebookAuthorizationCode(request);
 		if (this.isUserLoggedIn(request.getSession().getId())) {
 			this.handlePostConnectionRedirections(request, response);
-		}
-		String auth_code = this.getFacebookAuthorizationCode(request);
-		if (auth_code == null || auth_code.isEmpty()) {
+		}else if (auth_code == null || auth_code.isEmpty()) {
 			this.facebook_connect(request, response);
-		} else {
-
+		}else if (auth_code != null && !auth_code.isEmpty()) {
 			this.saveNewConnection(request, auth_code);
+		}else{
+			connectionLog.add("ConnectionManager/connect> confused!");
+			return;
 		}
 	}
 
@@ -99,7 +104,8 @@ public class ConnectionManagerImpl implements ConnectionManager {
 			}
 
 		} catch (Exception e) {
-			connectionLog.add("Exception on post connection Redirection  "
+			connectionLog.add("ConnectionManager/handlePostConnectionRedirections >" +
+					" Exception on post connection Redirection  "
 					+ e.toString());
 
 		}
@@ -119,7 +125,6 @@ public class ConnectionManagerImpl implements ConnectionManager {
 	@Override
 	public String disconnect(HttpServletRequest request,
 			HttpServletResponse response, boolean facebook_logout) {
-		this.doPrePublicLoggingActions();
 		String facebookAccessToken = this.getSessionFacebookAccessGrant(
 				request.getSession().getId()).getAccessToken();
 		if (this.isUserLoggedIn(request.getSession().getId())) {
@@ -234,7 +239,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 				response.sendRedirect(cache.getRequestURL() + "?"
 						+ cache.getQuerryString());
 			} catch (Exception e) {
-				connectionLog.add("redirect to original page failed, cause: "
+				connectionLog.add("ConnectionManager/redirectToOrginal > redirect to original page failed, cause: "
 						+ e.toString());
 			}
 		}
@@ -247,7 +252,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 			response.sendRedirect(req.getContextPath()
 					+ credential.getDefault_redirect_path());
 		} catch (Exception e) {
-			connectionLog.add("redirect to default page failed, cause: "
+			connectionLog.add("ConnectionManager/redirectToDefault > redirect to default page failed, cause: "
 					+ e.toString());
 		}
 
@@ -257,12 +262,14 @@ public class ConnectionManagerImpl implements ConnectionManager {
 			HttpServletResponse response)
 			throws InvalidConnectionCredentialException,
 			NullActiveConnectionException, NullAccessGrantException {
+
 		String authurl = this.createAuthUrl();
 		try {
 			response.sendRedirect(authurl);
 		} catch (Exception e) {
 
-			connectionLog.add("ConnectionManager> " + e.toString());
+			connectionLog.add("ConnectionManager/facebook_connect > "
+					+ e.toString());
 		}
 
 	}
@@ -376,12 +383,10 @@ public class ConnectionManagerImpl implements ConnectionManager {
 
 		if (req.getParameter("error") == null
 				&& req.getParameter("code") != null) {
-
-			this.connectionLog.add("login ok!");
-
 			return req.getParameter("code");
-
-		} else {
+		}
+		else if(req.getParameter("error") != null){
+		
 			this.connectionLog.add("error: " + req.getParameter("error"));
 			this.connectionLog.add("error_code: "
 					+ req.getParameter("error_code"));
@@ -391,6 +396,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 					+ req.getParameter("error_reason"));
 			return null;
 		}
+		return null;
 	}
 
 	private String createAuthUrl() {
@@ -441,18 +447,4 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		return true;
 	}
 
-	private void doPrePublicLoggingActions(){
-		if(this.loggingPolicy != null && (
-				this.loggingPolicy == LoggingPolicy.CLEAR_ON_PUBLIC_CALL 
-				|| this.loggingPolicy == LoggingPolicy.CLEAR_ON_PUBLIC_CALL_AND_GET_LOGGER)){
-			this.connection_map.clear();
-		}
-	}
-	private void doAferGetLoggingActions(){
-		if(this.loggingPolicy != null && (
-				this.loggingPolicy == LoggingPolicy.CLEAR_ON_GET_LOGGER 
-				|| this.loggingPolicy == LoggingPolicy.CLEAR_ON_PUBLIC_CALL_AND_GET_LOGGER)){
-			this.connection_map.clear();
-		}
-	}
 }

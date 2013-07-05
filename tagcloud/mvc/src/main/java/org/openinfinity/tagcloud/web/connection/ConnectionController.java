@@ -31,8 +31,9 @@ public class ConnectionController {
 
 	@Autowired
 	private ConnectionManager connection_manager;
-	@Autowired
-	private Config config;
+
+	
+	//***************
 	private final String check_connection_path = "/check/connection";
 	private final String connect_path = "/connect";
 	private final String login_path = "/login";
@@ -53,12 +54,9 @@ public class ConnectionController {
 			HttpServletResponse response) {
 
 		List<String> logList = new LinkedList<String>();
-		logList.add("Connecting...");
-		ConnectionCredential credential = config
-				.buildDefaultConnectionCredential();
-		connection_manager.setLoggingPolicy(config.getDefaultLoggingPolicy());
+		logList.add("Connecting...with postConstruct");
+//		this.continueToConnection( request,  response,  logList);
 		try {
-			connection_manager.setConnectionCredential(credential);
 			connection_manager.connect(request, response);
 			logList.add("Facebook login session created successfully!");
 		} catch (InvalidConnectionCredentialException e) {
@@ -77,6 +75,7 @@ public class ConnectionController {
 		return logList;
 	}
 
+	
 	@RequestMapping(value = check_connection_path, method = RequestMethod.GET)
 	public @ResponseBody
 	List<String> loginTest(HttpServletRequest req) {
@@ -105,7 +104,6 @@ public class ConnectionController {
 	public @ResponseBody
 	List<String> redTest(HttpServletRequest req, HttpServletResponse response) {
 		List<String> logList = new LinkedList<String>();
-
 		CachedRequest login = connection_manager.requireLogin(req, response);
 		logList.addAll(connection_manager.getConnectionLog());
 
@@ -117,6 +115,8 @@ public class ConnectionController {
 			logList.add("your cached uri was: " + login.getRequestURI());
 			logList.add("your cached url was: " + login.getRequestURL());
 
+		}else{
+			logList.add("ConnectionController/redx> CachedRequest object is null");
 		}
 		return logList;
 	}
@@ -133,9 +133,7 @@ public class ConnectionController {
 				|| redirect.equalsIgnoreCase("/")) {
 			return redirect_default + "?k=" + redirect;
 		}
-
 		return redirect;
-
 	}
 
 	@RequestMapping(value = "/update-status", method = RequestMethod.GET)
@@ -177,6 +175,23 @@ public class ConnectionController {
 		}
 		return logList;
 	}
+	private void continueToConnection( HttpServletRequest request, HttpServletResponse response, List<String> logList){
 
+		try {
+			connection_manager.connect(request, response);
+			logList.add("Facebook login session created successfully!");
+		} catch (InvalidConnectionCredentialException e) {
+			logList.add("connection failed > check your credentials > "
+					+ e.toString());
+		} catch (NullAccessGrantException e) {
+			logList.add("connection failed > check facebook AccessGrant > "
+					+ e.toString());
+		} catch (NullActiveConnectionException e) {
+			logList.add("connection failed > check web app ActiveConnection Object >  "
+					+ e.toString());
+		} catch (Exception e) {
+			logList.add("connection failed >  " + e.toString());
+		}
+	}
 
 }
