@@ -59,15 +59,19 @@ public class ConnectionManagerImpl implements ConnectionManager {
 	public CachedRequest requireLogin(HttpServletRequest request,
 			HttpServletResponse response) {
 		this.cacheThisRequest(request);
-		if (!this.isUserLoggedIn(request.getSession().getId())) {			
+		if (!this.isUserLoggedIn(request.getSession().getId())) {
 			try {
 				response.sendRedirect(request.getContextPath() + "/connect");
 			} catch (Exception e) {
-				connectionLog.add("ConnectionManager/requireLogin> error on redirect to /connect path: " + e.toString());
+				connectionLog
+						.add("ConnectionManager/requireLogin> error on redirect to /connect path: "
+								+ e.toString());
 			}
-		} 
-		return this.retrieveCachedRequest(request.getSession().getId());
-		
+			return null;
+		} else {
+			return this.retrieveCachedRequest(request.getSession().getId());
+		}
+
 	}
 
 	@Override
@@ -77,11 +81,12 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		String auth_code = this.getFacebookAuthorizationCode(request);
 		if (this.isUserLoggedIn(request.getSession().getId())) {
 			this.handlePostConnectionRedirections(request, response);
-		}else if (auth_code == null || auth_code.isEmpty()) {
+		} else if (auth_code == null || auth_code.isEmpty()) {
 			this.facebook_connect(request, response);
-		}else if (auth_code != null && !auth_code.isEmpty()) {
+		} else if (auth_code != null && !auth_code.isEmpty()) {
 			this.saveNewConnection(request, auth_code);
-		}else{
+			this.handlePostConnectionRedirections(request, response);
+		} else {
 			connectionLog.add("ConnectionManager/connect> confused!");
 			return;
 		}
@@ -96,17 +101,22 @@ public class ConnectionManagerImpl implements ConnectionManager {
 
 	private void handlePostConnectionRedirections(HttpServletRequest request,
 			HttpServletResponse response) {
+		String session_id = request.getSession().getId();
 		try {
-			if (this.isRedirectNeeded(request.getSession().getId())) {
+			connectionLog.add("redirect needed? "
+					+ this.isRedirectNeeded(session_id));
+
+			if (this.isRedirectNeeded(session_id)) {
 				this.redirectToOriginal(request, response);
 			} else {
 				this.redirectToDefault(request, response);
 			}
 
 		} catch (Exception e) {
-			connectionLog.add("ConnectionManager/handlePostConnectionRedirections >" +
-					" Exception on post connection Redirection  "
-					+ e.toString());
+			connectionLog
+					.add("ConnectionManager/handlePostConnectionRedirections >"
+							+ " Exception on post connection Redirection  "
+							+ e.toString());
 
 		}
 
@@ -213,7 +223,10 @@ public class ConnectionManagerImpl implements ConnectionManager {
 
 	private boolean isRedirectNeeded(String session_id) {
 		ActiveConnection conn = this.connection_map.get(session_id);
-		return this.redirectElementsAvalaible(conn);
+		if (conn != null && conn.getCachedRequest() != null) {
+			return true;
+		}
+		return false;
 	}
 
 	private CachedRequest retrieveCachedRequest(String session_id) {
@@ -232,15 +245,16 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		ActiveConnection conn = this.connection_map.get(req.getSession()
 				.getId());
 
-		if (this.redirectElementsAvalaible(conn)) {
+		if (this.isRedirectNeeded(req.getSession().getId())) {
 			CachedRequest cache = conn.getCachedRequest();
 
 			try {
 				response.sendRedirect(cache.getRequestURL() + "?"
 						+ cache.getQuerryString());
 			} catch (Exception e) {
-				connectionLog.add("ConnectionManager/redirectToOrginal > redirect to original page failed, cause: "
-						+ e.toString());
+				connectionLog
+						.add("ConnectionManager/redirectToOrginal > redirect to original page failed, cause: "
+								+ e.toString());
 			}
 		}
 	}
@@ -252,8 +266,9 @@ public class ConnectionManagerImpl implements ConnectionManager {
 			response.sendRedirect(req.getContextPath()
 					+ credential.getDefault_redirect_path());
 		} catch (Exception e) {
-			connectionLog.add("ConnectionManager/redirectToDefault > redirect to default page failed, cause: "
-					+ e.toString());
+			connectionLog
+					.add("ConnectionManager/redirectToDefault > redirect to default page failed, cause: "
+							+ e.toString());
 		}
 
 	}
@@ -352,13 +367,6 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		this.connection_map.put(session_id, conn);
 	}
 
-	private boolean redirectElementsAvalaible(ActiveConnection conn) {
-		if (conn != null && conn.getCachedRequest() != null) {
-			return true;
-		}
-		return false;
-	}
-
 	private Facebook createFacebookApi(AccessGrant accessGrant)
 			throws NullAccessGrantException,
 			InvalidConnectionCredentialException {
@@ -384,9 +392,8 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		if (req.getParameter("error") == null
 				&& req.getParameter("code") != null) {
 			return req.getParameter("code");
-		}
-		else if(req.getParameter("error") != null){
-		
+		} else if (req.getParameter("error") != null) {
+
 			this.connectionLog.add("error: " + req.getParameter("error"));
 			this.connectionLog.add("error_code: "
 					+ req.getParameter("error_code"));

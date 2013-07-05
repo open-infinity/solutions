@@ -32,8 +32,7 @@ public class ConnectionController {
 	@Autowired
 	private ConnectionManager connection_manager;
 
-	
-	//***************
+	// ***************
 	private final String check_connection_path = "/check/connection";
 	private final String connect_path = "/connect";
 	private final String login_path = "/login";
@@ -55,7 +54,7 @@ public class ConnectionController {
 
 		List<String> logList = new LinkedList<String>();
 		logList.add("Connecting...with postConstruct");
-//		this.continueToConnection( request,  response,  logList);
+		// this.continueToConnection( request, response, logList);
 		try {
 			connection_manager.connect(request, response);
 			logList.add("Facebook login session created successfully!");
@@ -75,29 +74,33 @@ public class ConnectionController {
 		return logList;
 	}
 
-	
 	@RequestMapping(value = check_connection_path, method = RequestMethod.GET)
 	public @ResponseBody
 	List<String> loginTest(HttpServletRequest req) {
 		List<String> logList = new LinkedList<String>();
 		if (connection_manager.isUserLoggedIn(req.getSession().getId())) {
 			logList.add("you're logged in, ");
-			Facebook facebook = connection_manager.getSessionFacebook(req
-					.getSession().getId());
-			List<FacebookProfile> profs = facebook.friendOperations()
-					.getFriendProfiles();
-			for (FacebookProfile p : profs) {
-				logList.add(" " + p.getFirstName() + " " + p.getLastName()
-						+ " about:" + p.getAbout());
-			}
+			// getFacebookFriends(req, logList);
 
 		} else {
 			logList.add("you're not logged in");
 		}
+
 		logList.add("Session_id: " + req.getSession().getId());
-		// logList.addAll(cmanager.getConnectionLog());
+		logList.addAll(connection_manager.getConnectionLog());
 
 		return logList;
+	}
+
+	private void getFacebookFriends(HttpServletRequest req, List<String> logList) {
+		Facebook facebook = connection_manager.getSessionFacebook(req
+				.getSession().getId());
+		List<FacebookProfile> profs = facebook.friendOperations()
+				.getFriendProfiles();
+		for (FacebookProfile p : profs) {
+			logList.add(" " + p.getFirstName() + " " + p.getLastName()
+					+ " about:" + p.getAbout());
+		}
 	}
 
 	@RequestMapping(value = "/redx", method = RequestMethod.GET)
@@ -115,7 +118,7 @@ public class ConnectionController {
 			logList.add("your cached uri was: " + login.getRequestURI());
 			logList.add("your cached url was: " + login.getRequestURL());
 
-		}else{
+		} else {
 			logList.add("ConnectionController/redx> CachedRequest object is null");
 		}
 		return logList;
@@ -175,7 +178,9 @@ public class ConnectionController {
 		}
 		return logList;
 	}
-	private void continueToConnection( HttpServletRequest request, HttpServletResponse response, List<String> logList){
+
+	private void continueToConnection(HttpServletRequest request,
+			HttpServletResponse response, List<String> logList) {
 
 		try {
 			connection_manager.connect(request, response);
