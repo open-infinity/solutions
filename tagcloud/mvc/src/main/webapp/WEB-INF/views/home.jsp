@@ -1,67 +1,159 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ page session="false"%>
-<%@ include file="/WEB-INF/views/common/includes.jsp"%>
-<%@ include file="/WEB-INF/views/common/header.jsp"%>
+<%-- <%@ page session="false"%> --%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="stylesheet"
+		href="<spring:url value="/resources/styles/styles.css" />"
+		type="text/css" />
+	<link rel="stylesheet"
+		href="<spring:url value="/resources/styles/threeColumn.css" />"
+		type="text/css" />
+	<link rel="stylesheet"
+		href="<spring:url value="/resources/styles/token-input-facebook.css" />"
+		type="text/css" />
+
+	<script type="text/javascript" src="<c:url value="/resources/scripts/jquery.min.js" />" ></script>
+	<script type="text/javascript" src="<c:url value="/resources/scripts/json.min.js" />" ></script>
+	<script type="text/javascript" src="<c:url value="/resources/scripts/map.js" />" ></script>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false" ></script>
+	<script type="text/javascript" src="<c:url value="/resources/scripts/styling.js" />" ></script>
+	<script type="text/javascript" src="<c:url value="/resources/scripts/jquery.tokeninput.js" />" ></script>
+	
+	
+	<title>TagCloud</title>
+</head>
+
+<body>
+	<div id="mainContainer">
+
+		<div id="header"></div>
+		<!-- The container divs for the center and the right columns -->
+		<div id="centerRightColumnContainer">
+
+			<div id="centerRightColumnPositioner">
+
+				<div id="centerColumnContainer">
+
+					<div id="centerColumn">
+						<div id="map-canvas"></div>
+
+					</div>
+					<!-- centerColumn, END -->
+
+				</div>
+				<!-- centerColumnContainer, END -->
 
 
-<c:set var="model" value="searchModel" />
-<c:set var="action" value="/tagcloud" />
+				<div id="sideBarRight">
+					<div id="column3row1">
+						<p>list targets here</p>
+						<p>Veggies sunt bona vobis, proinde vos postulo esse magis
+							caulie carrot wakame quandong summer purslane garlic kohlrabi
+							prairie turnip mustard artichoke bok choy spring onion mung bean.
+							Dulse cauliflower gram watercress sea lettuce dulse gourd epazote
+							caulie. Shallot amaranth komatsuna potato pumpkin catsear sweet
+							pepper. Spring onion parsnip cauliflower cucumber soybean celtuce
+							kakadu plum lotus root watercress leek tatsoi celery gumbo
+							garbanzo silver beet. Parsnip lentil broccoli rabe asparagus
+							bamboo shoot beet greens. Wakame bitterleaf rutabaga napa cabbage
+							cauliflower parsnip ricebean salsify scallion broccoli. Asparagus
+							dulse shallot collard greens silver beet scallion catsear turnip
+							greens kale brussels sprout celtuce lentil pumpkin chard. Wattle
+							seed radicchio leek tigernut welsh onion daikon avocado chard
+							bush tomato kakadu plum. Yarrow celtuce radicchio winter purslane
+							catsear bell pepper wakame. Spring onion tigernut water spinach
+							beetroot cauliflower gram spinach leek arugula grape shallot
+							sweet pepper groundnut coriander komatsuna artichoke scallion.
+							Parsley pumpkin summer purslane sea lettuce desert raisin
+							broccoli rabe. Sierra leone bologi bok choy earthnut pea leek
+							yarrow brussels sprout soko bell pepper chickweed tatsoi kakadu
+							plum horseradish tomato. Sweet pepper parsnip sierra leone bologi
+							potato daikon garlic turnip fava bean bok choy broccoli rabe
+							kombu aubergine. Gourd onion lentil catsear okra cucumber collard
+							greens sea lettuce squash turnip earthnut pea cauliflower.
+							Brussels sprout prairie turnip ricebean cauliflower rock melon
+							azuki bean napa cabbage sierra leone bologi water chestnut
+							zucchini lotus root tomatillo scallion grape watercress parsley
+							epazote leek. Courgette tigernut salad earthnut pea burdock gram
+							radish garbanzo brussels sprout. Gourd winter purslane celery
+							water chestnut kakadu plum beet greens squash celtuce napa
+							cabbage scallion garlic fava bean turnip salad salsify. Kombu
+							peanut dulse chickpea amaranth potato kohlrabi kombu asparagus
+							swiss chard parsnip cress rutabaga garbanzo. Spring onion turnip
+							greens quandong kakadu plum bok choy scallion beetroot onion okra
+							shallot cress bunya nuts nori mung bean green bean tomatillo.
+							Aubergine turnip greens fennel bunya nuts ricebean water chestnut
+							pumpkin tatsoi tigernut sierra leone bologi dulse pea sprouts
+							celtuce onion. Fava bean eggplant napa cabbage sorrel azuki bean
+							pumpkin cauliflower bunya nuts watercress. Tomatillo endive bell
+							pepper bunya nuts taro sweet pepper courgette bitterleaf catsear.
+							Komatsuna coriander jícama celery horseradish gourd gram cucumber
+							zucchini maize.</p>
+					</div>
+
+				</div>
+				<!-- sideBarRight, END -->
+
+			</div>
+			<!-- centerRightColumnPositioner, END -->
+
+		</div>
+		<!-- centerRightColumnContainer, END -->
+
+
+		<!-- The left column div -->
+		<div id="sideBarLeft">
+
+			<div id="column1row1">
+
+				<p>I want to go to a place that...</p>
+
+
+				<p>I want to go there on...</p>
+				<form:form modelAttribute="searchModel" action="searchModel"
+					method="post">
+					<table id="searchTable">
+						<tr>
+							<td><form:label for="required" path="required">Name</form:label></td>
+							<td><form:input type="text" id="required" name="required"
+									path="required" /></td>
+						</tr>
+
+						<tr>
+							<td><input id="save" type="submit" value="Save" /></td>
+						</tr>
+					</table>
+
+				</form:form>
 
 
 
-<div id="column1">
-	<div id="column1row1">
-		<p>I want to go to a place that...</p>
-		
-		
-		<p>I want to go there on...</p>
-		<form:form modelAttribute="searchModel" action="${model}" method="post">
-			<table id="searchTable">
-				<tr>
-					<td><form:label for="required" path="required">Name</form:label></td>
-					<td><form:input type="text" id="required" name="required" path="required"/></td>
-				</tr>
-				<tr>
-					<td>
-						<p>
-							<input id="save" type="submit" value="Save" />
-						</p>
-					</td>
-				</tr>
-			</table>
-			
-		</form:form>
+			</div>
+
+			<!-- Required so that IE 6.0 doesn't mangle the last entry of content in this column -->
+			<p>&nbsp;</p>
+
+		</div>
+		<!-- sideBarLeft, END -->
+
 	</div>
-</div>
-	<div id="column1row2">
-		<p>
+	<!-- mainContainer, END -->
 
 
-		</p>
-	</div>
-</div>
-<div id="column2">
-	<div id="map-canvas"></div>
-</div>
+	<div style="height: 562px;" id="bg"></div>
 
-<script type="text/javascript">
-			$(document).ready(function () {
-			    $("#required").tokenInput("/tagcloud/tag/autocomplete", {
-			    	propertyToSearch: "text",
-			    	preventDuplicates: true,
-			    	theme: "facebook"
-			    });
-				
-			    $("#${model}").submit(function() {
-			    	var request = $(this).serializeObject();
-  		            request.required = $("#required").tokenInput("get");
-  		            //var request = $(this).serializeObject();
-			    	$.postJSON("/tagcloud/", request);
-		            return false;
-				});
-			});
-		</script>
-		
+	<%-- 	<c:set var="model" value="searchModel" /> --%>
+	<%-- 	<c:set var="action" value="/tagcloud" /> --%>
 
-<%@ include file="/WEB-INF/views/common/footer.jsp"%>
+	<script type="text/javascript">
+		google.maps.event.addDomListener(window, 'load', initialize);
+	</script>
+	<script type="text/javascript" src="<c:url value="/resources/scripts/mainscript.js" />"></script>
+</body>
+</html>

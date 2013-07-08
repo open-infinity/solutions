@@ -1,7 +1,6 @@
 
 package org.openinfinity.tagcloud.web.controller;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,6 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
@@ -24,6 +24,7 @@ import org.openinfinity.core.exception.SystemException;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.domain.service.TargetService;
+import org.openinfinity.tagcloud.web.connection.ConnectionManager;
 import org.openinfinity.tagcloud.web.model.TargetModel;
 import org.openinfinity.tagcloud.web.support.SerializerUtil;
 import org.openinfinity.tagcloud.web.support.ServletUtil;
@@ -54,7 +55,9 @@ public class TargetController {
 		
 		@Autowired 
 		ApplicationContext applicationContext;
-
+		
+		@Autowired 
+		ConnectionManager conn_man;
 		@Log
 		@ExceptionHandler({SystemException.class, ApplicationException.class, BusinessViolationException.class})
 		public void exceptionOccurred(AbstractCoreException abstractCoreException, HttpServletResponse response, Locale locale) {
@@ -89,13 +92,19 @@ public class TargetController {
 		@RequestMapping(method = RequestMethod.GET)
 		public String createNewTarget(Model model) {
 			model.addAttribute("targetModel", new TargetModel());
-			return "target/createTarget";
+			return "createTarget";
 		}
 		
 		@RequestMapping(method = RequestMethod.GET, value="reset")
-		public String resetTargetDB() {
+		public String resetTargetDB(HttpServletRequest request) {
+			String session_id = request.getSession().getId();
+			
+			if(conn_man.isUserLoggedIn(session_id)){
 			targetRepository.dropCollection();
+			
 			return "redirect:/target/loadAll";
+			}
+			return "redirect:/login";
 		}
 		
 		@Log
