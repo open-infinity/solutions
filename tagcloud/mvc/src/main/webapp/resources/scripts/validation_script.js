@@ -1,5 +1,6 @@
 
 function initFormValidation(model, action) {
+	console.log($("#"+model)+"");
 	$("#"+model).submit(function() {
 		var request = $(this).serializeObject();
 		$.postJSON(action, request, 

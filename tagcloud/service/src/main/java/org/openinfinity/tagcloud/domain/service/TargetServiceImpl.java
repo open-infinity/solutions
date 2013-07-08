@@ -65,8 +65,14 @@ public class TargetServiceImpl extends AbstractTextEntityCrudServiceImpl<Target>
 						TargetService.UNIQUE_EXCEPTION_TAG_ALREADY_INCLUDED);
 		}
 		
-		if(!tagService.contains(tag)) 
+		System.out.println("creating tag "+tag.getText());
+		if(!tagService.contains(tag)) { 
 			tag = tagService.create(tag);
+			System.out.println("tag created "+tag.getText());
+		}
+		else {
+			System.out.println("tag already exists "+tag.getText());
+		}
 		
 		target.getTags().add(tag);
 		update(target);

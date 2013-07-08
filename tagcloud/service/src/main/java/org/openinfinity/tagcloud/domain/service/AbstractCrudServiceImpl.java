@@ -94,10 +94,10 @@ public abstract class AbstractCrudServiceImpl<T extends Entity> implements Abstr
 	@Log
 	@AuditTrail
 	@Override
-	public boolean contains(T comment) {
-		if(comment==null || comment.getId()==null) return false;
+	public boolean contains(T entity) {
+		if(entity==null || entity.getId()==null) return false;
 		try {
-			loadById(comment.getId());
+			loadById(entity.getId());
 		} catch (Exception e) {
 			return false;
 		}

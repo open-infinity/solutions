@@ -42,10 +42,10 @@ public class TagController {
 		@RequestMapping(method = RequestMethod.GET, value="reset")
 		public String resetTagDB() {
 			tagRepository.dropCollection();
-			for(Tag tag : Utils.createList(new Tag("outdoor"), new Tag("bar"), new Tag("gym"), new Tag("shop"),
-					new Tag("bus station"), new Tag("statue"))) {
-				tagService.create(tag);
-			}
+//			for(Tag tag : Utils.createList(new Tag("outdoor"), new Tag("bar"), new Tag("gym"), new Tag("shop"),
+//					new Tag("bus station"), new Tag("statue"))) {
+//				tagService.create(tag);
+//			}
 			return "redirect:/";
 		}
 			

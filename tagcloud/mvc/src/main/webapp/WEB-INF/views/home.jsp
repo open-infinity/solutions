@@ -155,7 +155,7 @@
 					<div id="add-target-tab">
 						<div id="statusbox"></div>
 						<div id="targetForm" class="span-12 last">
-							<form:form modelAttribute="targetModel" action="/tagcloud/target" method="post">
+							<form:form modelAttribute="targetModel" action="/tagcloud/targetaaaaaaaaaaa" method="post">
 								<table id="targetTable">
 									<tr>
 										<td><form:label for="text" path="text"

@@ -134,7 +134,6 @@ public class TargetController {
 			Set<ConstraintViolation<TargetModel>> failures = validator.validate(targetModel);
 			if (failures.isEmpty()) {
 				Target target = targetService.create(targetModel.getTarget());
-				
 				return new ModelMap("id", target.getId());
 			} else {
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
