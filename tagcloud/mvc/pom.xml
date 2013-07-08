@@ -14,14 +14,12 @@
 	<properties>
 
 		<slf4j.version>1.6.4</slf4j.version>
-
-		<bas1.host>10.33.208.25</bas1.host>
-		<sp.keyfile>C:\Users\soleikav\kavan-instance-key</sp.keyfile>
+	
+		<bas1.host>10.33.208.21</bas1.host>
+		<sp.keyfile>C:\Users\salentea\Documents\oSSH_v_instance813</sp.keyfile>
 		<bas.deployDir>/opt/openinfinity/2.0.0/tomcat/webapps</bas.deployDir>
 
 
-
-		<slf4j.version>1.6.4</slf4j.version>
 	</properties>
 	<dependencies>
 		<dependency>

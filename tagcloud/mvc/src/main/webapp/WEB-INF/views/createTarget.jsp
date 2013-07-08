@@ -83,27 +83,31 @@
 <div id="sideBarLeft">
 
 	<div id="column1row1">
-		<p>I want to go to a place that...</p>
+	<div id="statusbox"></div>
+		<div id="targetForm" class="span-12 last">
+			<form:form modelAttribute="targetModel" action="target" method="post">
+				<table id="targetTable">
+					<tr>
+						<td><form:label for="text" path="text" cssErrorClass="error">Name</form:label></td>
+						<td><form:input path="text" /></td>
+						<td><form:errors path="text" /></td>
+					</tr>
+					<tr>
+						<form:hidden id="latitude" path="latitude" />
+					</tr>
+					<tr>
+						<form:hidden id="longitude" path="longitude" />
+					</tr>
+					<tr>
+						<td><input id="save" type="submit" value="Save" /></td>
+					</tr>
+				</table>
 
-
-		<p>I want to go there on...</p>
-		<form:form modelAttribute="searchModel" action="${model}"
-			method="post">
-			<table id="searchTable">
-				<tr>
-					<td><form:label for="required" path="required">Name</form:label></td>
-					<td><form:input type="text" id="required" name="required"
-							path="required" /></td>
-				</tr>
-
-				<tr>
-					<td><input id="save" type="submit" value="Save" /></td>
-				</tr>
-			</table>
-
-		</form:form>
+			</form:form>
+		</div>
 	</div>
 
+	<div id="column1row2"></div>
 	<!-- Required so that IE 6.0 doesn't mangle the last entry of content in this column -->
 	<p>&nbsp;</p>
 
@@ -115,9 +119,9 @@
 
 <div style="height: 562px;" id="bg"></div>
 
-<c:set var="model" value="searchModel" />
-<c:set var="action" value="/tagcloud" />
+<c:set var="model" value="targetModel" />
+<c:set var="action" value="/tagcloud/target" />
 
 <%@ include file="/WEB-INF/views/common/styling.jsp"%>
-<%@ include file="/WEB-INF/views/common/search_script.jsp"%>
+<%@ include file="/WEB-INF/views/common/validation_scripts.jsp"%>
 <%@ include file="/WEB-INF/views/common/footer.jsp"%>

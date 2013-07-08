@@ -1,9 +1,18 @@
 <script type="text/javascript">	
-	$(document).ready(function() {
+$(document).ready(function() {
+		$("#required").tokenInput("/tagcloud/tag/autocomplete", {
+			propertyToSearch : "text",
+			preventDuplicates : true,
+			theme : "facebook"
+		});
+
 		$("#${model}").submit(function() {
 			var request = $(this).serializeObject();
-			$.postJSON("${action}", request);
-			return false;				
+			request.required = $("#required").tokenInput("get");
+			//var request = $(this).serializeObject();
+			$.postJSON("/tagcloud/", request);
+			return false;
 		});
 	});
 </script>
+
