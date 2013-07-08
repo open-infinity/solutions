@@ -17,20 +17,27 @@ package org.openinfinity.tagcloud.web.controller;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.Valid;
 import javax.validation.Validator;
 
 import org.apache.log4j.Logger;
 import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.aspect.ArgumentStrategy;
+import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.TagRepository;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.domain.service.TagService;
 import org.openinfinity.tagcloud.domain.service.testdata.TestDataGenerator;
 import org.openinfinity.tagcloud.web.model.SearchModel;
+import org.openinfinity.tagcloud.web.model.TargetModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -71,31 +78,31 @@ public class HomeController {
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
-		LOGGER.error("\n\n!!!!!!!!!Welcome home! the client locale is "+ locale.toString()+"!!!!!!!!!!!\n\n");
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		String formattedDate = dateFormat.format(date);
-		model.addAttribute("serverTime", formattedDate );
 		model.addAttribute("searchModel", new SearchModel());
+		model.addAttribute("targetModel", new TargetModel());
+
 		return "home";
 	}
 
-	@Log
+	/*@Log
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody
 	Map<String, ? extends Object> create(@RequestBody SearchModel searchModel) {
 		LOGGER.error(searchModel.getRequired()[0].getId());
 		return new ModelMap("id", 0);
-	}
+	}*/
 
 	@RequestMapping(method = RequestMethod.GET, value="reset")
-	public String resetTagDB() {
+	public String resetDB() {
 		tagRepository.dropCollection();
 		targetRepository.dropCollection();
 		testDataGenerator.generate();
 		return "redirect:/";
 	}
+
+
+
 	
 
 }
