@@ -99,28 +99,6 @@ public class ConnectionManagerImpl implements ConnectionManager {
 
 	}
 
-	private void handlePostConnectionRedirections(HttpServletRequest request,
-			HttpServletResponse response) {
-		String session_id = request.getSession().getId();
-		try {
-			connectionLog.add("redirect needed? "
-					+ this.isRedirectNeeded(session_id));
-
-			if (this.isRedirectNeeded(session_id)) {
-				this.redirectToOriginal(request, response);
-			} else {
-				this.redirectToDefault(request, response);
-			}
-
-		} catch (Exception e) {
-			connectionLog
-					.add("ConnectionManager/handlePostConnectionRedirections >"
-							+ " Exception on post connection Redirection  "
-							+ e.toString());
-
-		}
-
-	}
 
 	/**
 	 * disconnect user and create new session,
@@ -142,7 +120,6 @@ public class ConnectionManagerImpl implements ConnectionManager {
 			createNewConnectionSession(this.connection_map, request, true);
 
 			if (facebook_logout) {
-
 				return generateFacebookLogouUrl(facebookAccessToken);
 			}
 		}
@@ -209,6 +186,31 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		}
 		return false;
 	}
+	
+
+	private void handlePostConnectionRedirections(HttpServletRequest request,
+			HttpServletResponse response) {
+		String session_id = request.getSession().getId();
+		try {
+			connectionLog.add("redirect needed? "
+					+ this.isRedirectNeeded(session_id));
+
+			if (this.isRedirectNeeded(session_id)) {
+				this.redirectToOriginal(request, response);
+			} else {
+				this.redirectToDefault(request, response);
+			}
+
+		} catch (Exception e) {
+			connectionLog
+					.add("ConnectionManager/handlePostConnectionRedirections >"
+							+ " Exception on post connection Redirection  "
+							+ e.toString());
+
+		}
+
+	}
+	
 
 	private void cacheThisRequest(HttpServletRequest request) {
 		String session_id = request.getSession().getId();

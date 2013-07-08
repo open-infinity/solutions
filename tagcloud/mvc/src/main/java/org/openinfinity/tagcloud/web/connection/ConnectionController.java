@@ -8,12 +8,11 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openinfinity.tagcloud.web.connection.config.Config;
-import org.openinfinity.tagcloud.web.connection.config.DefaultConfig;
 import org.openinfinity.tagcloud.web.connection.exception.InvalidConnectionCredentialException;
 import org.openinfinity.tagcloud.web.connection.exception.NullAccessGrantException;
 import org.openinfinity.tagcloud.web.connection.exception.NullActiveConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.FacebookProfile;
 import org.springframework.stereotype.Controller;
@@ -86,6 +85,8 @@ public class ConnectionController {
 			logList.add("you're not logged in");
 		}
 
+		logList.add("isUserLoggedIn method returns: "
+				+ connection_manager.isUserLoggedIn(req.getSession().getId()));
 		logList.add("Session_id: " + req.getSession().getId());
 		logList.addAll(connection_manager.getConnectionLog());
 
@@ -124,19 +125,20 @@ public class ConnectionController {
 		return logList;
 	}
 
+
+
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public String doLogout(HttpServletRequest req, HttpServletResponse response) {
+	public String doLogout(@Param("facebook") String facebook,HttpServletRequest req, HttpServletResponse response) {
 
-		String redirect_default = "redirect:" + check_connection_path, redirect = "";
-
+		String manager_redirect_url = null;
 		if (connection_manager.isUserLoggedIn(req.getSession().getId())) {
-			redirect = connection_manager.disconnect(req, response, true);
+			boolean facebook_logout = this.isFacebookLogoutNeeded(facebook);
+			manager_redirect_url = connection_manager.disconnect(req, response,facebook_logout);
+			
+
 		}
-		if (redirect == null || redirect.isEmpty()
-				|| redirect.equalsIgnoreCase("/")) {
-			return redirect_default + "?k=" + redirect;
-		}
-		return redirect;
+		return "redirect:"+this.getLogoutRedirect(manager_redirect_url);
+
 	}
 
 	@RequestMapping(value = "/update-status", method = RequestMethod.GET)
@@ -179,23 +181,25 @@ public class ConnectionController {
 		return logList;
 	}
 
-	private void continueToConnection(HttpServletRequest request,
-			HttpServletResponse response, List<String> logList) {
+	private boolean isFacebookLogoutNeeded(String facebook_param) {
 
-		try {
-			connection_manager.connect(request, response);
-			logList.add("Facebook login session created successfully!");
-		} catch (InvalidConnectionCredentialException e) {
-			logList.add("connection failed > check your credentials > "
-					+ e.toString());
-		} catch (NullAccessGrantException e) {
-			logList.add("connection failed > check facebook AccessGrant > "
-					+ e.toString());
-		} catch (NullActiveConnectionException e) {
-			logList.add("connection failed > check web app ActiveConnection Object >  "
-					+ e.toString());
-		} catch (Exception e) {
-			logList.add("connection failed >  " + e.toString());
+		if (facebook_param == null || facebook_param.isEmpty()) {
+			return false;
+		}
+		if (facebook_param.equalsIgnoreCase("true")) {
+			return true;
+		}
+		return false;
+	}
+
+	private String getLogoutRedirect(String manager_redirect_url) {
+		String redirect_default = check_connection_path
+				+ "?sts=renewed";
+		if (manager_redirect_url == null || manager_redirect_url.isEmpty()
+				|| manager_redirect_url.equalsIgnoreCase("/")) {
+			return redirect_default;
+		} else {
+			return  manager_redirect_url;
 		}
 	}
 
