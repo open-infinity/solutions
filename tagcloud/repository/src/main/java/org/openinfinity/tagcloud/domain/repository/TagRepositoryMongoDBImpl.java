@@ -41,7 +41,7 @@ public class TagRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<
 
 	@Override
 	public List<Tag> searchLike(String input) {
-		Query query = new Query(Criteria.where("text").regex("\\.*"+input+"\\.*", "i"));
+		Query query = new Query(Criteria.where("text").regex("\\b"+input+"\\.*", "i"));
 		return mongoTemplate.find(query, Tag.class);
 	}
 }

@@ -1,5 +1,3 @@
-<script type="text/javascript">	
-
 function resize_bg_div() {
 
 	var headerHeight = window.getComputedStyle(
@@ -66,5 +64,3 @@ $(document).ready(function() {
 $(window).resize(function() {
 	resize_bg_div();
 });
-</script>
-

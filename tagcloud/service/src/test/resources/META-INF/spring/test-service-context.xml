@@ -13,6 +13,6 @@
  	<beans:import resource="classpath*:**/mongo-testservice-context.xml"/> 
  	
 	<context:component-scan base-package="org.openinfinity.tagcloud.domain.repository,org.openinfinity.tagcloud.domain.service,
-	org.openinfinity.tagcloud.domain.specification" />
+	org.openinfinity.tagcloud.domain.repository,org.openinfinity.tagcloud.domain.service.testdata, org.openinfinity.tagcloud.domain.specification" />
 		    
 </beans:beans>

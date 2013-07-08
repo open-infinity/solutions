@@ -16,35 +16,25 @@
 package org.openinfinity.tagcloud.web.controller;
 
 import java.text.DateFormat;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolation;
-import javax.validation.Valid;
 import javax.validation.Validator;
 
-import org.aspectj.weaver.NewConstructorTypeMunger;
+import org.apache.log4j.Logger;
 import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.aspect.ArgumentStrategy;
-import org.openinfinity.tagcloud.domain.entity.Tag;
-import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.TagRepository;
+import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.domain.service.TagService;
+import org.openinfinity.tagcloud.domain.service.testdata.TestDataGenerator;
 import org.openinfinity.tagcloud.web.model.SearchModel;
-import org.openinfinity.tagcloud.web.model.TargetModel;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -68,7 +58,13 @@ public class HomeController {
 	@Autowired
 	private Validator validator;
 
+	@Autowired
+	private TestDataGenerator testDataGenerator;
 
+	@Autowired
+	private TagRepository tagRepository;
+	@Autowired
+	private TargetRepository targetRepository;
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -84,15 +80,6 @@ public class HomeController {
 		return "home";
 	}
 
-//	@RequestMapping(method = RequestMethod.GET)
-//	public @ResponseBody
-//	String  home() {
-//	
-//
-//		return "Welcome to TagCloud";
-//	}
-	
-
 	@Log
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
 	@RequestMapping(method = RequestMethod.POST)
@@ -102,5 +89,13 @@ public class HomeController {
 		return new ModelMap("id", 0);
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value="reset")
+	public String resetTagDB() {
+		tagRepository.dropCollection();
+		targetRepository.dropCollection();
+		testDataGenerator.generate();
+		return "redirect:/";
+	}
+	
 
 }
