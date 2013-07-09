@@ -1,4 +1,5 @@
 function initRequiredOnDocumentReady() {
+	console.log("init tagpicker");
 	$("#required").tokenInput("/tagcloud/tag/autocomplete", {
 		propertyToSearch : "text",
 		preventDuplicates : true,

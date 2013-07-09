@@ -133,6 +133,7 @@ public class TargetServiceImplTest {
 		Profile profile = new Profile("testId");
 		profile = profileService.create(profile);
 		
+		System.out.println("test add tag");
 		targetService.addTagToTarget(tag, target, profile);
 		assertEquals(1, tagService.loadAll().size());
 		assertEquals("test tag", targetService.loadById(target.getId()).getTags().iterator().next().getText());
