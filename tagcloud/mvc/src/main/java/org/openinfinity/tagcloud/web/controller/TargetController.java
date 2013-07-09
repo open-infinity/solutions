@@ -58,6 +58,7 @@ public class TargetController {
 		
 		@Autowired 
 		ConnectionManager conn_man;
+		
 		@Log
 		@ExceptionHandler({SystemException.class, ApplicationException.class, BusinessViolationException.class})
 		public void exceptionOccurred(AbstractCoreException abstractCoreException, HttpServletResponse response, Locale locale) {
@@ -95,6 +96,7 @@ public class TargetController {
 			return "createTarget";
 		}
 		
+		
 		@RequestMapping(method = RequestMethod.GET, value="reset")
 		public String resetTargetDB(HttpServletRequest request) {
 			String session_id = request.getSession().getId();
@@ -120,11 +122,11 @@ public class TargetController {
 		
 		@Log
 		@AuditTrail(argumentStrategy=ArgumentStrategy.ALL)
-		@RequestMapping(method = RequestMethod.GET, value="{id}")
-		public String showTarget(Model model, @PathVariable String id) {
-			Target target = targetService.loadById(id);
-			model.addAttribute("target", target);
-			return "target/showTarget";
+		@RequestMapping(method = RequestMethod.GET, value="{target_id}")
+		public @ResponseBody Target showTarget(@PathVariable String target_id) {
+			Target target = targetService.loadById(target_id);
+
+			return target;
 		}
 		
 		@Log

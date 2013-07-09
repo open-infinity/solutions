@@ -23,6 +23,11 @@ import org.springframework.social.oauth2.OAuth2Operations;
 import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.stereotype.Service;
 
+/**
+ * 
+ * @author Kavan Soleimanbeigi
+ *
+ */
 @Service
 public class ConnectionManagerImpl implements ConnectionManager {
 

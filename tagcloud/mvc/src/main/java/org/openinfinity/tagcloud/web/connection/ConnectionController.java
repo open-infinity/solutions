@@ -1,5 +1,6 @@
 package org.openinfinity.tagcloud.web.connection;
 
+import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +36,9 @@ public class ConnectionController {
 	private final String check_connection_path = "/check/connection";
 	private final String connect_path = "/connect";
 	private final String login_path = "/login";
+	private final String logout_path = "/logout";
 
-	@RequestMapping(value = login_path, method = RequestMethod.GET)
+	@RequestMapping(value = login_path)
 	public String authTest(HttpServletRequest request,
 			HttpServletResponse response) {
 
@@ -45,35 +47,33 @@ public class ConnectionController {
 		}
 		return "redirect:" + connect_path;
 	}
+	@RequestMapping(value = logout_path)
+	public String doLogout(@Param("facebook") String facebook,HttpServletRequest req, HttpServletResponse response) {
 
-	@RequestMapping(value = connect_path, method = RequestMethod.GET)
+		String manager_redirect_url = null;
+		if (connection_manager.isUserLoggedIn(req.getSession().getId())) {
+			boolean facebook_logout = this.isFacebookLogoutNeeded(facebook);
+			manager_redirect_url = connection_manager.disconnect(req, response,facebook_logout);
+			
+
+		}
+		return "redirect:"+this.getLogoutRedirectURL(manager_redirect_url);
+
+	}
+
+	@RequestMapping(value = connect_path)
 	public @ResponseBody
 	List<String> FacebookConnect(HttpServletRequest request,
 			HttpServletResponse response) {
-
 		List<String> logList = new LinkedList<String>();
-		logList.add("Connecting...with postConstruct");
-		// this.continueToConnection( request, response, logList);
-		try {
-			connection_manager.connect(request, response);
-			logList.add("Facebook login session created successfully!");
-		} catch (InvalidConnectionCredentialException e) {
-			logList.add("connection failed > check your credentials > "
-					+ e.toString());
-		} catch (NullAccessGrantException e) {
-			logList.add("connection failed > check facebook AccessGrant > "
-					+ e.toString());
-		} catch (NullActiveConnectionException e) {
-			logList.add("connection failed > check web app ActiveConnection Object >  "
-					+ e.toString());
-		} catch (Exception e) {
-			logList.add("connection failed >  " + e.toString());
-		}
+		logList.add("Connecting...");
+		this.continueToConnection(request, response, logList);
 		logList.addAll(connection_manager.getConnectionLog());
 		return logList;
 	}
 
-	@RequestMapping(value = check_connection_path, method = RequestMethod.GET)
+
+	@RequestMapping(value = check_connection_path)
 	public @ResponseBody
 	List<String> loginTest(HttpServletRequest req) {
 		List<String> logList = new LinkedList<String>();
@@ -93,16 +93,7 @@ public class ConnectionController {
 		return logList;
 	}
 
-	private void getFacebookFriends(HttpServletRequest req, List<String> logList) {
-		Facebook facebook = connection_manager.getSessionFacebook(req
-				.getSession().getId());
-		List<FacebookProfile> profs = facebook.friendOperations()
-				.getFriendProfiles();
-		for (FacebookProfile p : profs) {
-			logList.add(" " + p.getFirstName() + " " + p.getLastName()
-					+ " about:" + p.getAbout());
-		}
-	}
+
 
 	@RequestMapping(value = "/redx", method = RequestMethod.GET)
 	public @ResponseBody
@@ -127,19 +118,7 @@ public class ConnectionController {
 
 
 
-	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public String doLogout(@Param("facebook") String facebook,HttpServletRequest req, HttpServletResponse response) {
 
-		String manager_redirect_url = null;
-		if (connection_manager.isUserLoggedIn(req.getSession().getId())) {
-			boolean facebook_logout = this.isFacebookLogoutNeeded(facebook);
-			manager_redirect_url = connection_manager.disconnect(req, response,facebook_logout);
-			
-
-		}
-		return "redirect:"+this.getLogoutRedirect(manager_redirect_url);
-
-	}
 
 	@RequestMapping(value = "/update-status", method = RequestMethod.GET)
 	public @ResponseBody
@@ -180,6 +159,25 @@ public class ConnectionController {
 		}
 		return logList;
 	}
+	
+	private void continueToConnection(HttpServletRequest request,
+			HttpServletResponse response, List<String> logList) {
+		try {
+			connection_manager.connect(request, response);
+			logList.add("Facebook login session created successfully!");
+		} catch (InvalidConnectionCredentialException e) {
+			logList.add("connection failed > check your credentials > "
+					+ e.toString());
+		} catch (NullAccessGrantException e) {
+			logList.add("connection failed > check facebook AccessGrant > "
+					+ e.toString());
+		} catch (NullActiveConnectionException e) {
+			logList.add("connection failed > check web app ActiveConnection Object >  "
+					+ e.toString());
+		} catch (Exception e) {
+			logList.add("connection failed >  " + e.toString());
+		}
+	}
 
 	private boolean isFacebookLogoutNeeded(String facebook_param) {
 
@@ -192,14 +190,23 @@ public class ConnectionController {
 		return false;
 	}
 
-	private String getLogoutRedirect(String manager_redirect_url) {
-		String redirect_default = check_connection_path
-				+ "?sts=renewed";
+	private String getLogoutRedirectURL(String manager_redirect_url) {
+		String redirect_default = check_connection_path;
 		if (manager_redirect_url == null || manager_redirect_url.isEmpty()
 				|| manager_redirect_url.equalsIgnoreCase("/")) {
 			return redirect_default;
 		} else {
 			return  manager_redirect_url;
+		}
+	}
+	private void getFacebookFriends(HttpServletRequest req, List<String> logList) {
+		Facebook facebook = connection_manager.getSessionFacebook(req
+				.getSession().getId());
+		List<FacebookProfile> profs = facebook.friendOperations()
+				.getFriendProfiles();
+		for (FacebookProfile p : profs) {
+			logList.add(" " + p.getFirstName() + " " + p.getLastName()
+					+ " about:" + p.getAbout());
 		}
 	}
 
