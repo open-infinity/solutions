@@ -33,7 +33,7 @@
 	bottom: 0;
 }
 
-#tag_bar>span {
+#tag_bar > div > span {
 	background-color: beige;
 	margin: 6px;
 	margin-top: 5px;

@@ -123,6 +123,7 @@ public class CommentController {
 	
 	private List<Comment> getFakeCommentList(){
 		List<Comment> comments = new LinkedList<Comment>();
+		
 		for(int i = 0; i <20; i++){
 			Comment comment = new Comment();
 			Profile profile = new Profile();
