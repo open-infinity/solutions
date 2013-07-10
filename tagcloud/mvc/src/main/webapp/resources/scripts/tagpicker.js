@@ -1,16 +1,49 @@
-function initRequiredOnDocumentReady() {
-	console.log("init tagpicker");
-	$("#required").tokenInput("/tagcloud/tag/autocomplete", {
-		propertyToSearch : "text",
-		preventDuplicates : true,
-		theme : "facebook",
-		resultsLimit : 8
-	});
-
+function initTagSearchOnDocumentReady() {
+	initTokenInput("#required");
+	initTokenInput("#preferred");
+	initTokenInput("#nearby");
+	
 	$("#searchModel").submit(function() {
 		var request = $(this).serializeObject();
 		request.required = $("#required").tokenInput("get");
-		$.postJSON("/tagcloud/", request);
+		request.preferred = $("#preferred").tokenInput("get");
+		request.nearby = $("#nearby").tokenInput("get");
+		var center = getMap().getCenter();
+		request.location = new Array(center.lng(), getMap().getCenter().lat());
+		var bounds = getMap().getBounds();
+		request.bounds = new Array(center.lng(), center.lat(), bounds.getNorthEast().lng(), bounds.getNorthEast().lat());
+		$.postJSON("/tagcloud/", request, function(resultJson){
+			var $list = $("#targetlist");
+			$list.empty();
+			clearMarkers();
+			$.each(resultJson.results, function(index, value) {
+				  $list.append(createDiv(value, index));
+				  var loc = new google.maps.LatLng(value.target.location[1], value.target.location[0]);
+				  
+				  placeNewMarkerWithIndex(loc, index);
+			});
+			
+			styleTargetDivs();
+
+		}, function(error){
+			console.log("error: "+error.responseText);
+		});
 		return false;
 	});
+}
+
+function initTokenInput(field){
+	$(field).tokenInput("/tagcloud/tag/autocomplete", {
+		propertyToSearch : "text",
+		preventDuplicates : true,
+		theme : "facebook",
+		resultsLimit : 8,
+        onAdd: function(){
+            $("#searchModel").submit();
+        },
+        onDelete: function(){
+            $("#searchModel").submit();
+        }
+	});
+	
 }

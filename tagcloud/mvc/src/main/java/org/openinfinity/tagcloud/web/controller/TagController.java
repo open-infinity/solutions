@@ -33,7 +33,7 @@ public class TagController {
 		public @ResponseBody Collection<TagModel> getAutocompleteSuggestions(@RequestParam(value="q") String q) {
 			List<TagModel> tagModels = new ArrayList<TagModel>();
 			LOGGER.error("hmph "+tagService.loadAll().size());
-			for(Tag tag : tagService.loadAll()) {//searchLike(q)) {
+			for(Tag tag : tagService.searchLike(q)) {
 				tagModels.add(new TagModel(tag.getId().toString(), tag.getText()));
 			}
 			return tagModels;

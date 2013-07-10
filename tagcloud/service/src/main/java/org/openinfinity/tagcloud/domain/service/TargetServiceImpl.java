@@ -15,26 +15,24 @@
  */
 package org.openinfinity.tagcloud.domain.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.ListIterator;
-
 import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.exception.ExceptionLevel;
 import org.openinfinity.core.util.ExceptionUtil;
-import org.openinfinity.tagcloud.domain.entity.Profile;
-import org.openinfinity.tagcloud.domain.entity.Score;
-import org.openinfinity.tagcloud.domain.entity.Tag;
-import org.openinfinity.tagcloud.domain.entity.Target;
+import org.openinfinity.tagcloud.domain.entity.*;
 import org.openinfinity.tagcloud.domain.entity.query.NearbyTarget;
 import org.openinfinity.tagcloud.domain.entity.query.Result;
+import org.openinfinity.tagcloud.domain.entity.query.TagQuery;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Product service implementation with specification.
@@ -54,10 +52,16 @@ public class TargetServiceImpl extends
 	@Autowired
 	private ProfileService profileService;
 
-	@Autowired
-	ScoreService scoreService;
+    @Autowired
+    private ScoreService scoreService;
 
-	@Log
+    @Autowired
+    private CommentService commentService;
+
+
+
+
+    @Log
 	@AuditTrail
 	@Override
 	@Transactional
@@ -71,12 +75,10 @@ public class TargetServiceImpl extends
 		}
 
 		System.out.println("creating tag " + tag.getText());
-		if (!tagService.contains(tag)) {
-			tag = tagService.create(tag);
-			System.out.println("tag created " + tag.getText());
-		} else {
-			System.out.println("tag already exists " + tag.getText());
-		}
+		if (tagService.contains(tag))
+			tagService.update(tag);
+        else tag = tagService.create(tag);
+
 
 		target.getTags().add(tag);
 	
@@ -86,21 +88,37 @@ public class TargetServiceImpl extends
 		profileService.update(profile);
 	}
 
-	@Log
-	@AuditTrail
-	@Override
-	@Transactional
-	public void addScoreToTarget(Score score, Target target) {
+    @Log
+    @AuditTrail
+    @Override
+    @Transactional
+    public void addScoreToTarget(Score score, Target target) {
+        if(scoreService.contains(score))
+            scoreService.update(score);
+        else score = scoreService.create(score);
 
-		score = scoreService.create(score);
+        target.getScores().add(score);
+        target.setScore(this.calcScore(target.getScores()));
+        update(target);
 
-		target.getScores().add(score);
-		target.setScore(this.calcScore(target.getScores()));
-		update(target);
+    }
 
-	}
+    @Log
+    @AuditTrail
+    @Override
+    @Transactional
+    public void addCommentToTarget(Comment comment, Target target) {
+        if(commentService.contains(comment))
+            commentService.update(comment);
+        else comment = commentService.create(comment);
 
-	@Log
+        target.getComments().add(comment);
+        update(target);
+    }
+
+
+
+    @Log
 	@AuditTrail
 	@Override
 	@Transactional
@@ -121,27 +139,40 @@ public class TargetServiceImpl extends
 	}
 
 	@Override
-	public List<Result> loadByQuery(List<Tag> requiredTags,
-			List<Tag> preferredTags, List<Tag> nearbyTags, double longitude,
-			double latitude, double radius) {
-
-		List<Target> targets = targetRepository.loadByCoordinates(longitude,
-				latitude, radius);
-		List<Result> results = requireTags(targets, requiredTags, nearbyTags);
-		if (nearbyTags.size() > 0) {
-			results = nearbySearch(targetRepository.loadByCoordinates(
-					longitude, latitude, radius + NearbyTarget.MAX_DISTANCE),
-					results, nearbyTags);
+	public List<Result> loadByQuery(TagQuery tagQuery) {
+		
+		List<Target> targets = targetRepository.loadByCoordinates(tagQuery.getLongitude(), tagQuery.getLatitude(), tagQuery.getRadius());
+		List<Result> results = requireTags(targets, tagQuery);
+		if(tagQuery.getNearby().size()>0) {
+			results = nearbySearch(targetRepository.loadByCoordinates(tagQuery.getLongitude(), tagQuery.getLatitude(), tagQuery.getRadius() +NearbyTarget.MAX_DISTANCE), results, tagQuery.getNearby());
 		}
+        if(tagQuery.getPreferred().size() > 0){
+            checkPreferredTags(results, tagQuery);
+        }
+        for(Result result : results){
+            result.updateRecommendationScore();
+        }
 		return results;
 	}
 
-	private List<Result> requireTags(List<Target> targets,
-			List<Tag> requiredTags, List<Tag> nearbyTags) {
+    private void checkPreferredTags(List<Result> results, TagQuery tagQuery) {
+        for(Result result:results){
+            for(Tag tag : tagQuery.getPreferred()){
+                if(result.getTarget().getTags().contains(tag))
+                    result.getPreferredTags().add(tag);
+            }
+        }
+    }
+
+    private List<Result> requireTags(List<Target> targets, TagQuery tagQuery) {
+        List<Tag> requiredTags = tagQuery.getRequired();
+        List<Tag> nearbyTags = tagQuery.getNearby();
+
 		List<Result> results = new ArrayList<Result>();
-		for (Target target : targets) {
-			if (target.getTags().containsAll(requiredTags)) {
-				Result result = new Result(nearbyTags);
+		if(requiredTags.size()==0) return results; //return empty list because required tags should not be empty. fix later with exception?
+		for(Target target : targets) {
+			if(target.getTags().containsAll(requiredTags)) {
+				Result result = new Result(tagQuery, nearbyTags);
 				result.setTarget(target);
 				result.getRequiredTags().addAll(requiredTags);
 				results.add(result);

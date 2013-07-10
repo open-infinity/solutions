@@ -1,17 +1,17 @@
 var map;
-var marker;
 var markers = [];
 var infoWindow;
 var lat;
 var lng;
+var tabIndex = 0;
 
-var infoWindowContent   = "Target's location";
+var infoWindowContent = "Target's location";
 
 
 function initialize() {
   var mapOptions = {
     zoom: 13,
-    center: new google.maps.LatLng(-34.397, 150.644),
+    center: new google.maps.LatLng(60.172983,24.940332),
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
   
@@ -22,10 +22,13 @@ function initialize() {
 	    content: infoWindowContent
   });
   
-  google.maps.event.addListener(infoWindow, 'closeclick', removePreviousMarker);
+  google.maps.event.addListener(infoWindow, 'closeclick', clearMarkers);
 	 	
   google.maps.event.addListener(map, 'click', function(event){
-	removePreviousMarker();
+    if($("#tabs").tabs('option', 'active') != 1) return false;
+
+
+	clearMarkers();
     placeNewMarker(event.latLng);
     
 	var myLatLng = event.latLng;
@@ -34,15 +37,15 @@ function initialize() {
     
     populateCoordinates(location);
   });
+
 }
 
-function removePreviousMarker() {
-		if (markers.length > 0){
-			
-			marker = markers.pop();
-			marker.setMap(null); 
-		}
-};
+function clearMarkers() {
+	for (var i = 0; i < markers.length; i++) {
+		markers[i].setMap(null);
+	}
+	markers.length = 0;
+}
 
 function populateCoordinates(){
 	document.getElementById("latitude").setAttribute("value", lat);
@@ -51,11 +54,48 @@ function populateCoordinates(){
 
 function placeNewMarker(location) {
 
-  marker = new google.maps.Marker({
+  var marker = new google.maps.Marker({
       position: location,
       map: map
   });
 
   markers.push(marker);
   infoWindow.open(map,marker);
+}
+
+function placeNewMarkerWithIndex(location, index) {
+
+	  var marker = new google.maps.Marker({
+	      position: location,
+	      map: map,
+	      icon: "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="+(index+1)+"|88BBFF|000000",
+	      ind: index
+	  });
+	  
+	  markers.push(marker);
+
+	  google.maps.event.addListener(marker, 'mouseover', function(event){
+		  setMarkerHighlight(index, true);
+		  setTargetDivHighlight($("#targetlist").children().eq(index), true);
+	  });
+	  
+	  google.maps.event.addListener(marker, 'mouseout', function(event){
+		  setMarkerHighlight(index, false);
+		  setTargetDivHighlight($("#targetlist").children().eq(index), false);
+	  });
+	  
+	}
+
+
+function setMarkerHighlight(index, highlight){
+	if(highlight){
+		markers[index].setIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="+(index+1)+"|BBDDFF|000000");
+	}
+	else{
+		markers[index].setIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="+(index+1)+"|88BBFF|000000");
+	}
+}
+
+function getMap(){
+	return map;
 }

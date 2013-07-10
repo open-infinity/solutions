@@ -25,4 +25,9 @@ local.properties
 # PDT-specific
 .buildpath
 
+# Intellij
+.idea/
+*.iml
+*.iws
+
 tagcloud/mvc/pom.xml
