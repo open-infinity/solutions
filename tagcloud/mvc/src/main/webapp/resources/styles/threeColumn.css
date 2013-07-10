@@ -120,10 +120,12 @@ body > #bg
 	overflow: hidden;
 	}
 	
-	#column3row1{
+#column3row1{
 	overflow-y: scroll;
 	height: 100%;
-	}
+}
+
+
 
 
 /*
@@ -219,17 +221,21 @@ p
 	width: 170px;
 	}
 
+/*
 /* We need to shave off a pixel from the width of the ul.  This then renders */
-/* list inside this columns bg image.                                        */
+/* list inside this columns bg image.  
+/*                                      
 #sideBarLeft ul
 	{
 	margin: 0;
 	padding: 0;
-	border-bottom: #978e7c 1px solid;
+	border-bottom: #222222 1px solid;
 	width: 189px;
 	}
-
+*/
 /* IE fix for additional padding that otherwise get's rendered between list items */
+
+/*
 #sideBarLeft ul li
 	{
 	height: 1%;
@@ -237,6 +243,7 @@ p
 	padding: 0;
 	list-style-type: none;
 	}
+*/
 
 #rightColumnBg > #sideBarLeft
 	{
@@ -251,16 +258,17 @@ p
 	background-image: url(sidenav.bg.gif);
 	background-position: bottom;
 	background-repeat:repeat-x;
-	background-color: #fffbf7;
-	color: #59503e;
+	/* background-color: #fffbf7; 
+	color: #59503e; */
 	text-decoration: none;
 	font-weight: bold;
 	}
 	
 #sideBarLeft ul li a:hover
 	{
-	color: #000000;
-	text-decoration: underline;
+	/*
+	color: #000000; 
+	text-decoration: underline;*/
 	}
 	
 #map-canvas {
