@@ -3,12 +3,12 @@ package org.openinfinity.tagcloud.domain.service;
 import java.util.Collection;
 import java.util.List;
 
-import org.openinfinity.tagcloud.domain.entity.Profile;
-import org.openinfinity.tagcloud.domain.entity.Score;
-import org.openinfinity.tagcloud.domain.entity.Tag;
-import org.openinfinity.tagcloud.domain.entity.Target;
+import org.openinfinity.core.annotation.AuditTrail;
+import org.openinfinity.core.annotation.Log;
+import org.openinfinity.tagcloud.domain.entity.*;
 import org.openinfinity.tagcloud.domain.entity.query.Result;
 import org.openinfinity.tagcloud.domain.entity.query.TagQuery;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface TargetService extends AbstractTextEntityCrudServiceInterface<Target> {
 	
@@ -25,8 +25,10 @@ public interface TargetService extends AbstractTextEntityCrudServiceInterface<Ta
 	List<Result> loadByQuery(TagQuery tagQuery);
 
 	void addScoreToTarget(Score score, Target target);
-	
 
 
-	
+    @Log
+    @AuditTrail
+    @Transactional
+    void addCommentToTarget(Comment comment, Target target);
 }

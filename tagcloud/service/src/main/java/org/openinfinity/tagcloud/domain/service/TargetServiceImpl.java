@@ -19,10 +19,7 @@ import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.exception.ExceptionLevel;
 import org.openinfinity.core.util.ExceptionUtil;
-import org.openinfinity.tagcloud.domain.entity.Profile;
-import org.openinfinity.tagcloud.domain.entity.Score;
-import org.openinfinity.tagcloud.domain.entity.Tag;
-import org.openinfinity.tagcloud.domain.entity.Target;
+import org.openinfinity.tagcloud.domain.entity.*;
 import org.openinfinity.tagcloud.domain.entity.query.NearbyTarget;
 import org.openinfinity.tagcloud.domain.entity.query.Result;
 import org.openinfinity.tagcloud.domain.entity.query.TagQuery;
@@ -55,10 +52,16 @@ public class TargetServiceImpl extends
 	@Autowired
 	private ProfileService profileService;
 
-	@Autowired
-	ScoreService scoreService;
+    @Autowired
+    private ScoreService scoreService;
 
-	@Log
+    @Autowired
+    private CommentService commentService;
+
+
+
+
+    @Log
 	@AuditTrail
 	@Override
 	@Transactional
@@ -72,12 +75,10 @@ public class TargetServiceImpl extends
 		}
 
 		System.out.println("creating tag " + tag.getText());
-		if (!tagService.contains(tag)) {
-			tag = tagService.create(tag);
-			System.out.println("tag created " + tag.getText());
-		} else {
-			System.out.println("tag already exists " + tag.getText());
-		}
+		if (tagService.contains(tag))
+			tagService.update(tag);
+        else tag = tagService.create(tag);
+
 
 		target.getTags().add(tag);
 	
@@ -87,21 +88,37 @@ public class TargetServiceImpl extends
 		profileService.update(profile);
 	}
 
-	@Log
-	@AuditTrail
-	@Override
-	@Transactional
-	public void addScoreToTarget(Score score, Target target) {
+    @Log
+    @AuditTrail
+    @Override
+    @Transactional
+    public void addScoreToTarget(Score score, Target target) {
+        if(scoreService.contains(score))
+            scoreService.update(score);
+        else score = scoreService.create(score);
 
-		score = scoreService.create(score);
+        target.getScores().add(score);
+        target.setScore(this.calcScore(target.getScores()));
+        update(target);
 
-		target.getScores().add(score);
-		target.setScore(this.calcScore(target.getScores()));
-		update(target);
+    }
 
-	}
+    @Log
+    @AuditTrail
+    @Override
+    @Transactional
+    public void addCommentToTarget(Comment comment, Target target) {
+        if(commentService.contains(comment))
+            commentService.update(comment);
+        else comment = commentService.create(comment);
 
-	@Log
+        target.getComments().add(comment);
+        update(target);
+    }
+
+
+
+    @Log
 	@AuditTrail
 	@Override
 	@Transactional
