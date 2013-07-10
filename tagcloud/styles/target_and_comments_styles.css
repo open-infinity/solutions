@@ -1,0 +1,9 @@
+
+body{
+	background-color: silver;
+}
+#target_main{
+	background-color: silver;
+	min-width:300px;
+	min-height: 600px;
+}

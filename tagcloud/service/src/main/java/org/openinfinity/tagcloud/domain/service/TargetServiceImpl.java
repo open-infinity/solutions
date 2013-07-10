@@ -25,6 +25,7 @@ import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.exception.ExceptionLevel;
 import org.openinfinity.core.util.ExceptionUtil;
 import org.openinfinity.tagcloud.domain.entity.Profile;
+import org.openinfinity.tagcloud.domain.entity.Score;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.NearbyTarget;
@@ -41,61 +42,78 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Ilkka Leinonen
  */
 @Service
-public class TargetServiceImpl extends AbstractTextEntityCrudServiceImpl<Target> implements TargetService {
+public class TargetServiceImpl extends
+		AbstractTextEntityCrudServiceImpl<Target> implements TargetService {
 
 	@Autowired
 	private TargetRepository targetRepository;
-	
+
 	@Autowired
 	private TagService tagService;
-	
-	@Autowired 
+
+	@Autowired
 	private ProfileService profileService;
-	
+
+	@Autowired
+	ScoreService scoreService;
+
 	@Log
 	@AuditTrail
 	@Override
 	@Transactional
 	public void addTagToTarget(Tag tag, Target target, Profile profile) {
 		for (Tag oldTag : target.getTags()) {
-			if(oldTag.getText().equals(tag.getText())) 
+			if (oldTag.getText().equals(tag.getText()))
 				ExceptionUtil.throwBusinessViolationException(
-						"Tag with the same name already exists in the target", 
+						"Tag with the same name already exists in the target",
 						ExceptionLevel.INFORMATIVE,
 						TargetService.UNIQUE_EXCEPTION_TAG_ALREADY_INCLUDED);
 		}
-		
-		System.out.println("creating tag "+tag.getText());
-		if(!tagService.contains(tag)) { 
+
+		System.out.println("creating tag " + tag.getText());
+		if (!tagService.contains(tag)) {
 			tag = tagService.create(tag);
-			System.out.println("tag created "+tag.getText());
+			System.out.println("tag created " + tag.getText());
+		} else {
+			System.out.println("tag already exists " + tag.getText());
 		}
-		else {
-			System.out.println("tag already exists "+tag.getText());
-		}
-		
+
 		target.getTags().add(tag);
+	
 		update(target);
-		
+
 		profile.addTag(tag, target);
 		profileService.update(profile);
 	}
-	
+
+	@Log
+	@AuditTrail
+	@Override
+	@Transactional
+	public void addScoreToTarget(Score score, Target target) {
+
+		score = scoreService.create(score);
+
+		target.getScores().add(score);
+		target.setScore(this.calcScore(target.getScores()));
+		update(target);
+
+	}
+
 	@Log
 	@AuditTrail
 	@Override
 	@Transactional
 	public void removeTagFromTarget(Tag tag, Target target) {
-		if(!target.getTags().contains(tag))
+		if (!target.getTags().contains(tag))
 			ExceptionUtil.throwApplicationException(
-					"Target does not contain the tag that is to be removed", 
+					"Target does not contain the tag that is to be removed",
 					ExceptionLevel.WARNING,
 					TargetService.UNIQUE_EXCEPTION_TAG_NOT_INCLUDED);
-		
+
 		target.getTags().remove(tag);
 		update(target);
 	}
-
 
 	@Override
 	public Collection<Target> loadByTag(Tag tag) {
@@ -103,22 +121,26 @@ public class TargetServiceImpl extends AbstractTextEntityCrudServiceImpl<Target>
 	}
 
 	@Override
-	public List<Result> loadByQuery(List<Tag> requiredTags, List<Tag> preferredTags, List<Tag> nearbyTags, 
-			double longitude, double latitude, double radius) {
-		
-		List<Target> targets = targetRepository.loadByCoordinates(longitude, latitude, radius);
+	public List<Result> loadByQuery(List<Tag> requiredTags,
+			List<Tag> preferredTags, List<Tag> nearbyTags, double longitude,
+			double latitude, double radius) {
+
+		List<Target> targets = targetRepository.loadByCoordinates(longitude,
+				latitude, radius);
 		List<Result> results = requireTags(targets, requiredTags, nearbyTags);
-		if(nearbyTags.size()>0) {
-			results = nearbySearch(targetRepository.loadByCoordinates(longitude, latitude, radius+NearbyTarget.MAX_DISTANCE), results, nearbyTags);
+		if (nearbyTags.size() > 0) {
+			results = nearbySearch(targetRepository.loadByCoordinates(
+					longitude, latitude, radius + NearbyTarget.MAX_DISTANCE),
+					results, nearbyTags);
 		}
 		return results;
 	}
 
-
-	private List<Result> requireTags(List<Target> targets, List<Tag> requiredTags, List<Tag> nearbyTags) {
+	private List<Result> requireTags(List<Target> targets,
+			List<Tag> requiredTags, List<Tag> nearbyTags) {
 		List<Result> results = new ArrayList<Result>();
-		for(Target target : targets) {
-			if(target.getTags().containsAll(requiredTags)) {
+		for (Target target : targets) {
+			if (target.getTags().containsAll(requiredTags)) {
 				Result result = new Result(nearbyTags);
 				result.setTarget(target);
 				result.getRequiredTags().addAll(requiredTags);
@@ -127,26 +149,28 @@ public class TargetServiceImpl extends AbstractTextEntityCrudServiceImpl<Target>
 		}
 		return results;
 	}
-	
-	
 
 	private List<Result> nearbySearch(List<Target> allTargets,
 			List<Result> results, List<Tag> nearbyTags) {
-		
+
 		for (Target target : allTargets) {
 			List<Tag> foundNearbyTags = new ArrayList<Tag>();
-			for(Tag tag : nearbyTags) {
-				if(target.getTags().contains(tag)) foundNearbyTags.add(tag);
+			for (Tag tag : nearbyTags) {
+				if (target.getTags().contains(tag))
+					foundNearbyTags.add(tag);
 			}
-			if(foundNearbyTags.size()==0) continue;
-			
+			if (foundNearbyTags.size() == 0)
+				continue;
+
 			ListIterator<Result> resultIterator = results.listIterator(0);
-			while(resultIterator.hasNext()) {
+			while (resultIterator.hasNext()) {
 				Result result = resultIterator.next();
-				for(Tag tag : foundNearbyTags) {
-					NearbyTarget nearbyTarget = result.getNearbyTargetsMap().get(tag.getText());
-					double distance = calcRelativeDistance(result.getTarget(), target);
-					if(distance < nearbyTarget.getDistance()) {
+				for (Tag tag : foundNearbyTags) {
+					NearbyTarget nearbyTarget = result.getNearbyTargetsMap()
+							.get(tag.getText());
+					double distance = calcRelativeDistance(result.getTarget(),
+							target);
+					if (distance < nearbyTarget.getDistance()) {
 						nearbyTarget.setTarget(target);
 						nearbyTarget.setDistance(distance);
 					}
@@ -154,39 +178,51 @@ public class TargetServiceImpl extends AbstractTextEntityCrudServiceImpl<Target>
 				result.updateNearbyTargetList();
 			}
 		}
-		
-		//update correct absolute distances and remove ones too far away
+
+		// update correct absolute distances and remove ones too far away
 		ListIterator<Result> resultIterator = results.listIterator(0);
-		while(resultIterator.hasNext()) {
+		while (resultIterator.hasNext()) {
 			Result result = resultIterator.next();
-			
-			for(NearbyTarget nearbyTarget : result.getNearbyTargetsList()) {
-				nearbyTarget.setDistance(calcDistance(result.getTarget(), nearbyTarget.getTarget()));
-				if(nearbyTarget.getDistance() > NearbyTarget.MAX_DISTANCE) {
+
+			for (NearbyTarget nearbyTarget : result.getNearbyTargetsList()) {
+				nearbyTarget.setDistance(calcDistance(result.getTarget(),
+						nearbyTarget.getTarget()));
+				if (nearbyTarget.getDistance() > NearbyTarget.MAX_DISTANCE) {
 					resultIterator.remove();
 					break;
 				}
 			}
-			
+
 		}
-		
+
 		return results;
 	}
 
 	private double calcRelativeDistance(Target t1, Target t2) {
-		double lonDif = Math.abs(t1.getLocation()[0]-t2.getLocation()[0]);
-		if(lonDif > 180) lonDif -= 180;
-		double latDif = Math.abs(t1.getLocation()[0]-t2.getLocation()[0]);
-		if(latDif > 180) latDif -= 180;
-		
-		return Math.sqrt(lonDif*lonDif + latDif*latDif);
+		double lonDif = Math.abs(t1.getLocation()[0] - t2.getLocation()[0]);
+		if (lonDif > 180)
+			lonDif -= 180;
+		double latDif = Math.abs(t1.getLocation()[0] - t2.getLocation()[0]);
+		if (latDif > 180)
+			latDif -= 180;
+
+		return Math.sqrt(lonDif * lonDif + latDif * latDif);
 	}
-	
-	
+
 	private double calcDistance(Target t1, Target t2) {
-		return Utils.calcDistanceGCS(t1.getLocation()[0], t1.getLocation()[1], t2.getLocation()[0], t2.getLocation()[1]);
+		return Utils.calcDistanceGCS(t1.getLocation()[0], t1.getLocation()[1],
+				t2.getLocation()[0], t2.getLocation()[1]);
 	}
-	
-	
-	
+
+	private double calcScore(List<Score> scores) {
+		
+		int size = scores.size();
+		int summ = 0;
+		for(Score s : scores){
+			summ += s.getStars();
+		}
+		double result = 1.0*summ/size; 
+		return result;
+	}
+
 }

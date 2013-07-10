@@ -1,9 +1,9 @@
-
 package org.openinfinity.tagcloud.web.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -44,115 +44,149 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/target")
 public class TargetController {
 
-		@Autowired
-		private TargetRepository targetRepository;
+	@Autowired
+	private TargetRepository targetRepository;
+
+	@Autowired
+	private TargetService targetService;
+
+	@Autowired
+	private Validator validator;
+
+	@Autowired
+	ApplicationContext applicationContext;
+
+	@Autowired
+	ConnectionManager conn_man;
+
+	@Log
+	@ExceptionHandler({ SystemException.class, ApplicationException.class,
+			BusinessViolationException.class })
+	public void exceptionOccurred(AbstractCoreException abstractCoreException,
+			HttpServletResponse response, Locale locale) {
+		TargetModel targetModel = new TargetModel();
+		if (abstractCoreException.isErrorLevelExceptionMessagesIncluded()) {
+			Collection<String> localizedErrorMessages = getLocalizedExceptionMessages(
+					abstractCoreException.getErrorLevelExceptionIds(), locale);
+			targetModel.addErrorStatuses("errorLevelExceptions",
+					localizedErrorMessages);
+		}
+		if (abstractCoreException.isWarningLevelExceptionMessagesIncluded()) {
+			Collection<String> localizedErrorMessages = getLocalizedExceptionMessages(
+					abstractCoreException.getWarningLevelExceptionIds(), locale);
+			targetModel.addErrorStatuses("warningLevelExceptions",
+					localizedErrorMessages);
+		}
+		if (abstractCoreException.isInformativeLevelExceptionMessagesIncluded()) {
+			Collection<String> localizedErrorMessages = getLocalizedExceptionMessages(
+					abstractCoreException.getInformativeLevelExceptionIds(),
+					locale);
+			targetModel.addErrorStatuses("informativeLevelExceptions",
+					localizedErrorMessages);
+		}
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		SerializerUtil.jsonSerialize(ServletUtil.getWriter(response),
+				targetModel.getErrorStatuses());
+	}
+
+	private Collection<String> getLocalizedExceptionMessages(
+			Collection<String> localizedExceptionIds, Locale locale) {
+		Collection<String> localizedErrorMessages = new ArrayList<String>();
+		for (String uniqueId : localizedExceptionIds) {
+			String message = applicationContext.getMessage(uniqueId, null,
+					locale);
+			localizedErrorMessages.add(message);
+		}
+		return localizedErrorMessages;
+	}
 	
-		@Autowired
-		private TargetService targetService;
-		
-		@Autowired
-		private Validator validator;
-		
-		@Autowired 
-		ApplicationContext applicationContext;
-		
-		@Autowired 
-		ConnectionManager conn_man;
-		
-		@Log
-		@ExceptionHandler({SystemException.class, ApplicationException.class, BusinessViolationException.class})
-		public void exceptionOccurred(AbstractCoreException abstractCoreException, HttpServletResponse response, Locale locale) {
-			TargetModel targetModel = new TargetModel();
-			if (abstractCoreException.isErrorLevelExceptionMessagesIncluded()) {
-				Collection<String> localizedErrorMessages = getLocalizedExceptionMessages(abstractCoreException.getErrorLevelExceptionIds(), locale);
-				targetModel.addErrorStatuses("errorLevelExceptions", localizedErrorMessages);
-			}
-			if (abstractCoreException.isWarningLevelExceptionMessagesIncluded())  {
-				Collection<String> localizedErrorMessages = getLocalizedExceptionMessages(abstractCoreException.getWarningLevelExceptionIds(), locale);
-				targetModel.addErrorStatuses("warningLevelExceptions", localizedErrorMessages);
-			}
-			if (abstractCoreException.isInformativeLevelExceptionMessagesIncluded()) {
-				Collection<String> localizedErrorMessages = getLocalizedExceptionMessages(abstractCoreException.getInformativeLevelExceptionIds(), locale);
-				targetModel.addErrorStatuses("informativeLevelExceptions", localizedErrorMessages);
-			}
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			SerializerUtil.jsonSerialize(ServletUtil.getWriter(response), targetModel.getErrorStatuses());
-		}
-		
-		private Collection<String> getLocalizedExceptionMessages(Collection<String> localizedExceptionIds, Locale locale) {
-			Collection<String> localizedErrorMessages = new ArrayList<String>();
-			for (String uniqueId : localizedExceptionIds) {
-				String message = applicationContext.getMessage(uniqueId, null, locale);
-				localizedErrorMessages.add(message);	
-			}
-			return localizedErrorMessages;
-		}
-		
-		@Log
-		@AuditTrail(argumentStrategy=ArgumentStrategy.ALL)
-		@RequestMapping(method = RequestMethod.GET)
-		public String createNewTarget(Model model) {
-			model.addAttribute("targetModel", new TargetModel());
-			return "createTarget";
-		}
-		
-		
-		@RequestMapping(method = RequestMethod.GET, value="reset")
-		public String resetTargetDB(HttpServletRequest request) {
-			String session_id = request.getSession().getId();
-			
-			if(conn_man.isUserLoggedIn(session_id)){
+	/**
+	* test and showcase for async json front 
+	* @return
+	*/	
+	@Log
+	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
+	@RequestMapping(method = RequestMethod.GET)
+	public String targetsHome() {
+
+		return "targets_home";
+	}
+	
+	@Log
+	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
+	@RequestMapping(method = RequestMethod.GET,value="create")
+	public String createNewTarget(Model model) {
+		model.addAttribute("targetModel", new TargetModel());
+		return "createTarget";
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "reset")
+	public String resetTargetDB(HttpServletRequest request) {
+		String session_id = request.getSession().getId();
+
+		if (conn_man.isUserLoggedIn(session_id)) {
 			targetRepository.dropCollection();
-			
-			return "redirect:/target/loadAll";
-			}
-			return "redirect:/login";
-		}
-		
-		@Log
-		@AuditTrail(argumentStrategy=ArgumentStrategy.ALL)
-		@RequestMapping(method = RequestMethod.GET, value="loadAll")
-		public String loadAllTargets(Model model) {
-			Collection<Target> targets = targetService.loadAll();
-			model.addAttribute("targets", targets);
-			return "target/listTargets";
-		}
-		
-		
-		
-		@Log
-		@AuditTrail(argumentStrategy=ArgumentStrategy.ALL)
-		@RequestMapping(method = RequestMethod.GET, value="{target_id}")
-		public @ResponseBody Target showTarget(@PathVariable String target_id) {
-			Target target = targetService.loadById(target_id);
 
+			return "redirect:/target/list";
+		}
+		return "redirect:/login";
+	}
+
+	@Log
+	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
+	@RequestMapping(method = RequestMethod.GET, value = "list")
+	public @ResponseBody
+	Collection<Target> loadAllTargets(Model model) {
+		Collection<Target> targets = targetService.loadAll();
+		return targets;
+	}
+
+	@Log
+	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
+	@RequestMapping(method = RequestMethod.GET, value = "{target_id}")
+	public @ResponseBody
+	Object showTarget(@PathVariable String target_id) {
+		Target target;
+		try {
+			target = targetService.loadById(target_id);
 			return target;
+		} catch (Exception e) {
+			ErrorObject error = new ErrorObject();
+			error.setError_status(HttpServletResponse.SC_BAD_REQUEST+"");
+			error.setLocalized_message(e.getLocalizedMessage());
+			error.setError_message(e.getMessage());
+			return error;
 		}
 		
-		@Log
-		@AuditTrail(argumentStrategy=ArgumentStrategy.ALL) 
-		@RequestMapping(method = RequestMethod.POST)
-		public @ResponseBody Map<String, ? extends Object> create(@Valid @RequestBody TargetModel targetModel, HttpServletResponse response) {
-			Set<ConstraintViolation<TargetModel>> failures = validator.validate(targetModel);
-			if (failures.isEmpty()) {
-				Target target = targetService.create(targetModel.getTarget());
-				return new ModelMap("id", target.getId());
-			} else {
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				return getValidationMessages(failures);
-			}
+	}
+
+	@Log
+	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
+	@RequestMapping(method = RequestMethod.POST)
+	public @ResponseBody
+	Map<String, ? extends Object> create(
+			@Valid @RequestBody TargetModel targetModel,
+			HttpServletResponse response) {
+		Set<ConstraintViolation<TargetModel>> failures = validator
+				.validate(targetModel);
+		if (failures.isEmpty()) {
+			Target target = targetService.create(targetModel.getTarget());
+			return new ModelMap("id", target.getId());
+		} else {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return getValidationMessages(failures);
 		}
+	}
+
+	private Map<String, String> getValidationMessages(
+			Set<ConstraintViolation<TargetModel>> failures) {
+		Map<String, String> failureMessages = new HashMap<String, String>();
+		for (ConstraintViolation<TargetModel> failure : failures) {
+			failureMessages.put(failure.getPropertyPath().toString(),
+					failure.getMessage());
+		}
+		return failureMessages;
+	}
 	
 
-		private Map<String, String> getValidationMessages(Set<ConstraintViolation<TargetModel>> failures) {
-			Map<String, String> failureMessages = new HashMap<String, String>();
-			for (ConstraintViolation<TargetModel> failure : failures) {
-				failureMessages.put(failure.getPropertyPath().toString(), failure.getMessage());
-			}
-			return failureMessages;
-		}
-
-		
-		
 }
-

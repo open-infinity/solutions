@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.openinfinity.tagcloud.domain.entity.Profile;
+import org.openinfinity.tagcloud.domain.entity.Score;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.Result;
@@ -23,6 +24,10 @@ public interface TargetService extends AbstractTextEntityCrudServiceInterface<Ta
 
 	List<Result> loadByQuery(List<Tag> required, List<Tag> preferred,
 			List<Tag> nearby, double longitude, double latitude, double radius);
+
+	void addScoreToTarget(Score score, Target target);
+	
+
 
 	
 }

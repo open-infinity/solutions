@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>welcome to targets home!</title>
+
+<style>
+#map-canvas {
+	margin-top: 2%;
+	margin-right: 2%;
+	margin-left: 1%;
+	padding: 0;
+	/*         height: 40%; */
+	min-width: 34%;
+	min-height: 300px;
+	max-width: 34%;
+	max-height: 300px;
+	/*         border: 5px black solid; */
+	float: right;
+	padding: 0;
+	padding: 0;
+}
+
+#target_info {
+	margin-left: 2%;
+	margin-top: 2%;
+	/*         height: 40%; */
+	min-width: 60%;
+	min-height: 300px;
+	max-width: 60%%;
+	max-height: 300px;
+	float: left;
+	padding: 0;
+}
+
+#tag_bar {
+	display: block;
+	min-height: 100px;
+	/* 	margin-top:20px; */
+	bottom: 0;
+}
+
+#tag_bar>span {
+	background-color: beige;
+	margin: 6px;
+	margin-top: 5px;
+	border-radius: 15px;
+	white-space: nowrap;
+	padding: 5px;
+	display: inline-block;
+}
+
+#target_header {
+	min-width: 100%;
+	min-height: 350px;
+/* 	border: 5px black solid; */
+	display: inline-block;
+	background-color: #E0E0E0;
+	border-radius:15px;
+}
+
+#target_score_main {
+	min-width: 100%;
+	min-height: 100px;
+/* 	border: 5px black solid; */
+	display: inline-block;
+/* 	background-color: #E0E0E0; */
+}
+
+#target_add_comment_main {
+	min-width: 100%;
+	min-height: 100px;
+	margin-top:40px;
+/* 	border: 5px black solid; */
+	display: inline-block;
+}
+
+.comment {
+	min-width: 100%;
+	min-height: 100px;
+	/* 	border: 5px black solid; */
+	display: inline-block;
+	border-radius: 15px;
+	background-color: #ADD8E6;
+	padding: 5px;
+	margin-top: 10px;
+}
+
+#target_main {
+/* 	background-color: silver; */
+	min-width: 1000px;
+	min-height: 600px;
+	max-width: 1000px;
+	float: right;
+	margin-right: 30%;
+/* 	border: 5px black solid; */
+	display: block;
+}
+
+#target_score_main>div {
+	margin-right: 2%;
+	margin-top: 10px;
+	height: 100%;
+	float: right;
+}
+
+.score_symbol {
+	color: #FFD700;
+	font-size: 50px;
+	/* 	width: 1.1em; */
+}
+
+#target_add_comment_main textarea {
+	min-width: 98%;
+	min-height: 100px;
+	margin: 0 auto;
+}
+
+.comment img {
+	width: 50px;
+	height: 50px;
+}
+
+.comment>div {
+	margin-left: 5px;
+	margin-top: 5px;
+}
+
+.comment_header>span {
+	font-size: x-large;
+}
+
+.comment_text {
+	margin-left: 2px;
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+</style>
+<script
+	src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<script>
+	var map;
+	function initialize() {
+		console.log("blaaaa");
+		var mapOptions = {
+			zoom : 16,
+			center : new google.maps.LatLng(60.170293, 24.939473),
+			mapTypeId : google.maps.MapTypeId.ROADMAP,
+			panControl : false,
+			zoomControl : false,
+			scaleControl : false,
+		};
+		map = new google.maps.Map(document.getElementById('map-canvas'),
+				mapOptions);
+	}
+
+	google.maps.event.addDomListener(window, 'load', initialize);
+	
+</script>
+<body>
+
+
+	<div id="target_main">
+		<div id="target_header">
+			<div id="target_info">
+				<h1>Kaivokatu</h1>
+
+				<div id="tag_bar">
+					<h3>Tags:</h3>
+					<span>I love this place!</span> <span>Amazing restaurants
+						and shops in this area!</span> <span>another tag</span><span> and
+						another one ..</span> <span>Nice Hotel right in the corner</span>
+				</div>
+			</div>
+
+			<div id="map-canvas"></div>
+		</div>
+		<div id="target_score_main">
+			<div>
+				<h3>Score: 8.0</h3>
+				<span class="score_symbol">&#x02605;</span> <span
+					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span>
+				<span class="score_symbol">&#x02605;</span> <span
+					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span>
+				<span class="score_symbol">&#x02605;</span> <span
+					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02606;</span>
+				<span class="score_symbol">&#x02606;</span>
+
+			</div>
+
+		</div>
+		<div id="target_add_comment_main">
+			<div>
+
+				<textarea rows="" cols=""></textarea>
+			</div>
+
+		</div>
+
+		<div class="comment">
+
+			<div class="comment_header">
+				<img alt="profile image"
+					src="https://fbcdn-sphotos-c-a.akamaihd.net/hphotos-ak-prn1/p480x480/156541_584368431587813_2134142774_n.jpg" />
+				<span>Carlo Sagan</span>
+			</div>
+			<div class="comment_text">Lorem ipsum dolor sit amet,
+				consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a
+				vulputate dictum, massa quam dapibus leo, eget vulputate orci purus
+				ut lorem. In fringilla mi in ligula. Pellentesque aliquam quam vel
+				dolor. Nunc adipiscing. Sed quam odio, tempus ac, aliquam molestie,
+				varius ac, tellus. Vestibulum ut nulla aliquam risus rutrum
+				interdum. Pellentesque lorem.</div>
+
+
+		</div>
+
+		<div class="comment">
+
+			<div class="comment_header">
+				<img alt="profile image"
+					src="https://fbcdn-sphotos-c-a.akamaihd.net/hphotos-ak-prn1/p480x480/156541_584368431587813_2134142774_n.jpg" />
+				<span>Jukka Niemi</span>
+			</div>
+			<div class="comment_text">Lorem ipsum dolor sit amet,
+				consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a
+				vulputate dictum, massa quam dapibus leo, eget vulputate orci purus
+				ut lorem. In fringilla mi in ligula. Pellentesque aliquam quam vel
+				dolor. Nunc adipiscing. Sed quam odio, tempus ac, aliquam molestie,
+				varius ac, tellus. Vestibulum ut nulla aliquam risus rutrum
+				interdum. Pellentesque lorem.</div>
+
+
+		</div>
+
+		<div class="comment">
+
+			<div class="comment_header">
+				<img alt="profile image"
+					src="https://fbcdn-sphotos-c-a.akamaihd.net/hphotos-ak-prn1/p480x480/156541_584368431587813_2134142774_n.jpg" />
+				<span>Jamal Karim</span>
+			</div>
+			<div class="comment_text">Lorem ipsum dolor sit amet,
+				consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a
+				vulputate dictum, massa quam dapibus leo, eget vulputate orci purus
+				ut lorem. In fringilla mi in ligula. Pellentesque aliquam quam vel
+				dolor. Nunc adipiscing. Sed quam odio, tempus ac, aliquam molestie,
+				varius ac, tellus. Vestibulum ut nulla aliquam risus rutrum
+				interdum. Pellentesque lorem.</div>
+
+
+		</div>
+
+		<div class="comment">
+
+			<div class="comment_header">
+				<img alt="profile image"
+					src="https://fbcdn-sphotos-c-a.akamaihd.net/hphotos-ak-prn1/p480x480/156541_584368431587813_2134142774_n.jpg" />
+				<span>Kim kardashian</span>
+			</div>
+			<div class="comment_text">Lorem ipsum dolor sit amet,
+				consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a
+				vulputate dictum, massa quam dapibus leo, eget vulputate orci purus
+				ut lorem. In fringilla mi in ligula. Pellentesque aliquam quam vel
+				dolor. Nunc adipiscing. Sed quam odio, tempus ac, aliquam molestie,
+				varius ac, tellus. Vestibulum ut nulla aliquam risus rutrum
+				interdum. Pellentesque lorem.</div>
+
+
+		</div>
+
+	</div>
+
+</body>
+</html>

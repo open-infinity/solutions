@@ -1,6 +1,5 @@
 package org.openinfinity.tagcloud.domain.entity;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,11 +11,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 import org.openinfinity.core.annotation.NotScript;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -37,13 +34,14 @@ public class Target implements TextEntity {
 	private Set<Tag> tags = new HashSet<Tag>();
 
 	private List<Score> scores = new ArrayList<Score>();
+	
+	private double score = 0;
 
 	private List<Comment> comments = new ArrayList<Comment>();
 	
 	@GeoSpatialIndexed(bits=30, collection="target")
 	private double[] location = new double[2];
 	
-
 	public Target(String text, double longitude, double latitude) {
 		super();
 		this.text = text;
