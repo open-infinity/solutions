@@ -4,13 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openinfinity.core.exception.ApplicationException;
@@ -20,11 +18,11 @@ import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.NearbyTarget;
 import org.openinfinity.tagcloud.domain.entity.query.Result;
+import org.openinfinity.tagcloud.domain.entity.query.TagQuery;
 import org.openinfinity.tagcloud.domain.repository.TagRepository;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.StaticListableBeanFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -177,12 +175,12 @@ public class TargetServiceImplTest {
 		List<Tag> testListOk = new ArrayList<Tag>();
 		testListOk.add(tag1);
 		testListOk.add(tag2);
-		assertEquals(1, targetService.loadByQuery(testListOk, new ArrayList<Tag>(), new ArrayList<Tag>(), 0, 0, 200).size());
+		assertEquals(1, targetService.loadByQuery(new TagQuery(testListOk, new ArrayList<Tag>(), new ArrayList<Tag>(), 0, 0, 200)).size());
 		
 		List<Tag> testListFail = new ArrayList<Tag>();
 		testListFail.add(tag1);
 		testListFail.add(tag3);
-		assertEquals(0, targetService.loadByQuery(testListFail, new ArrayList<Tag>(), new ArrayList<Tag>(), 0, 0, 200).size());
+		assertEquals(0, targetService.loadByQuery(new TagQuery(testListFail, new ArrayList<Tag>(), new ArrayList<Tag>(), 0, 0, 200)).size());
 	}
 	
 	
@@ -198,7 +196,7 @@ public class TargetServiceImplTest {
 		double[] dLoc = Utils.calcLocation(30, 40, 2*NearbyTarget.MAX_DISTANCE, 0);
 		Target d = createTestTarget("d", Utils.createList(shop, gym), dLoc[0], dLoc[1]);
 		
-		List<Result> results = targetService.loadByQuery(Utils.createList(shop), new ArrayList<Tag>(), Utils.createList(gym), 30, 40, 5000);
+		List<Result> results = targetService.loadByQuery(new TagQuery(Utils.createList(shop), new ArrayList<Tag>(), Utils.createList(gym), 30, 40, 5000));
 		assertEquals(false, resultsContainsTarget(results, a));
 		assertEquals(true, resultsContainsTarget(results, b));
 		assertEquals(false, resultsContainsTarget(results, c));

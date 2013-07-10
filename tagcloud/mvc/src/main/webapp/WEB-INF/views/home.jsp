@@ -41,6 +41,7 @@
 	</script>
 	<script type="text/javascript" src="<c:url value="/resources/scripts/tagpicker.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/scripts/validation_script.js" />"></script>
+	<script type="text/javascript" src="<c:url value="/resources/scripts/target_result_div_styling.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/scripts/mainscript.js" />"></script>
   	
 	<title>TagCloud</title>
@@ -70,48 +71,9 @@
 				<div id="sideBarRight">
 					<div id="column3row1">
 						<p>list targets here</p>
-						<p>Veggies sunt bona vobis, proinde vos postulo esse magis
-							caulie carrot wakame quandong summer purslane garlic kohlrabi
-							prairie turnip mustard artichoke bok choy spring onion mung bean.
-							Dulse cauliflower gram watercress sea lettuce dulse gourd epazote
-							caulie. Shallot amaranth komatsuna potato pumpkin catsear sweet
-							pepper. Spring onion parsnip cauliflower cucumber soybean celtuce
-							kakadu plum lotus root watercress leek tatsoi celery gumbo
-							garbanzo silver beet. Parsnip lentil broccoli rabe asparagus
-							bamboo shoot beet greens. Wakame bitterleaf rutabaga napa cabbage
-							cauliflower parsnip ricebean salsify scallion broccoli. Asparagus
-							dulse shallot collard greens silver beet scallion catsear turnip
-							greens kale brussels sprout celtuce lentil pumpkin chard. Wattle
-							seed radicchio leek tigernut welsh onion daikon avocado chard
-							bush tomato kakadu plum. Yarrow celtuce radicchio winter purslane
-							catsear bell pepper wakame. Spring onion tigernut water spinach
-							beetroot cauliflower gram spinach leek arugula grape shallot
-							sweet pepper groundnut coriander komatsuna artichoke scallion.
-							Parsley pumpkin summer purslane sea lettuce desert raisin
-							broccoli rabe. Sierra leone bologi bok choy earthnut pea leek
-							yarrow brussels sprout soko bell pepper chickweed tatsoi kakadu
-							plum horseradish tomato. Sweet pepper parsnip sierra leone bologi
-							potato daikon garlic turnip fava bean bok choy broccoli rabe
-							kombu aubergine. Gourd onion lentil catsear okra cucumber collard
-							greens sea lettuce squash turnip earthnut pea cauliflower.
-							Brussels sprout prairie turnip ricebean cauliflower rock melon
-							azuki bean napa cabbage sierra leone bologi water chestnut
-							zucchini lotus root tomatillo scallion grape watercress parsley
-							epazote leek. Courgette tigernut salad earthnut pea burdock gram
-							radish garbanzo brussels sprout. Gourd winter purslane celery
-							water chestnut kakadu plum beet greens squash celtuce napa
-							cabbage scallion garlic fava bean turnip salad salsify. Kombu
-							peanut dulse chickpea amaranth potato kohlrabi kombu asparagus
-							swiss chard parsnip cress rutabaga garbanzo. Spring onion turnip
-							greens quandong kakadu plum bok choy scallion beetroot onion okra
-							shallot cress bunya nuts nori mung bean green bean tomatillo.
-							Aubergine turnip greens fennel bunya nuts ricebean water chestnut
-							pumpkin tatsoi tigernut sierra leone bologi dulse pea sprouts
-							celtuce onion. Fava bean eggplant napa cabbage sorrel azuki bean
-							pumpkin cauliflower bunya nuts watercress. Tomatillo endive bell
-							pepper bunya nuts taro sweet pepper courgette bitterleaf catsear.
-							Komatsuna coriander jícama celery horseradish gourd gram cucumber
-							zucchini maize.</p>
+						<div id="targetlist">
+							
+						</div>
 					</div>
 
 				</div>
@@ -141,10 +103,21 @@
 							method="post">
 							<table id="searchTable">
 								<tr>
-									<td><form:label for="required" path="required">Name</form:label></td>
+									<td><form:label for="required" path="required">must be</form:label></td>
 									<td><form:input type="text" id="required" name="required"
 											path="required" /></td>
 								</tr>
+                                <tr>
+									<td><form:label for="preferred" path="preferred">preferably also</form:label></td>
+									<td><form:input type="text" id="preferred" name="preferred"
+											path="preferred" /></td>
+								</tr>
+                                <tr>
+									<td><form:label for="nearby" path="nearby">and is near to</form:label></td>
+									<td><form:input type="text" id="nearby" name="nearby"
+											path="nearby" /></td>
+								</tr>
+																								
 								<tr>
 									<td><input id="search" type="submit" value="Save" /></td>
 								</tr>

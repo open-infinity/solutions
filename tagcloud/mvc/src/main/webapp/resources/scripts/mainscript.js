@@ -1,5 +1,6 @@
 $(document).ready( function() { 
 	console.log("docu ready");
-	initRequiredOnDocumentReady();
+	initTagSearchOnDocumentReady();
 	initFormValidation("targetModel", "/tagcloud/target");
+	styleTargetDivs();
 });

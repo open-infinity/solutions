@@ -1,6 +1,5 @@
 package org.openinfinity.tagcloud.domain.service;
 
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 
@@ -9,6 +8,7 @@ import org.openinfinity.tagcloud.domain.entity.Score;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.Result;
+import org.openinfinity.tagcloud.domain.entity.query.TagQuery;
 
 public interface TargetService extends AbstractTextEntityCrudServiceInterface<Target> {
 	
@@ -22,8 +22,7 @@ public interface TargetService extends AbstractTextEntityCrudServiceInterface<Ta
 
 	Collection<Target> loadByTag(Tag tag);
 
-	List<Result> loadByQuery(List<Tag> required, List<Tag> preferred,
-			List<Tag> nearby, double longitude, double latitude, double radius);
+	List<Result> loadByQuery(TagQuery tagQuery);
 
 	void addScoreToTarget(Score score, Target target);
 	
