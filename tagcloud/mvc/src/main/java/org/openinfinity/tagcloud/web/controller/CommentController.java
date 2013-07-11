@@ -2,11 +2,9 @@ package org.openinfinity.tagcloud.web.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +35,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -110,16 +109,50 @@ public class CommentController {
 	
 		return comments;
 	}
+	
+	
+	@Log
+	@AuditTrail(argumentStrategy=ArgumentStrategy.ALL)
+	@RequestMapping(method = RequestMethod.POST, value="/{target_id}")
+	public @ResponseBody ResponseObject<CommentModel> submitComment(@PathVariable("target_id") String target_id,@RequestParam("text") String text) {
+		
+		CommentModel comment = new CommentModel();
+		Profile profile = new Profile();
+		profile.setFacebookId("jamal.Karim");
+		profile.setId("test1234");
+		comment.setText(text);
+		comment.setProfile(profile);
+		
+		Set<ConstraintViolation<CommentModel>> failures = validator.validate(comment);
+		ResponseObject<CommentModel> responseObject = new ResponseObject<CommentModel>();
+		if(failures.isEmpty()){
+			responseObject.setStatus("200");
+			responseObject.setIs_error(false);
+			responseObject.setMessage("Comment saved successfully");
+			
+		}else{
+			responseObject.setIs_error(true);
+			responseObject.setStatus(HttpServletResponse.SC_BAD_REQUEST+"");
+			responseObject.setMessage("Comment can't be accepted");
+			responseObject.setError_code("comment_error");
+			for(ConstraintViolation<CommentModel> e : failures){
+						responseObject.addErrorReason("Error: " + e.getMessage());
+			}
 
-	private Map<String, String> getValidationMessages(
-			Set<ConstraintViolation<CommentModel>> failures) {
-		Map<String, String> failureMessages = new HashMap<String, String>();
-		for (ConstraintViolation<CommentModel> failure : failures) {
-			failureMessages.put(failure.getPropertyPath().toString(),
-					failure.getMessage());
 		}
-		return failureMessages;
+		responseObject.addResultObject(comment);
+		return responseObject;
 	}
+
+//	private Map<String, String> getValidationMessages(
+//			Set<ConstraintViolation<CommentModel>> failures) {
+//		Map<String, String> failureMessages = new HashMap<String, String>();
+//		for (ConstraintViolation<CommentModel> failure : failures) {
+//			failureMessages.put(failure.getPropertyPath().toString(),
+//					failure.getMessage());
+//		}
+//		return failureMessages;
+//	}
 	
 	private List<Comment> getFakeCommentList(){
 		List<Comment> comments = new LinkedList<Comment>();

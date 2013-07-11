@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>welcome to targets home!</title>
+<title>Tagcloud</title>
 
 <link rel="stylesheet"
 	href="/tagcloud/resources/styles/target_and_comments.css" />
@@ -21,25 +21,30 @@
 	<div id="target_main">
 		<div id="target_header">
 			<div id="target_info">
-				<h1 id="target_title">Empty Title!</h1>
+				<h1 id="target_title">
+					<!-- 				Empty Title! -->
+				</h1>
 
 				<div id="tag_bar">
 					<h3>Tags:</h3>
 					<div>
-					empty tag bar!
-<!-- 						<span>I love this place!</span> <span>Amazing restaurants -->
-<!-- 							and shops in this area!</span> <span>another tag</span><span> and -->
-<!-- 							another one ..</span> <span>Nice Hotel right in the corner</span> -->
+						<!-- 						empty tag bar! -->
+						<!-- 						<span>I love this place!</span> <span>Amazing restaurants -->
+						<!-- 							and shops in this area!</span> <span>another tag</span><span> and -->
+						<!-- 							another one ..</span> <span>Nice Hotel right in the corner</span> -->
 					</div>
 				</div>
 			</div>
 
-			<div id="map-canvas">Empty Map</div>
+			<div id="map-canvas">
+				<!-- 			Empty Map -->
+			</div>
 		</div>
 		<div id="target_score_main">
 			<div>
 				<h3>
-					Score: <span id="score_value">empty scroe value</span>
+					Score: <span id="score_value"> <!-- empty scroe value-->
+					</span>
 				</h3>
 				<span class="score_symbol">&#x02605;</span> <span
 					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span>
@@ -53,32 +58,58 @@
 
 		</div>
 		<div id="target_add_comment_main">
-			<div>
 
-				<textarea rows="" cols=""></textarea>
+			<div id="add_comment_success">
+				<div id="comment_success_header">
+					<!--  empty success header-->
+					<img alt="error_png"
+						src="http://sms.smsmarketing360.com/img/success_icon.png" />
+					<h3></h3>
+				</div>
+
+			</div>
+
+			<div id="add_comment_errors">
+				<div id="comment_errors_header">
+					<!--  empty error header-->
+					<img alt="error_png"
+						src="http://www.clker.com/cliparts/8/3/3/4/1195445190322000997molumen_red_round_error_warning_icon.svg.med.png" />
+					<h3></h3>
+				</div>
+				<ul>
+					<!--  empty error list-->
+				</ul>
+			</div>
+
+
+			<div>
+				<form action="" method="post" id="comment_form">
+					<textarea rows="" cols="" name="text"></textarea>
+					<input value="send" type="submit">
+				</form>
+
+
 			</div>
 
 		</div>
 		<div id="comment_container">
-		empty comment container
+			<!-- 			empty comment container -->
 
-<!-- 			<div class="comment"> -->
-
-<!-- 				<div class="comment_header"> -->
-<!-- 					<img alt="profile image" -->
-<!-- 						src="http://www.howsimple.com/assets/imgs/person_empty.png" /> <span>Carlo -->
-<!-- 						Sagan</span> -->
-<!-- 				</div> -->
-<!-- 				<div class="comment_text">Lorem ipsum dolor sit amet, -->
-<!-- 					consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a -->
-<!-- 					vulputate dictum, massa quam dapibus leo, eget vulputate orci purus -->
-<!-- 					ut lorem. In fringilla mi in ligula. Pellentesque aliquam quam vel -->
-<!-- 					dolor. Nunc adipiscing. Sed quam odio, tempus ac, aliquam molestie, -->
-<!-- 					varius ac, tellus. Vestibulum ut nulla aliquam risus rutrum -->
-<!-- 					interdum. Pellentesque lorem.</div> -->
-
-
-<!-- 			</div> -->
+			<!-- 		example comment
+			<!--	<div class="comment"> -->
+			<!-- 				<div class="comment_header"> -->
+			<!-- 					<img alt="profile image" -->
+			<!-- 						src="http://www.howsimple.com/assets/imgs/person_empty.png" /> <span>Carlo -->
+			<!-- 						Sagan</span> -->
+			<!-- 				</div> -->
+			<!-- 				<div class="comment_text">Lorem ipsum dolor sit amet, -->
+			<!-- 					consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a -->
+			<!-- 					vulputate dictum, massa quam dapibus leo, eget vulputate orci purus -->
+			<!-- 					ut lorem. In fringilla mi in ligula. Pellentesque aliquam quam vel -->
+			<!-- 					dolor. Nunc adipiscing. Sed quam odio, tempus ac, aliquam molestie, -->
+			<!-- 					varius ac, tellus. Vestibulum ut nulla aliquam risus rutrum -->
+			<!-- 					interdum. Pellentesque lorem.</div> -->
+			<!-- 			</div> -->
 		</div>
 
 

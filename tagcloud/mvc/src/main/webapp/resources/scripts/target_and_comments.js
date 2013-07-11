@@ -2,6 +2,7 @@ var map;
 var star = "&#x02605;";
 var empty_star = "&#x02606;";
 var default_author_img = "http://www.howsimple.com/assets/imgs/person_empty.png";
+var test_object;
 $('document').ready(function() {
 
 	getAndPrintTargetListInConsole();
@@ -34,13 +35,58 @@ function getTargeAndUpdateUi(target_id) {
 
 }
 function setTargetInUi(target) {
+
 	$("#target_title").html(target.text);
 	$("#score_value").html(target.score);
+	$("#target_add_comment_main form").submit(function() {
+		submitComment(this, "comment/" + target.id);
+		return false;// disable the default action of the form
+	});
 	setTagsInTagBar(target.tags);
 	google_map_initialize(target.location[0], target.location[1]);
 	getTargetCommentsAndUpdateUi(target.id);
 }
 
+function submitComment(form, path) {
+	console.log("sendig comment to server, comment's text is: "
+			+ $($(form).find("textarea")[0]).val());
+	console.log("server path " + path);
+	try {
+		$.ajax({
+			type : 'POST',
+			cache : false,
+			url : path,
+			data : $(form).serialize(),
+			success : function(data) {
+				console.log(data);
+				test_object = data;
+				if (hasError(data)) {
+					$("#comment_errors_header > h3").html(data.message);
+					var list = $("#add_comment_errors > ul");
+					$(list).html("");
+					if (data.error_reasons != null) {
+						$.each(data.error_reasons, function(i, reason) {
+							$(list).append("<li>" + reason + "</li>");
+						});
+					}
+					$("#add_comment_errors").css('display', 'block');
+					$("#add_comment_success").css('display', 'none');
+
+				} else {
+					$("#comment_success_header > h3").html(data.message);
+					$("#add_comment_errors").css('display', 'none');
+					$("#add_comment_success").css('display', 'block');
+
+				}
+			}
+		});
+	} catch (e) {
+		console.log("error" + e);
+	}
+}
+function hasError(data) {
+	return ((data.status != null && data.status != "200") || (data.is_error != null && data.is_error == true));
+}
 function getTargetCommentsAndUpdateUi(target_id) {
 	$("#comment_container").html("");
 	$.getJSON("comment/list/" + target_id, function(data) {

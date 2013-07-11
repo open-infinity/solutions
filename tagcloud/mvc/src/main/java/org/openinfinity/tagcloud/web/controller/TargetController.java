@@ -151,10 +151,9 @@ public class TargetController {
 			target = targetService.loadById(target_id);
 			return target;
 		} catch (Exception e) {
-			ErrorObject error = new ErrorObject();
-			error.setError_status(HttpServletResponse.SC_BAD_REQUEST+"");
-			error.setLocalized_message(e.getLocalizedMessage());
-			error.setError_message(e.getMessage());
+			ResponseObject error = new ResponseObject();
+			error.setStatus(HttpServletResponse.SC_BAD_REQUEST+"");
+			error.setMessage(e.getMessage());
 			return error;
 		}
 		
