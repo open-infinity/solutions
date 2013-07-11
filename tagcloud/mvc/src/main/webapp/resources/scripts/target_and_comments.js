@@ -17,10 +17,11 @@ $('document').ready(function() {
 function getAndPrintTargetListInConsole() {
 
 	$.getJSON("target/list", function(data) {
-		$.each(data, function(i, target) {
-			console.log(i + " id: " + target.id);
+		var targets = data.result_list;
+		$.each(targets, function(i, target) {
+			console.log(i + " new model id: " + target.id);
 			console.log(i + " text: " + target.text);
-			console.log(target);
+//			console.log(target);
 
 		});
 	});
@@ -29,7 +30,7 @@ function getAndPrintTargetListInConsole() {
 function getTargeAndUpdateUi(target_id) {
 
 	$.getJSON("target/" + target_id, function(data) {
-		target = data;
+		target = data.result_list[0];
 		setTargetInUi(target);
 	});
 
@@ -39,7 +40,7 @@ function setTargetInUi(target) {
 	$("#target_title").html(target.text);
 	$("#score_value").html(target.score);
 	$("#target_add_comment_main form").submit(function() {
-		submitComment(this, "comment/" + target.id);
+		submitComment(this, target.id);
 		return false;// disable the default action of the form
 	});
 	setTagsInTagBar(target.tags);
@@ -47,7 +48,8 @@ function setTargetInUi(target) {
 	getTargetCommentsAndUpdateUi(target.id);
 }
 
-function submitComment(form, path) {
+function submitComment(form, target_id) {
+	path="comment/"+target_id;
 	console.log("sendig comment to server, comment's text is: "
 			+ $($(form).find("textarea")[0]).val());
 	console.log("server path " + path);
@@ -71,11 +73,14 @@ function submitComment(form, path) {
 					}
 					$("#add_comment_errors").css('display', 'block');
 					$("#add_comment_success").css('display', 'none');
+					
 
 				} else {
 					$("#comment_success_header > h3").html(data.message);
 					$("#add_comment_errors").css('display', 'none');
 					$("#add_comment_success").css('display', 'block');
+					$("#target_add_comment_main textarea").val("");
+					getTargetCommentsAndUpdateUi(target.id);
 
 				}
 			}

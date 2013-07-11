@@ -27,7 +27,7 @@ public class Comment implements TextEntity {
 
 	@NonNull
 	@NotScript
-	@Size(min=1, max=400)
+	@Size(min=1, max=800)
 	private String text;
 
 	@NonNull
