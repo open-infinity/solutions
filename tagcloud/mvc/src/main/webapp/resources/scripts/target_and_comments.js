@@ -47,7 +47,11 @@ function setTargetInUi(target) {
 	google_map_initialize(target.location[0], target.location[1]);
 	getTargetCommentsAndUpdateUi(target.id);
 }
-
+/**
+ *  Refactoring needed!!!!!!!!
+ * @param form
+ * @param target_id
+ */
 function submitComment(form, target_id) {
 	path="comment/"+target_id;
 	console.log("sendig comment to server, comment's text is: "

@@ -80,6 +80,13 @@
 					<!--  empty error list-->
 				</ul>
 			</div>
+			<div id="default_login_main">
+			
+					<h3>Login and tell your opinion about this place!</h3>
+					<hr />
+				<img alt="login_facebook"
+					src="https://github.com/adozenlines/facebook-ios-sdk/diff_blob/adb3a65dfff79dc8dc30a1e3220a6bd0db017540/src/FacebookSDKResources.bundle/FBConnect/images/LoginWithFacebookPressed@2x.png?raw=true" />
+			</div>
 
 
 			<div>

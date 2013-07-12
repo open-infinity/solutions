@@ -1,5 +1,6 @@
 package org.openinfinity.tagcloud.web.connection;
 
+import org.openinfinity.tagcloud.web.connection.entity.ConnectionCredential;
 import org.springframework.beans.factory.annotation.Value;
 
 public class ConnectionCredentialBuilder {

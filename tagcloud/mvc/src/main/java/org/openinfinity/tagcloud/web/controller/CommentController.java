@@ -25,6 +25,7 @@ import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.domain.service.CommentService;
 import org.openinfinity.tagcloud.domain.service.TargetService;
 import org.openinfinity.tagcloud.web.connection.ConnectionManager;
+import org.openinfinity.tagcloud.web.connection.entity.ResponseObject;
 import org.openinfinity.tagcloud.web.model.CommentModel;
 import org.openinfinity.tagcloud.web.model.TargetModel;
 import org.openinfinity.tagcloud.web.support.SerializerUtil;
@@ -127,6 +128,12 @@ public class CommentController {
 		return comments;
 	}
 
+	/**
+	 * Refactoring needed
+	 * @param target_id
+	 * @param text
+	 * @return
+	 */
 	@Log
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
 	@RequestMapping(method = RequestMethod.POST, value = "/{target_id}")

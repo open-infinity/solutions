@@ -1,4 +1,4 @@
-package org.openinfinity.tagcloud.web.connection;
+package org.openinfinity.tagcloud.web.connection.entity;
 
 /**
  *

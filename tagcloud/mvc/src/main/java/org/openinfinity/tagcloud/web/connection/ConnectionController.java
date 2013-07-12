@@ -1,6 +1,5 @@
 package org.openinfinity.tagcloud.web.connection;
 
-import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +8,10 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.openinfinity.tagcloud.domain.entity.Profile;
+import org.openinfinity.tagcloud.web.connection.entity.CachedRequest;
+import org.openinfinity.tagcloud.web.connection.entity.LoginObject;
+import org.openinfinity.tagcloud.web.connection.entity.ResponseObject;
 import org.openinfinity.tagcloud.web.connection.exception.InvalidConnectionCredentialException;
 import org.openinfinity.tagcloud.web.connection.exception.NullAccessGrantException;
 import org.openinfinity.tagcloud.web.connection.exception.NullActiveConnectionException;
@@ -75,22 +78,27 @@ public class ConnectionController {
 
 	@RequestMapping(value = check_connection_path)
 	public @ResponseBody
-	List<String> loginTest(HttpServletRequest req) {
+	ResponseObject<LoginObject<Profile>> loginTest(HttpServletRequest req) {
+		String session_id = req.getSession().getId(); 
 		List<String> logList = new LinkedList<String>();
-		if (connection_manager.isUserLoggedIn(req.getSession().getId())) {
-			logList.add("you're logged in, ");
+		ResponseObject<LoginObject<Profile>> res_obj = new ResponseObject<LoginObject<Profile>>();
+		LoginObject<Profile> login = new LoginObject<Profile>();
+		if (connection_manager.isUserLoggedIn(session_id)) {
+			res_obj.setSuccess("User is logged in");
 			// getFacebookFriends(req, logList);
-
+			
+			login.setLogged_in(true);
+				
 		} else {
-			logList.add("you're not logged in");
+			res_obj.setSuccess("User is not logged in");
+			login.setLogged_in(false);
+			
 		}
+		login.setSession_id(session_id);
+		res_obj.addResultObject(login);
 
-		logList.add("isUserLoggedIn method returns: "
-				+ connection_manager.isUserLoggedIn(req.getSession().getId()));
-		logList.add("Session_id: " + req.getSession().getId());
-		logList.addAll(connection_manager.getConnectionLog());
 
-		return logList;
+		return res_obj;
 	}
 
 

@@ -5,6 +5,10 @@
 <title>welcome to targets home!</title>
 
 <style>
+html, body{
+width:100%;
+overflow-x:hidden;
+}
 #map-canvas {
 	margin-top: 2%;
 	margin-right: 2%;
@@ -83,8 +87,8 @@
 	min-width: 1000px;
 	min-height: 600px;
 	max-width: 1000px;
-	float: right;
-	margin-right: 30%;
+/* 	float: right; */
+	margin: 0 auto;
 	/* 	border: 5px black solid; */
 	display: block;
 }
@@ -140,8 +144,7 @@
 	margin-bottom: 10px;
 }
 
-#add_comment_errors,#add_comment_success {
-	background-color: pink;
+#add_comment_errors,#add_comment_success,#default_login_main {
 	padding: 10px;
 	padding-top: 15px;
 	padding-left: 10%;
@@ -170,6 +173,28 @@
 
 #add_comment_errors {
 	background-color: #F6CEE3;
+}
+
+#default_login_main {
+	/* 	background-color: #ADD8E6; */
+	color: brown; min-height : 100px;
+	overflow: auto;
+	clear: both;
+	border: 2px silver solid;
+	min-height: 100px;
+}
+
+
+#default_login_main img {
+	width: 200px;
+	margin-top: 50px;
+	float: right;
+	border-radius: 10px;
+	border: 2px outset;
+}
+
+#default_login_main img:active {
+	border: 2px inset;
 }
 </style>
 <script
@@ -251,6 +276,13 @@
 					<li>Comment length too long</li>
 					<li>Comment can't contain a script</li>
 				</ul>
+			</div>
+			<div id="default_login_main">
+			
+					<h3>Login and tell your opinion about this place!</h3>
+					<hr />
+				<img alt="login_facebook"
+					src="https://github.com/adozenlines/facebook-ios-sdk/diff_blob/adb3a65dfff79dc8dc30a1e3220a6bd0db017540/src/FacebookSDKResources.bundle/FBConnect/images/LoginWithFacebookPressed@2x.png?raw=true" />
 			</div>
 			<div>
 

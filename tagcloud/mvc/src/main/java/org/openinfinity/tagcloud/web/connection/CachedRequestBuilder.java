@@ -11,6 +11,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.openinfinity.tagcloud.web.connection.entity.CachedRequest;
+
 public class CachedRequestBuilder {
 
 	CachedRequest creq = new CachedRequest();

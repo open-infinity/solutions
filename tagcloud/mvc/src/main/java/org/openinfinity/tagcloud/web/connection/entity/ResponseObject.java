@@ -1,4 +1,4 @@
-package org.openinfinity.tagcloud.web.controller;
+package org.openinfinity.tagcloud.web.connection.entity;
 
 import java.util.Collection;
 import java.util.Iterator;

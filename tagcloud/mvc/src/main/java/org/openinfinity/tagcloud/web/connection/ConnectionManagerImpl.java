@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openinfinity.tagcloud.web.connection.config.Config;
+import org.openinfinity.tagcloud.web.connection.entity.ActiveConnection;
+import org.openinfinity.tagcloud.web.connection.entity.CachedRequest;
+import org.openinfinity.tagcloud.web.connection.entity.ConnectionCredential;
 import org.openinfinity.tagcloud.web.connection.exception.InvalidConnectionCredentialException;
 import org.openinfinity.tagcloud.web.connection.exception.NullAccessGrantException;
 import org.openinfinity.tagcloud.web.connection.exception.NullActiveConnectionException;

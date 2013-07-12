@@ -1,4 +1,4 @@
-package org.openinfinity.tagcloud.web.connection;
+package org.openinfinity.tagcloud.web.connection.entity;
 
 
 public class ConnectionCredential {
@@ -12,8 +12,10 @@ public class ConnectionCredential {
     private String default_redirect_path;
 
     public ConnectionCredential() {
-
-        this.client_id = "";
+    	init();
+    }
+    public void init(){
+    	this.client_id = "";
         this.client_secret = "";
         this.app_namespace = "";
         this.auth_scope = "";

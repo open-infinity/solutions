@@ -25,6 +25,7 @@ import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.domain.service.TargetService;
 import org.openinfinity.tagcloud.web.connection.ConnectionManager;
+import org.openinfinity.tagcloud.web.connection.entity.ResponseObject;
 import org.openinfinity.tagcloud.web.model.TargetModel;
 import org.openinfinity.tagcloud.web.support.SerializerUtil;
 import org.openinfinity.tagcloud.web.support.ServletUtil;

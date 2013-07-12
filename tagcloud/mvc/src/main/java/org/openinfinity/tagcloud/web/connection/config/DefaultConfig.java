@@ -1,8 +1,8 @@
 package org.openinfinity.tagcloud.web.connection.config;
 
-import org.openinfinity.tagcloud.web.connection.ConnectionCredential;
 import org.openinfinity.tagcloud.web.connection.ConnectionCredentialBuilder;
 import org.openinfinity.tagcloud.web.connection.LoggingPolicy;
+import org.openinfinity.tagcloud.web.connection.entity.ConnectionCredential;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
