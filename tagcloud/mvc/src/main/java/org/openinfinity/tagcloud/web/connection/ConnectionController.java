@@ -78,13 +78,13 @@ public class ConnectionController {
 		List<String> logList = new LinkedList<String>();
 		logList.add("Connecting...");
 		this.continueToConnection(request, response, logList);
-//		 if(connectionManager.isUserLoggedIn(request.getSession().getId())){
-//		 Facebook facebook =
-//		 connectionManager.getSessionFacebook(request.getSession().getId());
-//		 String facebookId =
-//		 facebook.userOperations().getUserProfile().getId();
-//		 profileService.createByFacebookId(facebookId);
-//		 }
+		if (connectionManager.isUserLoggedIn(request.getSession().getId())) {
+			Facebook facebook = connectionManager.getSessionFacebook(request
+					.getSession().getId());
+			String facebookId = facebook.userOperations().getUserProfile()
+					.getId();
+			profileService.createByFacebookId(facebookId);
+		}
 		logList.addAll(connectionManager.getConnectionLog());
 		return logList;
 	}
