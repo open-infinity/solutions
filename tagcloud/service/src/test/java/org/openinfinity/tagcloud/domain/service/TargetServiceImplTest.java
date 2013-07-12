@@ -19,6 +19,7 @@ import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.NearbyTarget;
 import org.openinfinity.tagcloud.domain.entity.query.Result;
 import org.openinfinity.tagcloud.domain.entity.query.TagQuery;
+import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
 import org.openinfinity.tagcloud.domain.repository.TagRepository;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.utils.Utils;
@@ -38,20 +39,29 @@ public class TargetServiceImplTest {
 	
 	@Autowired
 	TargetRepository targetRepository;
-	
-	@Autowired
-	TagRepository tagRepository;
-	
-	@Autowired
+
+    @Autowired
+    TagRepository tagRepository;
+
+    @Autowired
+    ProfileRepository profileRepository;
+
+    @Autowired
 	ProfileService profileService;
 	
+	Profile profile;
+
+    
 	@Before
-	public void setUp() throws Exception {}
+	public void setUp() throws Exception {
+		profile = profileService.create(new Profile("testId"));
+	}
 
 	@After
 	public void tearDown() throws Exception {
 		targetRepository.dropCollection();
 		tagRepository.dropCollection();
+        profileRepository.dropCollection();
 	}
 
 	
@@ -128,11 +138,10 @@ public class TargetServiceImplTest {
 		Target target = createTestTarget();
 		
 		Tag tag = new Tag("test tag");
-		Profile profile = new Profile("testId");
-		profile = profileService.create(profile);
+		targetService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
+		target = targetService.loadById(target.getId());
+		tag = tagService.loadByText(tag.getText()).iterator().next();
 		
-		System.out.println("test add tag");
-		targetService.addTagToTarget(tag, target, profile);
 		assertEquals(1, tagService.loadAll().size());
 		assertEquals("test tag", targetService.loadById(target.getId()).getTags().iterator().next().getText());
 		assertEquals(true, profileService.loadById(profile.getId()).getMyTags().get(target.getId()).contains(tag));
@@ -142,11 +151,8 @@ public class TargetServiceImplTest {
 	public void testAddTagToTargetFailsIfTagAlreadyExists() {
 		Target target = createTestTarget();
 		
-		Profile profile = new Profile("testId");
-		profile = profileService.create(profile);
-		
-		targetService.addTagToTarget(new Tag("test"), target, profile);
-		targetService.addTagToTarget(new Tag("test"), target, profile);
+		targetService.addTagToTarget("test", target, profile.getFacebookId());
+		targetService.addTagToTarget("test", target, profile.getFacebookId());
 	}
 	
 	@Test 
@@ -156,9 +162,7 @@ public class TargetServiceImplTest {
 		Tag tag = new Tag("testi");
 		Tag differentTag = new Tag("testi2");
 		
-		Profile profile = profileService.create(new Profile("testId"));
-		
-		targetService.addTagToTarget(tag, target, profile);
+		targetService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
 		
 		assertEquals(1, targetService.loadByTag(tag).size());
 		assertEquals(0, targetService.loadByTag(differentTag).size());
@@ -222,9 +226,8 @@ public class TargetServiceImplTest {
 		target.setLocation(longitude, latitude);
 		targetService.create(target);
 		
-		Profile profile = profileService.create(new Profile("testId"));
 		for(Tag tag : tags) {
-			targetService.addTagToTarget(tag, target, profile);
+			targetService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
 		}
 		
 		return target;

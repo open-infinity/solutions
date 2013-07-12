@@ -16,17 +16,12 @@
  */
 package org.openinfinity.tagcloud.domain.repository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
-import org.springframework.data.mongodb.core.geo.Distance;
-import org.springframework.data.mongodb.core.geo.GeoResult;
-import org.springframework.data.mongodb.core.geo.GeoResults;
-import org.springframework.data.mongodb.core.geo.Metrics;
-import org.springframework.data.mongodb.core.geo.Point;
+import org.openinfinity.tagcloud.domain.entity.query.CoordinateBounds;
+import org.springframework.data.mongodb.core.geo.*;
 import org.springframework.data.mongodb.core.index.GeospatialIndex;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.NearQuery;
@@ -40,15 +35,40 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class TargetRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Target> implements TargetRepository {
-	@Override
-	public List<Target> loadByCoordinates(double longitude, double latitude, double radius) {
-		Point location = new Point(longitude, latitude);
-		NearQuery query = NearQuery.near(location).maxDistance(new Distance(radius/1000, Metrics.KILOMETERS));
-		GeoResults<Target> targets = mongoTemplate.geoNear(query, Target.class);
-		return getContentFromGeoResults(targets);
-	}
+    @Override
+    public List<Target> loadByCoordinates(double longitude, double latitude, double radius) {
+        Point location = new Point(longitude, latitude);
+        NearQuery query = NearQuery.near(location).maxDistance(new Distance(radius/1000, Metrics.KILOMETERS));
+        GeoResults<Target> targets = mongoTemplate.geoNear(query, Target.class);
+        return getContentFromGeoResults(targets);
+    }
 
-	private List<Target> getContentFromGeoResults(GeoResults<Target> geoResults) {
+    @Override
+    public List<Target> loadByCoordinates(CoordinateBounds b, double radius) {
+        double centerLng = (b.getnELng()+b.getsWLng())/2;
+        double centerLat = (b.getnELat()+b.getsWLat())/2;
+        Point location = new Point(centerLng, centerLat);
+
+        NearQuery query = NearQuery.near(location).maxDistance(new Distance(radius/1000, Metrics.KILOMETERS));
+        GeoResults<Target> results = mongoTemplate.geoNear(query, Target.class);
+
+        removeResultsOutsideBounds(b, results);
+        return getContentFromGeoResults(results);
+    }
+
+    private void removeResultsOutsideBounds(CoordinateBounds b, GeoResults<Target> results) {
+        Iterator<GeoResult<Target>> iterator = results.getContent().iterator();
+        while (iterator.hasNext()){
+            GeoResult<Target> result = iterator.next();
+            Target target = result.getContent();
+            if(target.getLocation()[0]< b.getsWLng() || target.getLocation()[0] > b.getnELng() ||
+               target.getLocation()[1] < b.getsWLat() || target.getLocation()[1] > b.getnELat())
+                  iterator.remove();
+        }
+    }
+
+
+    private List<Target> getContentFromGeoResults(GeoResults<Target> geoResults) {
 		List<Target> list = new ArrayList<Target>();
 		for (GeoResult<Target> result : geoResults.getContent()) {
 			list.add(result.getContent());

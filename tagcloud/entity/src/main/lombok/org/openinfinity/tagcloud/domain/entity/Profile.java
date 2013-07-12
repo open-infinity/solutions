@@ -38,12 +38,16 @@ public class Profile implements Entity {
 	private List<Target> myScoredTargets = new ArrayList<Target>();
 	
 	public void addTag(Tag tag, Target target) {
-		if(myTags.containsKey(target.getId()))
+		System.out.println(tag);
+		if(myTags.containsKey(target.getId())) {
 			myTags.get(target.getId()).add(tag);
+			System.out.println("contains");
+		}
 		else {
 			Set<Tag> tags = new HashSet<Tag>();
 			tags.add(tag);
 			myTags.put(target.getId(), tags);
+			System.out.println("new");
 		}
 	}
 

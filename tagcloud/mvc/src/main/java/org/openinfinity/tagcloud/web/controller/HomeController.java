@@ -24,8 +24,11 @@ import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.aspect.ArgumentStrategy;
 import org.openinfinity.tagcloud.domain.entity.Tag;
+import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.Result;
 import org.openinfinity.tagcloud.domain.entity.query.TagQuery;
+import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
+import org.openinfinity.tagcloud.domain.repository.ScoreRepository;
 import org.openinfinity.tagcloud.domain.repository.TagRepository;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.domain.service.TagService;
@@ -72,7 +75,11 @@ public class HomeController {
 	private TagRepository tagRepository;
 	@Autowired
 	private TargetRepository targetRepository;
-	
+	@Autowired
+    private ProfileRepository profileRepository;
+    @Autowired
+    private ScoreRepository scoreRepository;
+
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -101,10 +108,11 @@ public class HomeController {
 		for(TagModel tagModel : searchModel.getNearby()) {
 			nearby.add(tagService.loadById(tagModel.getId()));
 		}
-		
+
+        double radius = Utils.calcDistanceGCS(searchModel.getBounds()[0], searchModel.getBounds()[1],
+                searchModel.getBounds()[2], searchModel.getBounds()[3])/2;
 		List<Result> results = targetService.loadByQuery(
-                new TagQuery(required, preferred, nearby, searchModel.getLocation()[0], searchModel.getLocation()[1], Utils.calcDistanceGCS(searchModel.getBounds()[0], searchModel.getBounds()[1],
-                        searchModel.getBounds()[2], searchModel.getBounds()[3])));
+                new TagQuery(required, preferred, nearby, searchModel.getLocation()[0], searchModel.getLocation()[1], radius));
 
         Collections.sort(results);
 		return new ModelMap("results", results);
@@ -114,7 +122,31 @@ public class HomeController {
 	public String resetDB() {
 		tagRepository.dropCollection();
 		targetRepository.dropCollection();
-		testDataGenerator.generate();
+        profileRepository.dropCollection();
+        scoreRepository.dropCollection();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        List<Target> targets = testDataGenerator.generate();
+        LOGGER.info("Created "+targets.size()+" targets:");
+
+        for(Target target : targets){
+            String s = target.getText();
+            if(target.getTags().size()>0){
+                s += " (";
+                for(Tag tag : target.getTags()){
+                    s += tag.getText()+", ";
+                }
+                s = s.substring(0, s.length()-2);
+                s += ")";
+            }
+
+            LOGGER.info(s);
+        }
 		return "redirect:/";
 	}
 

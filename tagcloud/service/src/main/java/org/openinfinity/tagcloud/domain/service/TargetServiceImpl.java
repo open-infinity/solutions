@@ -65,23 +65,24 @@ public class TargetServiceImpl extends
 	@AuditTrail
 	@Override
 	@Transactional
-	public void addTagToTarget(Tag tag, Target target, Profile profile) {
-		for (Tag oldTag : target.getTags()) {
-			if (oldTag.getText().equals(tag.getText()))
+	public void addTagToTarget(String tagName, Target target, String facebookId) {
+    	for (Tag oldTag : target.getTags()) {
+			if (oldTag.getText().equals(tagName))
 				ExceptionUtil.throwBusinessViolationException(
 						"Tag with the same name already exists in the target",
 						ExceptionLevel.INFORMATIVE,
 						TargetService.UNIQUE_EXCEPTION_TAG_ALREADY_INCLUDED);
 		}
 
-		System.out.println("creating tag " + tag.getText());
-		if (tagService.contains(tag))
-			tagService.update(tag);
+        Profile profile = profileService.loadByFacebookId(facebookId);
+        
+        Tag tag = new Tag(tagName);
+        if (tagService.contains(tag)) {
+            tag = tagService.loadByText(tag.getText()).iterator().next();
+        }
         else tag = tagService.create(tag);
 
-
 		target.getTags().add(tag);
-	
 		update(target);
 
 		profile.addTag(tag, target);
@@ -92,13 +93,13 @@ public class TargetServiceImpl extends
     @AuditTrail
     @Override
     @Transactional
-    public void addScoreToTarget(Score score, Target target) {
-        if(scoreService.contains(score))
-            scoreService.update(score);
-        else score = scoreService.create(score);
-
+    public void scoreTarget(int scoreStars, Target target, String facebookId) {
+        Profile profile = profileService.loadByFacebookId(facebookId);
+        Score score = scoreService.create(new Score(scoreStars, profile));
         target.getScores().add(score);
         target.setScore(this.calcScore(target.getScores()));
+        profile.getMyScoredTargets().add(target);
+        profileService.update(profile);
         update(target);
 
     }
@@ -107,11 +108,10 @@ public class TargetServiceImpl extends
     @AuditTrail
     @Override
     @Transactional
-    public void addCommentToTarget(Comment comment, Target target) {
-        if(commentService.contains(comment))
-            commentService.update(comment);
-        else comment = commentService.create(comment);
-
+    public void addCommentToTarget(String commentText, Target target, String facebookId) {
+        Profile profile = profileService.loadByFacebookId(facebookId);
+        Comment comment = new Comment(commentText, profile);
+        if(comment.getId()==null) comment = commentService.create(comment);
         target.getComments().add(comment);
         update(target);
     }
@@ -138,9 +138,9 @@ public class TargetServiceImpl extends
 		return targetRepository.loadByTag(tag);
 	}
 
-	@Override
+    @Override
 	public List<Result> loadByQuery(TagQuery tagQuery) {
-		
+
 		List<Target> targets = targetRepository.loadByCoordinates(tagQuery.getLongitude(), tagQuery.getLatitude(), tagQuery.getRadius());
 		List<Result> results = requireTags(targets, tagQuery);
 		if(tagQuery.getNearby().size()>0) {
@@ -152,8 +152,9 @@ public class TargetServiceImpl extends
         for(Result result : results){
             result.updateRecommendationScore();
         }
-		return results;
+		return results.subList(0, Math.min(15, results.size()));
 	}
+
 
     private void checkPreferredTags(List<Result> results, TagQuery tagQuery) {
         for(Result result:results){
@@ -169,7 +170,7 @@ public class TargetServiceImpl extends
         List<Tag> nearbyTags = tagQuery.getNearby();
 
 		List<Result> results = new ArrayList<Result>();
-		if(requiredTags.size()==0) return results; //return empty list because required tags should not be empty. fix later with exception?
+		//if(requiredTags.size()==0) return results; //return empty list because required tags should not be empty. fix later with exception?
 		for(Target target : targets) {
 			if(target.getTags().containsAll(requiredTags)) {
 				Result result = new Result(tagQuery, nearbyTags);

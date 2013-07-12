@@ -12,9 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface TargetService extends AbstractTextEntityCrudServiceInterface<Target> {
 	
-	void addTagToTarget(Tag tag, Target target, Profile profile);
-	
-	void removeTagFromTarget(Tag tag, Target target);
 
 	public static final String UNIQUE_EXCEPTION_TAG_ALREADY_INCLUDED = "localized.exception.tag.already.included";
 
@@ -24,11 +21,11 @@ public interface TargetService extends AbstractTextEntityCrudServiceInterface<Ta
 
 	List<Result> loadByQuery(TagQuery tagQuery);
 
-	void addScoreToTarget(Score score, Target target);
+    void addTagToTarget(String tag, Target target, String facebookId);
 
+    void removeTagFromTarget(Tag tag, Target target);
 
-    @Log
-    @AuditTrail
-    @Transactional
-    void addCommentToTarget(Comment comment, Target target);
+    void addCommentToTarget(String comment, Target target, String facebookId);
+
+    void scoreTarget(int scoreStars, Target target, String facebookId);
 }
