@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 
 import lombok.NonNull;
 
+import org.openinfinity.core.annotation.NotScript;
 import org.openinfinity.tagcloud.domain.entity.Comment;
 import org.openinfinity.tagcloud.domain.entity.Profile;
 
@@ -22,13 +23,14 @@ public class CommentModel {
 	private Map<String, Collection<String>> errorStatuses = new HashMap<String, Collection<String>>();
 	
 	@NonNull
-	@Size(min=1,max=200)
+	@NotScript
+	@Size(min=1, max=800)
 	private String text;
 
 	@NonNull
 	private Profile profile;
 	
-	public Comment getTarget() {
+	public Comment getComment() {
 		Comment comment = new Comment();
 		comment.setText(text);
 		comment.setProfile(profile);

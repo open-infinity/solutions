@@ -99,11 +99,12 @@ public class TargetController {
 		}
 		return localizedErrorMessages;
 	}
-	
+
 	/**
-	* test and showcase for async json front 
-	* @return
-	*/	
+	 * test and showcase for async json front
+	 * 
+	 * @return
+	 */
 	@Log
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
 	@RequestMapping(method = RequestMethod.GET)
@@ -111,10 +112,10 @@ public class TargetController {
 
 		return "targets_home";
 	}
-	
+
 	@Log
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
-	@RequestMapping(method = RequestMethod.GET,value="create")
+	@RequestMapping(method = RequestMethod.GET, value = "create")
 	public String createNewTarget(Model model) {
 		model.addAttribute("targetModel", new TargetModel());
 		return "createTarget";
@@ -136,28 +137,38 @@ public class TargetController {
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
 	@RequestMapping(method = RequestMethod.GET, value = "list")
 	public @ResponseBody
-	Collection<Target> loadAllTargets(Model model) {
-		Collection<Target> targets = targetService.loadAll();
-		return targets;
+	ResponseObject<Target> loadAllTargets(Model model) {
+		ResponseObject<Target> result = new ResponseObject<Target>();
+		try{
+			Collection<Target> targets_col = targetService.loadAll();
+			result.setSuccess(result.convertToList(targets_col));
+		}catch(Exception e){
+			result.setIs_error(true);
+			result.setError_code("target_error");
+			result.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR + "");
+		}
+		return result;
 	}
 
 	@Log
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
 	@RequestMapping(method = RequestMethod.GET, value = "{target_id}")
 	public @ResponseBody
-	Object showTarget(@PathVariable String target_id) {
-		Target target;
+	ResponseObject<Target> showTarget(@PathVariable String target_id) {
+
+		ResponseObject<Target> result = new ResponseObject<Target>();
 		try {
-			target = targetService.loadById(target_id);
-			return target;
+			Target target = targetService.loadById(target_id);
+			result.setSuccess(target);
 		} catch (Exception e) {
-			ErrorObject error = new ErrorObject();
-			error.setError_status(HttpServletResponse.SC_BAD_REQUEST+"");
-			error.setLocalized_message(e.getLocalizedMessage());
-			error.setError_message(e.getMessage());
-			return error;
+			result.setIs_error(true);
+			result.setError_code("target_error");
+			result.setStatus(HttpServletResponse.SC_BAD_REQUEST + "");
+			result.setMessage("Target not found " + e.getMessage());
+			result.addErrorReason("No target found for id[" + target_id + "] ");
+
 		}
-		
+		return result;
 	}
 
 	@Log

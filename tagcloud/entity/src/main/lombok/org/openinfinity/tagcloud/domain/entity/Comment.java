@@ -3,6 +3,9 @@ package org.openinfinity.tagcloud.domain.entity;
 import java.io.Serializable;
 import java.math.BigInteger;
 
+import javax.validation.constraints.Size;
+
+import org.openinfinity.core.annotation.NotScript;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -23,6 +26,8 @@ public class Comment implements TextEntity {
 	private String id;
 
 	@NonNull
+	@NotScript
+	@Size(min=1, max=800)
 	private String text;
 
 	@NonNull
@@ -30,7 +35,9 @@ public class Comment implements TextEntity {
 
 	@Override
 	public String toString() {
-		String string = "Comment, id="+id+", profile-id="+profile.getId();
+		String string = "Comment, id="+id +", profile-id="+profile.getId();
+
+		
 		return string;
 	}
 	
