@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import org.openinfinity.tagcloud.domain.entity.Tag;
+import org.openinfinity.tagcloud.domain.entity.TagQuery;
 import org.openinfinity.tagcloud.domain.entity.Target;
 
 @Data

@@ -77,16 +77,13 @@ public class TestDataGenerator {
     public List<Target> generate() {
         testProfile = new Profile("testFacebookId");
         testProfile = profileService.create(testProfile);
-
+        
         List<Target> createdTargets = new ArrayList<Target>();
-
         createdTargets.add(createTarget("Kampin kauppakeskus", 60.168852, 24.932203, new int[]{7, 6, 8, 9}, "mall",
                 "shopping centre", "I love this place!", "Amazing restaurants and shops in this area!"
                 , "another tag", "and another one ..", "Nice Hotel right in the corner"));
-        createdTargets.add(createTarget("Vanha kirkkopuisto", 60.16613, 24.939774, new int[]{4, 5, 2, 9}, "park", "outdoor"));
+          createdTargets.add(createTarget("Vanha kirkkopuisto", 60.16613, 24.939774, new int[]{4, 5, 2, 9}, "park", "outdoor"));
         createdTargets.add(createTarget("Esplanadin puisto", 60.167198, 24.947627, new int[]{3, 7, 3, 6}, "park", "outdoor"));
-
-
 
         String requestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyBPtTi_78oAV7GyAT0WJL6KckNfgKJthZE&location=60.169866,24.940926&radius=10000&sensor=false&language=fi";
         try {
@@ -133,7 +130,7 @@ public class TestDataGenerator {
 
     private Target createTarget(String targetName, double latitude, double longitude,
                                 int[] scores, String... tags) {
-        Target target = targetService.create(new Target(targetName, longitude,
+    	Target target = targetService.create(new Target(targetName, longitude,
                 latitude));
         for (int s : scores) {
             targetService.scoreTarget(s, target, testProfile.getFacebookId());
@@ -141,7 +138,6 @@ public class TestDataGenerator {
         for (String tagName : tags) {
             targetService.addTagToTarget(tagName, target, testProfile.getFacebookId());
         }
-
         return targetService.loadById(target.getId());
     }
 

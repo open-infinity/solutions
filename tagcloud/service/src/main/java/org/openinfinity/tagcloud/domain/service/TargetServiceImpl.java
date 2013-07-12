@@ -22,7 +22,7 @@ import org.openinfinity.core.util.ExceptionUtil;
 import org.openinfinity.tagcloud.domain.entity.*;
 import org.openinfinity.tagcloud.domain.entity.query.NearbyTarget;
 import org.openinfinity.tagcloud.domain.entity.query.Result;
-import org.openinfinity.tagcloud.domain.entity.query.TagQuery;
+import org.openinfinity.tagcloud.domain.entity.TagQuery;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,9 +73,7 @@ public class TargetServiceImpl extends
 						ExceptionLevel.INFORMATIVE,
 						TargetService.UNIQUE_EXCEPTION_TAG_ALREADY_INCLUDED);
 		}
-
         Profile profile = profileService.loadByFacebookId(facebookId);
-        
         Tag tag = new Tag(tagName);
         if (tagService.contains(tag)) {
             tag = tagService.loadByText(tag.getText()).iterator().next();
@@ -98,7 +96,7 @@ public class TargetServiceImpl extends
         Score score = scoreService.create(new Score(scoreStars, profile));
         target.getScores().add(score);
         target.setScore(this.calcScore(target.getScores()));
-        profile.getMyScoredTargets().add(target);
+        profile.getMyScoredTargets().add(target.getId());
         profileService.update(profile);
         update(target);
 

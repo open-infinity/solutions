@@ -26,7 +26,7 @@ import org.openinfinity.core.aspect.ArgumentStrategy;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.Result;
-import org.openinfinity.tagcloud.domain.entity.query.TagQuery;
+import org.openinfinity.tagcloud.domain.entity.TagQuery;
 import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
 import org.openinfinity.tagcloud.domain.repository.ScoreRepository;
 import org.openinfinity.tagcloud.domain.repository.TagRepository;

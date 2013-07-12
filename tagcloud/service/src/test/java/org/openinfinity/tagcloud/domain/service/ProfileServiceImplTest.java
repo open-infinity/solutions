@@ -30,6 +30,9 @@ public class ProfileServiceImplTest {
 	@Autowired
 	ProfileRepository profileRepository;
 	
+	@Autowired
+	TargetService targetService;
+	
 	@Before
 	public void setUp() throws Exception {}
 
@@ -58,7 +61,8 @@ public class ProfileServiceImplTest {
 		Profile profile = createTestProfile();
 		profileService.create(profile);
 		profile = profileService.loadById(profile.getId());
-		profile.getMyScoredTargets().add(new Target("asdf",0,0));
+		Target target = targetService.create(new Target("asdf",0,0));
+		profile.getMyScoredTargets().add(target.getId());
 		profileService.update(profile);
 		assertEquals(1, profileService.loadById(profile.getId()).getMyScoredTargets().size());
 		assertEquals(1, profileService.loadAll().size());
@@ -77,7 +81,8 @@ public class ProfileServiceImplTest {
 		profileService.create(profile1);
 		assertAmountOfProfiles(1);
 		Profile profile2 = createTestProfile();
-		profile2.getMyScoredTargets().add(new Target("asdf",0,0));
+		Target target = targetService.create(new Target("asdf",0,0));
+		profile2.getMyScoredTargets().add(target.getId());
 		profileService.create(profile2);
 		assertAmountOfProfiles(2);
 		profileService.delete(profile1);
