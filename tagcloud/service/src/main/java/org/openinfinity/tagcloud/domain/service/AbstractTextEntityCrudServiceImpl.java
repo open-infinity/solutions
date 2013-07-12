@@ -29,7 +29,7 @@ public abstract class AbstractTextEntityCrudServiceImpl<T extends TextEntity> ex
 	public boolean contains(T entity) {
 		if(entity==null || entity.getText().trim().length() == 0) return false;
 		try {
-			if(loadByText(entity.getText()).size() == 0) return false;
+            if(loadByText(entity.getText()).size() == 0) return false;
 		} catch (Exception e) {
 			return false;
 		}

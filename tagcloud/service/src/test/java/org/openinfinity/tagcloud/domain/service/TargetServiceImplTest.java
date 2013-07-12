@@ -19,6 +19,7 @@ import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.NearbyTarget;
 import org.openinfinity.tagcloud.domain.entity.query.Result;
 import org.openinfinity.tagcloud.domain.entity.query.TagQuery;
+import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
 import org.openinfinity.tagcloud.domain.repository.TagRepository;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.utils.Utils;
@@ -38,11 +39,14 @@ public class TargetServiceImplTest {
 	
 	@Autowired
 	TargetRepository targetRepository;
-	
-	@Autowired
-	TagRepository tagRepository;
-	
-	@Autowired
+
+    @Autowired
+    TagRepository tagRepository;
+
+    @Autowired
+    ProfileRepository profileRepository;
+
+    @Autowired
 	ProfileService profileService;
 	
 	@Before
@@ -52,6 +56,7 @@ public class TargetServiceImplTest {
 	public void tearDown() throws Exception {
 		targetRepository.dropCollection();
 		tagRepository.dropCollection();
+        profileRepository.dropCollection();
 	}
 
 	
@@ -132,7 +137,7 @@ public class TargetServiceImplTest {
 		profile = profileService.create(profile);
 		
 		System.out.println("test add tag");
-		targetService.addTagToTarget(tag, target, profile);
+		targetService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
 		assertEquals(1, tagService.loadAll().size());
 		assertEquals("test tag", targetService.loadById(target.getId()).getTags().iterator().next().getText());
 		assertEquals(true, profileService.loadById(profile.getId()).getMyTags().get(target.getId()).contains(tag));
@@ -145,8 +150,8 @@ public class TargetServiceImplTest {
 		Profile profile = new Profile("testId");
 		profile = profileService.create(profile);
 		
-		targetService.addTagToTarget(new Tag("test"), target, profile);
-		targetService.addTagToTarget(new Tag("test"), target, profile);
+		targetService.addTagToTarget("test", target, profile.getFacebookId());
+		targetService.addTagToTarget("test", target, profile.getFacebookId());
 	}
 	
 	@Test 
@@ -158,7 +163,7 @@ public class TargetServiceImplTest {
 		
 		Profile profile = profileService.create(new Profile("testId"));
 		
-		targetService.addTagToTarget(tag, target, profile);
+		targetService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
 		
 		assertEquals(1, targetService.loadByTag(tag).size());
 		assertEquals(0, targetService.loadByTag(differentTag).size());
@@ -224,7 +229,7 @@ public class TargetServiceImplTest {
 		
 		Profile profile = profileService.create(new Profile("testId"));
 		for(Tag tag : tags) {
-			targetService.addTagToTarget(tag, target, profile);
+			targetService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
 		}
 		
 		return target;

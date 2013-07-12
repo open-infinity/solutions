@@ -25,6 +25,9 @@ public class Score implements Entity {
 	@NonNull
 	private Integer stars;
 
+    @NonNull
+    private Profile profile;
+
 	@Override
 	public String toString() {
 		return "Score, id="+id+", stars="+stars;

@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.BusinessViolationException;
+import org.openinfinity.tagcloud.domain.entity.Profile;
 import org.openinfinity.tagcloud.domain.entity.Score;
 import org.openinfinity.tagcloud.domain.repository.ScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +37,11 @@ public class ScoreServiceImplTest {
 		scoreRepository.dropCollection();
 	}
 
+    Profile testProfile = new Profile("testId");
+
 	@Test 
 	public void testCreateScore() {
-		Score expected = new Score(3);
+		Score expected = new Score(3, testProfile);
 		Score score = scoreService.create(expected);
 		Score actual = scoreService.loadById(score.getId());
 		assertEquals(expected.getStars(), actual.getStars());
@@ -47,14 +50,14 @@ public class ScoreServiceImplTest {
 
 	@Test(expected=ApplicationException.class)
 	public void testCreateScoreFailsWhenScoreAlreadyExists() {	
-		Score expected = new Score(3);
+		Score expected = new Score(3, testProfile);
 		Score createdScore = scoreService.create(expected);
 		scoreService.create(createdScore);
 	}
 	
 	@Test 
 	public void testUpdateScore() {
-		Score score = new Score(3);
+		Score score = new Score(3, testProfile);
 		scoreService.create(score);
 		score = scoreService.loadById(score.getId());
 		score.setStars(5);
@@ -65,17 +68,17 @@ public class ScoreServiceImplTest {
 	
 	@Test(expected=BusinessViolationException.class)
 	public void testUpdateScoreFailsWhenScoreDoesNotExistYet() {
-		Score score = new Score(3);
+		Score score = new Score(3, testProfile);
 		scoreService.update(score);
 	}
 	
 	
 	@Test
 	public void testDeleteScore() {
-		Score score1 = new Score(3);
+		Score score1 = new Score(3,testProfile);
 		scoreService.create(score1);
 		assertAmountOfScores(1);
-		Score score2 = new Score(3);
+		Score score2 = new Score(3,testProfile);
 		score2.setStars(4);
 		scoreService.create(score2);
 		assertAmountOfScores(2);
@@ -88,13 +91,13 @@ public class ScoreServiceImplTest {
 	
 	@Test(expected=ApplicationException.class)
 	public void testDeleteScoreFailsWhenScoreDoesNotExist() {
-		Score score = new Score(3);
+		Score score = new Score(3,testProfile);
 		scoreService.delete(score);
 	}
 	
 	@Test
 	public void testLoadById() {
-		Score expected = new Score(3);
+		Score expected = new Score(3,testProfile);
 		scoreService.create(expected);
 		Score actual = scoreService.loadById(expected.getId());
 		assertEquals(expected, actual);

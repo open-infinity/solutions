@@ -17,7 +17,15 @@
 package org.openinfinity.tagcloud.domain.repository;
 
 import org.openinfinity.tagcloud.domain.entity.Profile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.GenericTypeResolver;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * TagRepository repository implementation.
@@ -25,4 +33,16 @@ import org.springframework.stereotype.Repository;
  * @author Joosa Kurvinen
  */
 @Repository
-public class ProfileRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Profile> implements ProfileRepository {}
+public class ProfileRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Profile> implements ProfileRepository {
+    @Autowired
+    MongoTemplate mongoTemplate;
+
+    @Override
+    public Profile loadByFacebookId(String facebookId) {
+        Query query = new Query(Criteria.where("facebookId").is(facebookId));
+        List<Profile> profiles = mongoTemplate.find(query, Profile.class);
+        if(profiles.size()==0) return null;
+        else return profiles.get(0);
+    }
+
+}

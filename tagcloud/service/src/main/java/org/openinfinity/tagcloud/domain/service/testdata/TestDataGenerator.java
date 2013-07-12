@@ -1,6 +1,7 @@
 package org.openinfinity.tagcloud.domain.service.testdata;
 
 import com.google.gson.*;
+import org.apache.log4j.Logger;
 import org.openinfinity.tagcloud.domain.entity.Profile;
 import org.openinfinity.tagcloud.domain.entity.Score;
 import org.openinfinity.tagcloud.domain.entity.Tag;
@@ -20,6 +21,8 @@ import java.util.Scanner;
 
 @Service
 public class TestDataGenerator {
+
+    private static final Logger LOGGER = Logger.getLogger(TestDataGenerator.class);
 
 	@Autowired
 	ApplicationContext applicationContext;
@@ -55,33 +58,37 @@ public class TestDataGenerator {
 	//
 	//
 
-	public static final Profile TEST_PROFILE = new Profile("test profile");
+	public static Profile testProfile;
 
 	/*public void generate() {
 		if (!profileService.contains(TEST_PROFILE))
 			profileService.create(TEST_PROFILE);
 		
-		add("Kampin kauppakeskus", 60.168852, 24.932203, new int[]{7,6,8,9}, "mall",
+		createTarget("Kampin kauppakeskus", 60.168852, 24.932203, new int[]{7,6,8,9}, "mall",
 				"shopping centre","I love this place!","Amazing restaurants and shops in this area!"
 				,"another tag","and another one ..","Nice Hotel right in the corner");
-		add("Vanha kirkkopuisto", 60.16613, 24.939774, new int[]{4,5,2,9}, "park", "outdoor");
-		add("Esplanadin puisto", 60.167198, 24.947627, new int[]{3,7,3,6}, "park", "outdoor");
+		createTarget("Vanha kirkkopuisto", 60.16613, 24.939774, new int[]{4,5,2,9}, "park", "outdoor");
+		createTarget("Esplanadin puisto", 60.167198, 24.947627, new int[]{3,7,3,6}, "park", "outdoor");
 
 	}
 
     */
 
-    public void generate() {
-        if (!profileService.contains(TEST_PROFILE))
-            profileService.create(TEST_PROFILE);
+    public List<Target> generate() {
+        testProfile = new Profile("testFacebookId");
+        testProfile = profileService.create(testProfile);
 
-        add("Kampin kauppakeskus", 60.168852, 24.932203, new int[]{7,6,8,9}, "mall",
-                "shopping centre","I love this place!","Amazing restaurants and shops in this area!"
-                ,"another tag","and another one ..","Nice Hotel right in the corner");
-        add("Vanha kirkkopuisto", 60.16613, 24.939774, new int[]{4,5,2,9}, "park", "outdoor");
-        add("Esplanadin puisto", 60.167198, 24.947627, new int[]{3,7,3,6}, "park", "outdoor");
+        List<Target> createdTargets = new ArrayList<Target>();
 
-        String requestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyBPtTi_78oAV7GyAT0WJL6KckNfgKJthZE&location=60.169866,24.940926&radius=2500&sensor=false&language=fi";
+        createdTargets.add(createTarget("Kampin kauppakeskus", 60.168852, 24.932203, new int[]{7, 6, 8, 9}, "mall",
+                "shopping centre", "I love this place!", "Amazing restaurants and shops in this area!"
+                , "another tag", "and another one ..", "Nice Hotel right in the corner"));
+        createdTargets.add(createTarget("Vanha kirkkopuisto", 60.16613, 24.939774, new int[]{4, 5, 2, 9}, "park", "outdoor"));
+        createdTargets.add(createTarget("Esplanadin puisto", 60.167198, 24.947627, new int[]{3, 7, 3, 6}, "park", "outdoor"));
+
+
+
+        String requestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyBPtTi_78oAV7GyAT0WJL6KckNfgKJthZE&location=60.169866,24.940926&radius=10000&sensor=false&language=fi";
         try {
             URL wikiRequest = new URL(requestURL);
             Scanner scanner = new Scanner(wikiRequest.openStream());
@@ -96,17 +103,17 @@ public class TestDataGenerator {
                 String name = result.get("name").getAsString();
                 double score = -1;
                 if(result.get("rating") != null) score = result.get("rating").getAsDouble();
-                List<Tag> tags = new ArrayList<Tag>();
+                List<String> tags = new ArrayList<String>();
                 JsonArray tagArray = result.getAsJsonArray("types");
                 for(int j=0; j<tagArray.size(); j++){
                     String tagName = tagArray.get(j).getAsString();
                     tagName = tagName.replace('_',' ');
-                    tags.add(new Tag(tagName));
+                    tags.add(tagName);
                 }
                 if(score >= 0)
-                    add(name, latitude, longitude, new int[]{(int)score}, tags);
+                    createdTargets.add(createTarget(name, latitude, longitude, new int[]{(int) score}, tags));
                 else
-                    add(name, latitude, longitude, new int[]{}, tags);
+                    createdTargets.add(createTarget(name, latitude, longitude, new int[]{}, tags));
             }
 
         } catch (MalformedURLException e) {
@@ -114,6 +121,9 @@ public class TestDataGenerator {
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+        finally {
+            return createdTargets;
+        }
 
 
     }
@@ -121,33 +131,31 @@ public class TestDataGenerator {
 
 
 
-    private void add(String targetName, double latitude, double longitude,
-                     int[] scores, String... tags) {
+    private Target createTarget(String targetName, double latitude, double longitude,
+                                int[] scores, String... tags) {
         Target target = targetService.create(new Target(targetName, longitude,
                 latitude));
         for (int s : scores) {
-            Score score = new Score(s);
-            targetService.addScoreToTarget(score, target);
+            targetService.scoreTarget(s, target, testProfile.getFacebookId());
         }
         for (String tagName : tags) {
-            targetService
-                    .addTagToTarget(new Tag(tagName), target, TEST_PROFILE);
+            targetService.addTagToTarget(tagName, target, testProfile.getFacebookId());
         }
 
+        return targetService.loadById(target.getId());
     }
 
-    private void add(String targetName, double latitude, double longitude,
-                     int[] scores, List<Tag> tags) {
+    private Target createTarget(String targetName, double latitude, double longitude,
+                              int[] scores, List<String> tags) {
         Target target = targetService.create(new Target(targetName, longitude,
                 latitude));
         for (int s : scores) {
-            Score score = new Score(s);
-            targetService.addScoreToTarget(score, target);
+            targetService.scoreTarget(s, target, testProfile.getFacebookId());
         }
-        for (Tag tag : tags) {
-            targetService.addTagToTarget(tag, target, TEST_PROFILE);
+        for (String tag : tags) {
+            targetService.addTagToTarget(tag, target, testProfile.getFacebookId());
         }
-
+        return targetService.loadById(target.getId());
     }
 
 

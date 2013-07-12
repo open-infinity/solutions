@@ -16,6 +16,7 @@
 package org.openinfinity.tagcloud.domain.service;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
@@ -25,7 +26,10 @@ import org.openinfinity.tagcloud.domain.entity.Profile;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
+import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,4 +38,19 @@ import org.springframework.stereotype.Service;
  * @author Ilkka Leinonen
  */
 @Service
-public class ProfileServiceImpl extends AbstractCrudServiceImpl<Profile> implements ProfileService {}
+public class ProfileServiceImpl extends AbstractCrudServiceImpl<Profile> implements ProfileService {
+    @Autowired
+    private ProfileRepository profileRepository;
+
+    @Override
+    public Profile loadByFacebookId(String facebookId) {
+        Profile profile = profileRepository.loadByFacebookId(facebookId);
+        if (profile == null) {
+            ExceptionUtil.throwApplicationException(
+                    "Profile does not exist with facebookId: " + facebookId,
+                    ExceptionLevel.ERROR,
+                    AbstractCrudServiceInterface.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
+        }
+        return profile;
+    }
+}
