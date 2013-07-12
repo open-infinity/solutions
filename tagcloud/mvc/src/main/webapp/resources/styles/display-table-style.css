@@ -1,77 +1,82 @@
-html, body{
-	height:100%;
-	width:100%;
-	padding:0;
-	margin:0;
-	overflow-y:hidden;
+html,body {
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	overflow-y: hidden;
+	overflow-x: hidden;
 }
 
-#container{
-    display:table;
+body {
+	font-size: 14px;
+}
+
+#container {
+	display: table;
 	background-color: green;
-	height:100%;
-	width:100%;
-	padding:0;
-	margin:0;
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	margin: 0;
 }
 
-#top-container{
-    display:table-row;
+#top-container {
+	display: table-row;
 	background-color: blue;
-	height:20px;
-	max-height:20px;
-	width:100%;
-	padding:0;
-	margin:0;
+	height: 20px;
+	max-height: 20px;
+	width: 100%;
+	padding: 0;
+	margin: 0;
 }
 
-
-#bottom-container{
-	display:table;
-	position:absolute;
-	top:0;
+#bottom-container {
+	display: table;
+	position: absolute;
+	top: 0;
 	background-color: red;
-	height:100%;
-	width:100%;
-	padding:0;
-	margin:0;
-	margin-top:20px;
-	padding-bottom:20px;
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	/*removed  padding-bottom: 20px;*/
+	
 }
 
-#bc-row1{
-    display:table-row;
-    height:100%;
-    width:100%;
-    padding:0;
-    margin:0;
+#bc-row1 {
+	display: table-row;
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	margin: 0;
 }
 
-#bc-col1, #bc-col2, #bc-col3{
-	display:table-cell;
-	height:100%;
-	min-height:200px;
-	padding:0;
-	margin:0;
-	vertical-align:top;
+#bc-col1,#bc-col2,#bc-col3 {
+	display: table-cell;
+	height: 100%;
+	min-height: 200px;
+	padding: 0;
+	margin: 0;
+	vertical-align: top;
 }
 
-#bc-col1{
+#bc-col1 {
 	background-color: #AAAA00;
-	width:20%;
-	min-width:310px;
+	width: 20%;
+	min-width: 310px;
 }
-#bc-col2{
+
+#bc-col2 {
 	background-color: #AA00BB;
-	width:60%;
-	min-width:350px;
+	width: 60%;
+	min-width: 350px;
 }
-#bc-col3{
+
+#bc-col3 { /*height for firefox*/
 	background-color: #00CCDD;
-	width:20%;
-	min-width:250px;
-	margin:5px;
-	padding-left:5px;
+	min-width: 250px;
+	padding-left: 5px;
+	height: 300px;
 }
 
 #map-canvas {
@@ -79,9 +84,14 @@ html, body{
 	height: 100%;
 }
 
-.scroller{
-height:100%;
-width:100%;
-overflow-y:auto;
-overflow-x:hidden;
+#scroller {
+	height: 100%;
+	width: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+#login_div{
+	display: table-cell;
+	height: 50px;
 }
