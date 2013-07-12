@@ -1,4 +1,4 @@
-package org.openinfinity.tagcloud.domain.entity.query;
+package org.openinfinity.tagcloud.domain.entity;
 
 import org.openinfinity.tagcloud.domain.entity.Tag;
 

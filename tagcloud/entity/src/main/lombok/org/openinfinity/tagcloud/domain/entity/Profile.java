@@ -35,7 +35,7 @@ public class Profile implements Entity {
 	
 	private Map<String, Set<Tag>> myTags = new HashMap<String, Set<Tag>>(); //string = target.id
 	
-	private List<Target> myScoredTargets = new ArrayList<Target>();
+	private List<String> myScoredTargets = new ArrayList<String>();
 	
 	public void addTag(Tag tag, Target target) {
 		System.out.println(tag);
