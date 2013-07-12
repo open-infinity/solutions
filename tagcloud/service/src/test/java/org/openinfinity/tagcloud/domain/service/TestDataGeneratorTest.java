@@ -52,7 +52,7 @@ public class TestDataGeneratorTest {
         scoreRepository.dropCollection();
 	}
 
-	@Test
+	@Test @Ignore
 	public void test() {
 		testDataGenerator.generate();
 		//assertEquals(1, targetRepository.loadAll().size());

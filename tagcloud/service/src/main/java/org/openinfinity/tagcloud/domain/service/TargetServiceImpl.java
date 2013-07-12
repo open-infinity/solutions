@@ -66,7 +66,7 @@ public class TargetServiceImpl extends
 	@Override
 	@Transactional
 	public void addTagToTarget(String tagName, Target target, String facebookId) {
-        for (Tag oldTag : target.getTags()) {
+    	for (Tag oldTag : target.getTags()) {
 			if (oldTag.getText().equals(tagName))
 				ExceptionUtil.throwBusinessViolationException(
 						"Tag with the same name already exists in the target",
@@ -75,7 +75,7 @@ public class TargetServiceImpl extends
 		}
 
         Profile profile = profileService.loadByFacebookId(facebookId);
-
+        
         Tag tag = new Tag(tagName);
         if (tagService.contains(tag)) {
             tag = tagService.loadByText(tag.getText()).iterator().next();

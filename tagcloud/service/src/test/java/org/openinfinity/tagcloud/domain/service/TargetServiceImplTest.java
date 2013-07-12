@@ -49,8 +49,13 @@ public class TargetServiceImplTest {
     @Autowired
 	ProfileService profileService;
 	
+	Profile profile;
+
+    
 	@Before
-	public void setUp() throws Exception {}
+	public void setUp() throws Exception {
+		profile = profileService.create(new Profile("testId"));
+	}
 
 	@After
 	public void tearDown() throws Exception {
@@ -133,11 +138,10 @@ public class TargetServiceImplTest {
 		Target target = createTestTarget();
 		
 		Tag tag = new Tag("test tag");
-		Profile profile = new Profile("testId");
-		profile = profileService.create(profile);
-		
-		System.out.println("test add tag");
 		targetService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
+		target = targetService.loadById(target.getId());
+		tag = tagService.loadByText(tag.getText()).iterator().next();
+		
 		assertEquals(1, tagService.loadAll().size());
 		assertEquals("test tag", targetService.loadById(target.getId()).getTags().iterator().next().getText());
 		assertEquals(true, profileService.loadById(profile.getId()).getMyTags().get(target.getId()).contains(tag));
@@ -146,9 +150,6 @@ public class TargetServiceImplTest {
 	@Test(expected=BusinessViolationException.class)  
 	public void testAddTagToTargetFailsIfTagAlreadyExists() {
 		Target target = createTestTarget();
-		
-		Profile profile = new Profile("testId");
-		profile = profileService.create(profile);
 		
 		targetService.addTagToTarget("test", target, profile.getFacebookId());
 		targetService.addTagToTarget("test", target, profile.getFacebookId());
@@ -160,8 +161,6 @@ public class TargetServiceImplTest {
 		
 		Tag tag = new Tag("testi");
 		Tag differentTag = new Tag("testi2");
-		
-		Profile profile = profileService.create(new Profile("testId"));
 		
 		targetService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
 		
@@ -227,7 +226,6 @@ public class TargetServiceImplTest {
 		target.setLocation(longitude, latitude);
 		targetService.create(target);
 		
-		Profile profile = profileService.create(new Profile("testId"));
 		for(Tag tag : tags) {
 			targetService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
 		}
