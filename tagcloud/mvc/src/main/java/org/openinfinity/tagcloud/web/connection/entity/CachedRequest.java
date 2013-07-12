@@ -16,6 +16,7 @@ public class CachedRequest{
 	private Map<String, String[]> parameterMap;
 	private Map<String, String> headerMap;
 	private Map<String, Object> attributeMap;
+	private String complete_redirect_url;
 	private String pathInfo;
 	private String pathTranslated;
 	private String querryString;
@@ -29,6 +30,17 @@ public class CachedRequest{
 	public CachedRequest() {
 
 	}
+	
+	
+	public String getCompleteRedirectUrl() {
+		return complete_redirect_url;
+	}
+
+
+	public void setCompleteRedirectUrl(String complete_redirect_url) {
+		this.complete_redirect_url = complete_redirect_url;
+	}
+
 
 	public Map<String, String[]> getParameterMap() {
 		return parameterMap;

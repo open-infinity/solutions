@@ -49,5 +49,10 @@ public interface ConnectionManager {
 	public LoggingPolicy getLoggingPolicy();
 
 	public void setLoggingPolicy(LoggingPolicy policy);
+	
+	public void setRedirectUrl(HttpServletRequest request, String url);
+	
+	public String getRedirectUrl(HttpServletRequest request);
+	
 
 }

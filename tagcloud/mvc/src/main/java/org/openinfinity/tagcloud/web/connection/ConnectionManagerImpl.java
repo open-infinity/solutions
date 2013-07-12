@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 /**
  * 
  * @author Kavan Soleimanbeigi
- *
+ * 
  */
 @Service
 public class ConnectionManagerImpl implements ConnectionManager {
@@ -106,7 +106,6 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		return this.disconnect(request, response, false);
 
 	}
-
 
 	/**
 	 * disconnect user and create new session,
@@ -194,8 +193,59 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		}
 		return false;
 	}
-	
 
+	/**
+	 * this will replace the already CachedRequest with new cachedRquest
+	 * suitable for set redirect from a url parameter
+	 * 
+	 */
+	@Override
+	public void setRedirectUrl(HttpServletRequest request, String url) {
+		ActiveConnection conn = this.getSessionActiveConnection(request
+				.getSession().getId());
+		CachedRequest cache = cache = new CachedRequest();
+		cache.setCompleteRedirectUrl(url);
+		conn.setCachedrequest(cache);
+
+	}
+
+	@Override
+	public String getRedirectUrl(HttpServletRequest request) {
+		CachedRequest cache = this.retrieveCachedRequest(request.getSession()
+				.getId());
+		if (cache != null) {
+			return cache.getCompleteRedirectUrl();
+		}
+		return null;
+
+	}
+
+	private void redirectToOriginal(HttpServletRequest req,
+			HttpServletResponse response) {
+
+		ActiveConnection conn = this.connection_map.get(req.getSession()
+				.getId());
+		boolean try2 = false;
+		if (this.isRedirectNeeded(req.getSession().getId())) {
+			CachedRequest cache = conn.getCachedRequest();
+
+			try {
+				response.sendRedirect(cache.getCompleteRedirectUrl());
+			} catch (Exception e) {
+				try2 = true;
+			}
+			if (try2) {
+				try {
+					response.sendRedirect(cache.getRequestURL() + "?"
+							+ cache.getQuerryString());
+				} catch (Exception e) {
+					connectionLog
+							.add("ConnectionManager/redirectToOrginal > redirect to original page failed, cause: "
+									+ e.toString());
+				}
+			}
+		}
+	}	
 	private void handlePostConnectionRedirections(HttpServletRequest request,
 			HttpServletResponse response) {
 		String session_id = request.getSession().getId();
@@ -218,7 +268,6 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		}
 
 	}
-	
 
 	private void cacheThisRequest(HttpServletRequest request) {
 		String session_id = request.getSession().getId();
@@ -249,26 +298,6 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		return null;
 	}
 
-	private void redirectToOriginal(HttpServletRequest req,
-			HttpServletResponse response) {
-
-		ActiveConnection conn = this.connection_map.get(req.getSession()
-				.getId());
-
-		if (this.isRedirectNeeded(req.getSession().getId())) {
-			CachedRequest cache = conn.getCachedRequest();
-
-			try {
-				response.sendRedirect(cache.getRequestURL() + "?"
-						+ cache.getQuerryString());
-			} catch (Exception e) {
-				connectionLog
-						.add("ConnectionManager/redirectToOrginal > redirect to original page failed, cause: "
-								+ e.toString());
-			}
-		}
-	}
-
 	private void redirectToDefault(HttpServletRequest req,
 			HttpServletResponse response) {
 
@@ -297,6 +326,15 @@ public class ConnectionManagerImpl implements ConnectionManager {
 					+ e.toString());
 		}
 
+	}
+
+	private ActiveConnection getSessionActiveConnection(String session_id) {
+		ActiveConnection conn = connection_map.get(session_id);
+		if (conn == null) {
+			conn = new ActiveConnection();
+			connection_map.put(session_id, conn);
+		}
+		return conn;
 	}
 
 	private void saveNewConnection(HttpServletRequest request, String auth_code)

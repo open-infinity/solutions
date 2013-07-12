@@ -42,10 +42,21 @@ public class ProfileServiceImpl extends AbstractCrudServiceImpl<Profile> impleme
     @Autowired
     private ProfileRepository profileRepository;
 
+
     @Override
     public Profile loadByFacebookId(String facebookId) {
         Profile profile = profileRepository.loadByFacebookId(facebookId);
       
         return profile;
     }
+
+	@Override
+	public Profile createByFacebookId(String facebookId) {
+		Profile profile = loadByFacebookId(facebookId);
+		if(profile == null){
+			profile = new Profile(facebookId);
+			create(profile);
+		}
+		return profile;
+	}
 }
