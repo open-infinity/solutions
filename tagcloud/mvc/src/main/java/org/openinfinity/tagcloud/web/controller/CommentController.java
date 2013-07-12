@@ -138,26 +138,22 @@ public class CommentController {
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
 	@RequestMapping(method = RequestMethod.POST, value = "/{target_id}")
 	public @ResponseBody
-	ResponseObject<Comment> submitComment(
+	ResponseObject<String> submitComment(
 			@PathVariable("target_id") String target_id,
 			@RequestParam("text") String text) {
 
 		Target target = targetService.loadById(target_id);
-		Profile profile = new Profile();
-		profile.setFacebookId("alex.diba");
-		profile.setId("test12erettr");
 		CommentModel commentmModel = new CommentModel();
 		commentmModel.setText(text);
-		commentmModel.setProfile(profile);
 
 		Set<ConstraintViolation<CommentModel>> failures = validator
 				.validate(commentmModel);
-		ResponseObject<Comment> responseObject = new ResponseObject<Comment>();
+		ResponseObject<String> responseObject = new ResponseObject<String>();
 
 		if (failures.isEmpty() && target != null) {
 			targetService
-					.addCommentToTarget(commentmModel.getComment(), target);
-			responseObject.setSuccess("Comment saved successfully!", commentmModel.getComment());
+					.addCommentToTarget(commentmModel.getText(), target,"alex.diba");
+			responseObject.setSuccess("Comment saved successfully!", commentmModel.getText());
 
 		} else {
 			responseObject.setIs_error(true);

@@ -45,12 +45,7 @@ public class ProfileServiceImpl extends AbstractCrudServiceImpl<Profile> impleme
     @Override
     public Profile loadByFacebookId(String facebookId) {
         Profile profile = profileRepository.loadByFacebookId(facebookId);
-        if (profile == null) {
-            ExceptionUtil.throwApplicationException(
-                    "Profile does not exist with facebookId: " + facebookId,
-                    ExceptionLevel.ERROR,
-                    AbstractCrudServiceInterface.UNIQUE_EXCEPTION_ENTITY_DOES_NOT_EXIST);
-        }
+      
         return profile;
     }
 }

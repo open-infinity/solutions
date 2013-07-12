@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openinfinity.tagcloud.domain.entity.Profile;
+import org.openinfinity.tagcloud.domain.service.ProfileService;
 import org.openinfinity.tagcloud.web.connection.entity.CachedRequest;
 import org.openinfinity.tagcloud.web.connection.entity.LoginObject;
 import org.openinfinity.tagcloud.web.connection.entity.ResponseObject;
@@ -33,7 +34,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ConnectionController {
 
 	@Autowired
-	private ConnectionManager connection_manager;
+	private ConnectionManager connectionManager;
+	
+	@Autowired 
+	private ProfileService profileService;
 
 	// ***************
 	private final String check_connection_path = "/check/connection";
@@ -45,7 +49,7 @@ public class ConnectionController {
 	public String authTest(HttpServletRequest request,
 			HttpServletResponse response) {
 
-		if (connection_manager.isUserLoggedIn(request.getSession().getId())) {
+		if (connectionManager.isUserLoggedIn(request.getSession().getId())) {
 			return "redirect:" + check_connection_path;
 		}
 		return "redirect:" + connect_path;
@@ -54,9 +58,9 @@ public class ConnectionController {
 	public String doLogout(@Param("facebook") String facebook,HttpServletRequest req, HttpServletResponse response) {
 
 		String manager_redirect_url = null;
-		if (connection_manager.isUserLoggedIn(req.getSession().getId())) {
+		if (connectionManager.isUserLoggedIn(req.getSession().getId())) {
 			boolean facebook_logout = this.isFacebookLogoutNeeded(facebook);
-			manager_redirect_url = connection_manager.disconnect(req, response,facebook_logout);
+			manager_redirect_url = connectionManager.disconnect(req, response,facebook_logout);
 			
 
 		}
@@ -71,11 +75,21 @@ public class ConnectionController {
 		List<String> logList = new LinkedList<String>();
 		logList.add("Connecting...");
 		this.continueToConnection(request, response, logList);
-		logList.addAll(connection_manager.getConnectionLog());
+		if(connectionManager.isUserLoggedIn(request.getSession().getId())){
+			Facebook facebook = connectionManager.getSessionFacebook(request.getSession().getId());
+			String facebookId = facebook.userOperations().getUserProfile().getId();
+			Profile profile = profileService.loadByFacebookId(facebookId);
+			if(profile == null){
+				profile = new Profile();
+				profile.setFacebookId(facebookId);
+				profileService.create(profile);
+			}
+		}
+		logList.addAll(connectionManager.getConnectionLog());
 		return logList;
 	}
 
-
+	
 	@RequestMapping(value = check_connection_path)
 	public @ResponseBody
 	ResponseObject<LoginObject<Profile>> loginTest(HttpServletRequest req) {
@@ -83,7 +97,7 @@ public class ConnectionController {
 		List<String> logList = new LinkedList<String>();
 		ResponseObject<LoginObject<Profile>> res_obj = new ResponseObject<LoginObject<Profile>>();
 		LoginObject<Profile> login = new LoginObject<Profile>();
-		if (connection_manager.isUserLoggedIn(session_id)) {
+		if (connectionManager.isUserLoggedIn(session_id)) {
 			res_obj.setSuccess("User is logged in");
 			// getFacebookFriends(req, logList);
 			
@@ -107,8 +121,8 @@ public class ConnectionController {
 	public @ResponseBody
 	List<String> redTest(HttpServletRequest req, HttpServletResponse response) {
 		List<String> logList = new LinkedList<String>();
-		CachedRequest login = connection_manager.requireLogin(req, response);
-		logList.addAll(connection_manager.getConnectionLog());
+		CachedRequest login = connectionManager.requireLogin(req, response);
+		logList.addAll(connectionManager.getConnectionLog());
 
 		logList.add("now, let's do our thing!");
 
@@ -141,13 +155,13 @@ public class ConnectionController {
 
 			logList.add(m + " : " + mp.get(m)[0]);
 		}
-		CachedRequest login = connection_manager
+		CachedRequest login = connectionManager
 				.requireLogin(request, response);
 		if (login != null) {
 			try {
 
 				message = request.getParameter("message");
-				Facebook facebook = connection_manager
+				Facebook facebook = connectionManager
 						.getSessionFacebook(request.getSession().getId());
 				if (facebook != null && message != null && !message.isEmpty()) {
 					facebook.feedOperations().updateStatus(message);
@@ -171,7 +185,7 @@ public class ConnectionController {
 	private void continueToConnection(HttpServletRequest request,
 			HttpServletResponse response, List<String> logList) {
 		try {
-			connection_manager.connect(request, response);
+			connectionManager.connect(request, response);
 			logList.add("Facebook login session created successfully!");
 		} catch (InvalidConnectionCredentialException e) {
 			logList.add("connection failed > check your credentials > "
@@ -208,7 +222,7 @@ public class ConnectionController {
 		}
 	}
 	private void getFacebookFriends(HttpServletRequest req, List<String> logList) {
-		Facebook facebook = connection_manager.getSessionFacebook(req
+		Facebook facebook = connectionManager.getSessionFacebook(req
 				.getSession().getId());
 		List<FacebookProfile> profs = facebook.friendOperations()
 				.getFriendProfiles();

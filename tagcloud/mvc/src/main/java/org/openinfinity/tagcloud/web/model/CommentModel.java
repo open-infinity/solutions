@@ -27,16 +27,6 @@ public class CommentModel {
 	@Size(min=1, max=800)
 	private String text;
 
-	@NonNull
-	private Profile profile;
-	
-	public Comment getComment() {
-		Comment comment = new Comment();
-		comment.setText(text);
-		comment.setProfile(profile);
-		
-		return comment;
-	}
 	
 	public void addErrorStatuses(String level, Collection<String> ids) {
 		errorStatuses.put(level, ids);
@@ -60,13 +50,6 @@ public class CommentModel {
 		this.text = text;
 	}
 
-	public Profile getProfile() {
-		return profile;
-	}
-
-	public void setProfile(Profile profile) {
-		this.profile = profile;
-	}
 	
 }
 
