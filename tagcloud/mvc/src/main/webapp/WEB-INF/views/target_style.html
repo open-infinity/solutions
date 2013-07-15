@@ -219,6 +219,7 @@
             $(document).ready(function() {
                 initialize();
                 setTimeToComments();
+                setStars(7);
             });
             var map;
             function initialize() {
@@ -239,6 +240,23 @@
             function setTimeToComments() {
                 time = (new Date()).toLocaleString();
                 $(".comment_date").html("Created: " + time);
+            }
+            function setStars(num) {
+                var div = $("#score_container");
+                try {
+                    $(div).html("<h3>Scroe: " + num + ".0</div>");
+                    var i;
+                    for (i = 0; i < num; i++) {
+                        $(div).append("<span class='score_symbol'>&#x02605;</span>")
+                    }
+//                var j = 10-i;
+                    for (i; i < 10; i++) {
+                        $(div).append("<span class='score_symbol'>&#x02606;</span>")
+                    }
+                } catch (e) {
+                    console.log("Error " + e.toString());
+                }
+
             }
 
         </script>
@@ -263,19 +281,26 @@
                 <div id="map-canvas"></div>
             </div>
             <div id="target_score_main">
-                <div>
-                    <h3>Score: 8.0</h3>
-                    <span class="score_symbol">&#x02605;</span> <span
-                        class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span>
-                    <span class="score_symbol">&#x02605;</span> <span
-                        class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span>
-                    <span class="score_symbol">&#x02605;</span> <span
-                        class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02606;</span>
-                    <span class="score_symbol">&#x02606;</span>
+                <div id="score_container">
+                    <!--                    <h3>Score: 8.0</h3>
+                                        <span class="score_symbol">&#x02605;</span> <span
+                                            class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span>
+                                        <span class="score_symbol">&#x02605;</span> <span
+                                            class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span>
+                                        <span class="score_symbol">&#x02605;</span> <span
+                                            class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02606;</span>
+                                        <span class="score_symbol">&#x02606;</span>-->
 
                 </div>
+                <!--                 <div>
+                                    <h3>Score: 8.0</h3>
+                                    <span class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02606;</span>
+                                    <span class="score_symbol">&#x02606;</span>
+                
+                                </div>-->
 
             </div>
+
             <div id="target_add_comment_main">
 
                 <div id="add_comment_success">
