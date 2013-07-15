@@ -204,7 +204,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 	public void setRedirectUrl(HttpServletRequest request, String url) {
 		ActiveConnection conn = this.getSessionActiveConnection(request
 				.getSession().getId());
-		CachedRequest cache = cache = new CachedRequest();
+		CachedRequest cache = new CachedRequest();
 		cache.setCompleteRedirectUrl(url);
 		conn.setCachedrequest(cache);
 

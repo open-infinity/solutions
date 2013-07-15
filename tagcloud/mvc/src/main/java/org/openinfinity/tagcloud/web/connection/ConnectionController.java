@@ -57,17 +57,18 @@ public class ConnectionController {
 	}
 
 	@RequestMapping(value = logout_path)
-	public String doLogout(@Param("facebook") String facebook,
-			HttpServletRequest req, HttpServletResponse response) {
+	public String doLogout(@Param("facebook") String facebook,@Param("next") String next,
+			HttpServletRequest request, HttpServletResponse response) {
 
 		String manager_redirect_url = null;
-		if (connectionManager.isUserLoggedIn(req.getSession().getId())) {
+		if (connectionManager.isUserLoggedIn(request.getSession().getId())) {
 			boolean facebook_logout = this.isFacebookLogoutNeeded(facebook);
-			manager_redirect_url = connectionManager.disconnect(req, response,
+			connectionManager.setRedirectUrl(request, next);
+			manager_redirect_url = connectionManager.disconnect(request, response,
 					facebook_logout);
 
 		}
-		return "redirect:" + this.getLogoutRedirectURL(manager_redirect_url);
+		return "redirect:" + this.getLogoutRedirectURL(request,manager_redirect_url)+"&mo="+next;//redirect to bug is no possible some bug here
 
 	}
 
@@ -207,11 +208,15 @@ public class ConnectionController {
 		return false;
 	}
 
-	private String getLogoutRedirectURL(String manager_redirect_url) {
+	private String getLogoutRedirectURL(HttpServletRequest request,String manager_redirect_url) {
 		String redirect_default = check_connection_path;
 		if (manager_redirect_url == null || manager_redirect_url.isEmpty()
 				|| manager_redirect_url.equalsIgnoreCase("/")) {
-			return redirect_default;
+			String next = connectionManager.getRedirectUrl(request);
+			if(next != null){
+				return next;
+			}
+			return redirect_default+"?next="+next;
 		} else {
 			return manager_redirect_url;
 		}
