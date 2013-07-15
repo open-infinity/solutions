@@ -89,7 +89,7 @@
 			</div>
 
 
-			<div>
+			<div id="comment_form_div">
 				<form action="" method="post" id="comment_form">
 					<textarea rows="" cols="" name="text"></textarea>
 					<input value="send" type="submit">

@@ -106,7 +106,7 @@ public class TargetServiceImpl extends
     @AuditTrail
     @Override
     @Transactional
-    public void addCommentToTarget(String commentText, Target target, String facebookId) {
+    public void addCommentToTarget(String commentText, Target target, String facebookId){
         Profile profile = profileService.loadByFacebookId(facebookId);
         Comment comment = new Comment(commentText, profile);
         if(comment.getId()==null) comment = commentService.create(comment);

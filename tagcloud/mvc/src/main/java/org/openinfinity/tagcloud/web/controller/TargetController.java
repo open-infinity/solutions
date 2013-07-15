@@ -3,7 +3,6 @@ package org.openinfinity.tagcloud.web.controller;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -160,7 +159,7 @@ public class TargetController {
 		ResponseObject<Target> result = new ResponseObject<Target>();
 		try {
 			Target target = targetService.loadById(target_id);
-			result.setSuccess(target);
+			result.setSuccess("Target loaded successfully",target);
 		} catch (Exception e) {
 			result.setIs_error(true);
 			result.setError_code("target_error");

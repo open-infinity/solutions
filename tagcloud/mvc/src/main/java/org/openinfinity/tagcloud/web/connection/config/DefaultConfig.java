@@ -1,13 +1,12 @@
 package org.openinfinity.tagcloud.web.connection.config;
 
 import org.openinfinity.tagcloud.web.connection.ConnectionCredentialBuilder;
-import org.openinfinity.tagcloud.web.connection.LoggingPolicy;
 import org.openinfinity.tagcloud.web.connection.entity.ConnectionCredential;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DefaultConfig implements Config {
+public class DefaultConfig implements ConnectionConfig {
 	@Value("${facebook.client_id}")
 	private String client_id;
 	@Value("${facebook.client_secret}")
