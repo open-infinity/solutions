@@ -9,14 +9,18 @@ var infoWindowContent = "Target's location";
 
 
 function initialize() {
+
   var mapOptions = {
     zoom: 13,
     center: new google.maps.LatLng(60.172983,24.940332),
     mapTypeId: google.maps.MapTypeId.ROADMAP
+
   };
   
   map = new google.maps.Map(document.getElementById('map-canvas'),
       mapOptions);  
+  
+      
 
   infoWindow = new google.maps.InfoWindow({
 	    content: infoWindowContent
@@ -37,6 +41,16 @@ function initialize() {
     
     populateCoordinates(location);
   });
+  
+   map.setOptions({styles: [
+   {
+     featureType: "poi",
+     elementType: "labels",
+     stylers: [
+       { visibility: "off" }
+     ]
+   }
+ ]});
 
 }
 google.maps.event.addDomListener(window, 'load', initialize);
