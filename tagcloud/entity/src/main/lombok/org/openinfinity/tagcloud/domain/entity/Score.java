@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -25,8 +26,8 @@ public class Score implements Entity {
 	@NonNull
 	private Integer stars;
 
-    @NonNull
-    private Profile profile;
+	@NonNull
+	private Profile profile;
 
 	@Override
 	public String toString() {

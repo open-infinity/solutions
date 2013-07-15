@@ -15,10 +15,5 @@ public class TagSpecification extends AbstractSpecification<Tag> {
 
 	@Override
 	public void testIfEligibleForCreation(Tag entity, Collection<Tag> entities) throws ApplicationException {
-		if (entities.contains(entity)) {
-			ExceptionUtil.throwApplicationException(
-				"Tag already exists with name: " + entity.getText(), 
-				ExceptionLevel.INFORMATIVE, 
-				TagService.UNIQUE_EXCEPTION_ENTITY_ALREADY_EXISTS);
-		}
+		//always ok
 	}}

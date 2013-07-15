@@ -20,7 +20,7 @@ public interface TargetService extends AbstractTextEntityCrudServiceInterface<Ta
 
     void addTagToTarget(String tag, Target target, String facebookId);
 
-    void removeTagFromTarget(Tag tag, Target target);
+    //void removeTagFromTarget(Tag tag, Target target);
 
     void addCommentToTarget(String comment, Target target, String facebookId);
 

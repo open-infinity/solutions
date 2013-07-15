@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import org.openinfinity.tagcloud.utils.Utils;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -33,24 +34,24 @@ public class Profile implements Entity {
 	@NonNull
 	private String facebookId;
 	
-	private Map<String, Set<Tag>> myTags = new HashMap<String, Set<Tag>>(); //string = target.id
+	private Map<String, List<Tag>> myTags = new HashMap<String, List<Tag>>(); //String = target.id
 	
-	private List<String> myScoredTargets = new ArrayList<String>();
+	private Set<String> myScoredTargets = new HashSet<String>();
 	
 	public void addTag(Tag tag, Target target) {
-		System.out.println(tag);
 		if(myTags.containsKey(target.getId())) {
-			myTags.get(target.getId()).add(tag);
-			System.out.println("contains");
+			if(!myTags.get(target.getId()).contains(tag))
+				myTags.get(target.getId()).add(tag);
 		}
 		else {
-			Set<Tag> tags = new HashSet<Tag>();
-			tags.add(tag);
-			myTags.put(target.getId(), tags);
-			System.out.println("new");
+			myTags.put(target.getId(), Utils.createList(tag));
 		}
 	}
-
+	
+	public void addScoredTarget(Target target) {
+		myScoredTargets.add(target.getId());
+	}
+	
 	@Override
 	public String toString() {
 		return "Profile, id="+id;

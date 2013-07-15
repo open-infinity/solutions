@@ -3,6 +3,7 @@ package org.openinfinity.tagcloud.domain.entity;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
 import javax.validation.constraints.Size;
@@ -53,13 +54,38 @@ public class Target implements TextEntity {
 		location[0] = longitude;
 		location[1] = latitude;
 	}
-	
+
+	/*
+	 * removes existing score from the same user, adds a new one and updates the average score
+	 */
+	public void addScore(Score score) {
+		ListIterator<Score> iterator = scores.listIterator();
+		while (iterator.hasNext()) {
+			Score existingScore = iterator.next();
+			if(existingScore.getProfile().getId() == score.getProfile().getId()) {
+				iterator.remove();
+				break;
+			}
+		}
+		scores.add(score);
+		calcScore();
+	}
 	
 	@Override
 	public String toString() {
 		return "Target, id="+id+", text="+text;
 	}
 
+
+
+	private void calcScore() {
+		int size = scores.size();
+		int summ = 0;
+		for(Score s : scores){
+			summ += s.getStars();
+		}
+		score = 1.0*summ/size; 
+	}
 
 
 
