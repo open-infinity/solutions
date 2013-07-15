@@ -1,9 +1,9 @@
 .targetItemDiv {
 	background-color: #88BBFF;
 	border-radius: 20px 20px;
-	border-bottom-right-radius: 50px 30px;
+	border-bottom-right-radius: 20px 20px;
 	-moz-border-radius: 20px 20px;
-	-moz-border-radius-bottomright: 50px 30px;
+	-moz-border-radius-bottomright: 20px 20px;
 	height: 100px;
 	width: 85%;
 	border-color: black;
