@@ -4,13 +4,16 @@ function createDiv(result, index) {
 	div.append("<div>Recommendation Score: " + result.recommendationScore
 			+ "</div>");
 	div.append("<div>User Score: " + result.target.score + "</div>");
-
+	var t_id = result.target.id;
+	$(div).click(function (){ window.location= "target?target_id="+t_id;});
+	div.css('cursor', 'pointer');
 	return div;
 }
 
 function setTargetDivHighlight(div, highlighted) {
 	if (highlighted) {
 		div.css('background-color', '#BBDDFF');
+		
 	} else {
 		div.css('background-color', '#88BBFF');
 	}
