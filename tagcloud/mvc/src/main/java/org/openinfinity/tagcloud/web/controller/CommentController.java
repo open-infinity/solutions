@@ -141,32 +141,43 @@ public class CommentController {
 	ResponseObject<String> submitComment(
 			@PathVariable("target_id") String target_id,
 			@RequestParam("text") String text) {
-
+				
+		ResponseObject<String> responseObject = new ResponseObject<String>();
 		Target target = targetService.loadById(target_id);
 		CommentModel commentmModel = new CommentModel();
 		commentmModel.setText(text);
 
 		Set<ConstraintViolation<CommentModel>> failures = validator
 				.validate(commentmModel);
-		ResponseObject<String> responseObject = new ResponseObject<String>();
+		
+		
+		try{
+			if (failures.isEmpty() && target != null) {
+				
+				targetService
+						.addCommentToTarget(commentmModel.getText(), target,"alex.diba");
+						
+				responseObject.setSuccess("Comment saved successfully!", commentmModel.getText());
 
-		if (failures.isEmpty() && target != null) {
-			targetService
-					.addCommentToTarget(commentmModel.getText(), target,"alex.diba");
-			responseObject.setSuccess("Comment saved successfully!", commentmModel.getText());
-
-		} else {
+			}
+			else{
+				throw new Exception("failures found or Target is null");
+			}
+		}catch(Exception ex){
+			
 			responseObject.setIs_error(true);
 			responseObject.setStatus(HttpServletResponse.SC_BAD_REQUEST + "");
 			responseObject.setMessage("Comment can't be accepted");
 			responseObject.setError_code("comment_error");
+			responseObject.addErrorReason("Error: " + ex.getMessage());
 			for (ConstraintViolation<CommentModel> e : failures) {
 				responseObject.addErrorReason("Error: " + e.getMessage());
 			}
+			if (target == null) {
+				responseObject.addErrorReason("Error: no Target found by Id:["+target_id+"]");
+			}			
 		}
-		if (target == null) {
-			responseObject.addErrorReason("Error: no Target found by Id:["+target_id+"]");
-		}
+		
 		return responseObject;
 	}
 

@@ -2,6 +2,7 @@ var map;
 var star = "&#x02605;";
 var empty_star = "&#x02606;";
 var default_author_img = "http://www.howsimple.com/assets/imgs/person_empty.png";
+var current_target = null;
 var test_object;
 $('document').ready(function() {
 
@@ -21,7 +22,7 @@ function getAndPrintTargetListInConsole() {
 		$.each(targets, function(i, target) {
 			console.log(i + " new model id: " + target.id);
 			console.log(i + " text: " + target.text);
-//			console.log(target);
+			// console.log(target);
 
 		});
 	});
@@ -36,24 +37,54 @@ function getTargeAndUpdateUi(target_id) {
 
 }
 function setTargetInUi(target) {
-
+	current_target = target;
 	$("#target_title").html(target.text);
-	$("#score_value").html(target.score);
-	$("#target_add_comment_main form").submit(function() {
-		submitComment(this, target.id);
-		return false;// disable the default action of the form
-	});
+	$("#score_value").html(target.score);	
 	setTagsInTagBar(target.tags);
 	google_map_initialize(target.location[0], target.location[1]);
 	getTargetCommentsAndUpdateUi(target.id);
+	if(isUserLoggedIn()){
+		postLoginView(target);
+	}else{
+		preLoginView(target);
+	}
+}
+
+function preLoginView(target){
+	$("#comment_form_div").css('display','none');
+	$("#default_login_main").css('display','block');
+	$("#default_login_main img").click(function(){ window.location ="login?next=target?target_id="+target.id;});
+}
+function postLoginView(target){
+	$("#default_login_main").css('display','none');
+	$("#comment_form_div").css('display','block');
+	$("#comment_form_div form").submit(function() {
+		submitComment(this, target.id);
+		return false;// disable the default action of the form
+	});
+}
+function isUserLoggedIn() {
+	var logged_in = false;
+	$.ajax({
+		type : 'GET',
+		async : false,
+		url : 'check/connection',
+		success : function(data) {
+			if (!hasError(data) && data.result_list[0] != null) {
+				logged_in = data.result_list[0].logged_in;
+			}
+		}
+	});
+	return logged_in;
 }
 /**
- *  Refactoring needed!!!!!!!!
+ * Refactoring needed!!!!!!!!
+ * 
  * @param form
  * @param target_id
  */
 function submitComment(form, target_id) {
-	path="comment/"+target_id;
+	path = "comment/" + target_id;
 	console.log("sendig comment to server, comment's text is: "
 			+ $($(form).find("textarea")[0]).val());
 	console.log("server path " + path);
@@ -77,7 +108,6 @@ function submitComment(form, target_id) {
 					}
 					$("#add_comment_errors").css('display', 'block');
 					$("#add_comment_success").css('display', 'none');
-					
 
 				} else {
 					$("#comment_success_header > h3").html(data.message);
