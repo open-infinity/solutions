@@ -130,13 +130,28 @@ function getTargetCommentsAndUpdateUi(target_id) {
 	$("#comment_container").html("");
 	$.getJSON("comment/list/" + target_id, function(data) {
 		$.each(data, function(i, comment) {
-			createNewComment(default_author_img, comment.profile.facebookId,
+			createNewComment("facebook/photo/"+comment.profile.facebookId, 
+					getFacebookName_synchronized(comment.profile.facebookId),
 					comment.id, comment.text);
 		});
 	});
 
 }
 
+function getFacebookName_synchronized(facebook_id){
+	var name = "anonymous";
+	$.ajax({
+		type : 'GET',
+		async : false,
+		url : 'facebook/profile/'+facebook_id,
+		success : function(data) {
+			if (!hasError(data) && data.result_list[0] != null) {
+				name = data.result_list[0].name;
+			}
+		}
+	});
+	return name;
+}
 function createNewComment(author_img, author_name, comment_id, text) {
 	var comment = $("<div></div>");
 	$(comment).attr('class', 'comment');

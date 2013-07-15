@@ -43,6 +43,8 @@ public interface ConnectionManager {
 	public String disconnect(HttpServletRequest request,
 			HttpServletResponse response, boolean facebook_logout);
 
+	public Facebook getPublicFacebook();
+	
 	public Facebook getSessionFacebook(String session_id);
 
 	public boolean isUserLoggedIn(String session_id);

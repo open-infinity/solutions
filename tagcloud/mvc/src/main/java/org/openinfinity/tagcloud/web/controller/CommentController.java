@@ -112,14 +112,7 @@ public class CommentController {
 		return localizedErrorMessages;
 	}
 
-	@Log
-	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
-	@RequestMapping(method = RequestMethod.GET)
-	public String createNewComment(Model model) {
-		model.addAttribute("commentModel", new CommentModel());
-		return "createComment";
-	}
-
+	
 	@Log
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
 	@RequestMapping(method = RequestMethod.GET, value = "/list/{target_id}")
@@ -166,7 +159,7 @@ public class CommentController {
 			}
 			Facebook facebook = connectionMnager.getSessionFacebook(request.getSession().getId());
 			targetService.addCommentToTarget(commentmModel.getText(), target,
-					facebook.userOperations().getUserProfile().getId());
+					facebook.userOperations().getUserProfile().getId());			
 
 			responseObject.setSuccess("Comment saved successfully!",
 					commentmModel.getText());

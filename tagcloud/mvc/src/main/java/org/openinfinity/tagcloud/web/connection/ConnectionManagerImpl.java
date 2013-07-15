@@ -20,6 +20,7 @@ import org.openinfinity.tagcloud.web.connection.exception.NullActiveConnectionEx
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.facebook.api.Facebook;
+import org.springframework.social.facebook.api.impl.FacebookTemplate;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.social.oauth2.GrantType;
@@ -180,6 +181,11 @@ public class ConnectionManagerImpl implements ConnectionManager {
 			conn.setFacebook(null);
 		}
 		return null;
+	}
+	@Override
+	public Facebook getPublicFacebook(){
+		Facebook fb = new FacebookTemplate();
+		return fb;
 	}
 
 	@Override
