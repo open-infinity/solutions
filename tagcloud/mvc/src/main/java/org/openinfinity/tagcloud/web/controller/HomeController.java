@@ -91,6 +91,14 @@ public class HomeController {
 		return "home";
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value="json")
+	public @ResponseBody Date home() {
+		
+		return new Date();
+	}
+
+	
+	
 	@Log
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
 	@RequestMapping(method = RequestMethod.POST)

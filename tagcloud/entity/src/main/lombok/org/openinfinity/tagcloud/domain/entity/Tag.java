@@ -1,5 +1,6 @@
 package org.openinfinity.tagcloud.domain.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Data;
@@ -23,7 +24,7 @@ public class Tag implements TextEntity, Likeable {
 	@Id
 	private String id;
 
-	private Set<Like> likes;
+	private Set<Like> likes = new HashSet<Like>();
 	
 	@Override
 	public String toString() {
