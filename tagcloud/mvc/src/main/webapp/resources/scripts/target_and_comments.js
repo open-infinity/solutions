@@ -131,13 +131,13 @@ function getTargetCommentsAndUpdateUi(target_id) {
 	$.getJSON("comment/list/" + target_id, function(data) {
 		$.each(data, function(i, comment) {
 			createNewComment(default_author_img, comment.profile.facebookId,
-					comment.id, comment.text);
+					comment.id,(new Date()).toLocaleString() ,comment.text);
 		});
 	});
 
 }
 
-function createNewComment(author_img, author_name, comment_id, text) {
+function createNewComment(author_img, author_name, comment_id, comment_date,text) {
 	var comment = $("<div></div>");
 	$(comment).attr('class', 'comment');
 	$(comment).attr('id', comment_id);
@@ -148,10 +148,11 @@ function createNewComment(author_img, author_name, comment_id, text) {
 
 	$(comment_head).html(
 			"<img alt='" + author_name + " image' src='" + author_img
-					+ "' /> <span>" + author_name + "</span>");
+					+ "' /> <span class='comment_name'>" + author_name + "</span><span class='comment_date'>Created: "+comment_date+"</span> ");
 	$(comment_text).html(text);
 
 	$(comment).append($(comment_head));
+        $(comment).append("<hr />");
 	$(comment).append($(comment_text));
 
 	$("#comment_container").append($(comment));
