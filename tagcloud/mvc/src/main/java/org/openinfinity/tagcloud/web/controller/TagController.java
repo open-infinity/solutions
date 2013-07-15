@@ -2,7 +2,9 @@ package org.openinfinity.tagcloud.web.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.openinfinity.tagcloud.domain.entity.Tag;
@@ -31,7 +33,7 @@ public class TagController {
 		
 		@RequestMapping(method = RequestMethod.GET, value="autocomplete")
 		public @ResponseBody Collection<TagModel> getAutocompleteSuggestions(@RequestParam(value="q") String q) {
-			List<TagModel> tagModels = new ArrayList<TagModel>();
+			Set<TagModel> tagModels = new HashSet<TagModel>();
 			LOGGER.error("hmph "+tagService.loadAll().size());
 			for(Tag tag : tagService.searchLike(q)) {
 				tagModels.add(new TagModel(tag.getId().toString(), tag.getText()));

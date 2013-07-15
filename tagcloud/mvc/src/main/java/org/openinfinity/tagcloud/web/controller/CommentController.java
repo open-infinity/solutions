@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
@@ -32,6 +33,7 @@ import org.openinfinity.tagcloud.web.support.SerializerUtil;
 import org.openinfinity.tagcloud.web.support.ServletUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.social.facebook.api.Facebook;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -123,13 +125,15 @@ public class CommentController {
 	@RequestMapping(method = RequestMethod.GET, value = "/list/{target_id}")
 	public @ResponseBody
 	List<Comment> loadAllComments(@PathVariable("target_id") String target_id) {
-		List<Comment> comments = targetService.loadById(target_id).getComments();
+		List<Comment> comments = targetService.loadById(target_id)
+				.getComments();
 
 		return comments;
 	}
 
 	/**
 	 * Refactoring needed
+	 * 
 	 * @param target_id
 	 * @param text
 	 * @return
@@ -140,49 +144,51 @@ public class CommentController {
 	public @ResponseBody
 	ResponseObject<String> submitComment(
 			@PathVariable("target_id") String target_id,
-			@RequestParam("text") String text) {
+			@RequestParam("text") String text, HttpServletRequest request) {
 
+		ResponseObject<String> responseObject = new ResponseObject<String>();
 		Target target = targetService.loadById(target_id);
 		CommentModel commentmModel = new CommentModel();
 		commentmModel.setText(text);
 
 		Set<ConstraintViolation<CommentModel>> failures = validator
 				.validate(commentmModel);
-		ResponseObject<String> responseObject = new ResponseObject<String>();
 
-		if (failures.isEmpty() && target != null) {
-			targetService
-					.addCommentToTarget(commentmModel.getText(), target,"alex.diba");
-			responseObject.setSuccess("Comment saved successfully!", commentmModel.getText());
+		try {
+			if (!connectionMnager.isUserLoggedIn(request.getSession().getId())) {
+				throw new Exception("user is not logged in!");
+			}
+			if (!failures.isEmpty()) {
+				throw new Exception();
+			}
+			if (target == null) {
+				throw new Exception("target can't be null!");
+			}
+			Facebook facebook = connectionMnager.getSessionFacebook(request.getSession().getId());
+			targetService.addCommentToTarget(commentmModel.getText(), target,
+					facebook.userOperations().getUserProfile().getId());
 
-		} else {
+			responseObject.setSuccess("Comment saved successfully!",
+					commentmModel.getText());
+
+		} catch (Exception ex) {
+
 			responseObject.setIs_error(true);
 			responseObject.setStatus(HttpServletResponse.SC_BAD_REQUEST + "");
 			responseObject.setMessage("Comment can't be accepted");
 			responseObject.setError_code("comment_error");
+			responseObject.addErrorReason("Error: " + ex.getMessage());
 			for (ConstraintViolation<CommentModel> e : failures) {
 				responseObject.addErrorReason("Error: " + e.getMessage());
 			}
+			if (target == null) {
+				responseObject.addErrorReason("Error: no Target found by Id:["
+						+ target_id + "]");
+			}
 		}
-		if (target == null) {
-			responseObject.addErrorReason("Error: no Target found by Id:["+target_id+"]");
-		}
+
 		return responseObject;
 	}
 
-	private List<Comment> getFakeCommentList() {
-		List<Comment> comments = new LinkedList<Comment>();
-
-		for (int i = 0; i < 20; i++) {
-			Comment comment = new Comment();
-			Profile profile = new Profile();
-			profile.setFacebookId("kavan.sole");
-			comment.setProfile(profile);
-			comment.setText("la bala bla ajhdl basdkl bakljdbsjkl blajbsdlkj "
-					+ "blsjbasdlkj lasjkhdlskjhd baldkjdklj blkajsdjkl agjhdgdjhqweytu!");
-			comment.setId("k" + i);
-			comments.add(comment);
-		}
-		return comments;
-	}
+	
 }

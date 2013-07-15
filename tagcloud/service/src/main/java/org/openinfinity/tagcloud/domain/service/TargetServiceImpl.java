@@ -15,24 +15,28 @@
  */
 package org.openinfinity.tagcloud.domain.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.ListIterator;
+
 import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.exception.ExceptionLevel;
 import org.openinfinity.core.util.ExceptionUtil;
-import org.openinfinity.tagcloud.domain.entity.*;
+import org.openinfinity.tagcloud.domain.entity.Comment;
+import org.openinfinity.tagcloud.domain.entity.Profile;
+import org.openinfinity.tagcloud.domain.entity.Score;
+import org.openinfinity.tagcloud.domain.entity.Tag;
+import org.openinfinity.tagcloud.domain.entity.TagQuery;
+import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.NearbyTarget;
 import org.openinfinity.tagcloud.domain.entity.query.Result;
-import org.openinfinity.tagcloud.domain.entity.TagQuery;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Product service implementation with specification.
@@ -66,19 +70,18 @@ public class TargetServiceImpl extends
 	@Override
 	@Transactional
 	public void addTagToTarget(String tagName, Target target, String facebookId) {
-    	for (Tag oldTag : target.getTags()) {
-			if (oldTag.getText().equals(tagName))
-				ExceptionUtil.throwBusinessViolationException(
-						"Tag with the same name already exists in the target",
-						ExceptionLevel.INFORMATIVE,
-						TargetService.UNIQUE_EXCEPTION_TAG_ALREADY_INCLUDED);
+    	Tag tag = new Tag(tagName);
+        
+    	if(target.getTags().contains(tag)) {
+			ExceptionUtil.throwBusinessViolationException(
+					"Tag with the same name already exists in the target",
+					ExceptionLevel.INFORMATIVE,
+					TargetService.UNIQUE_EXCEPTION_TAG_ALREADY_INCLUDED);
 		}
-        Profile profile = profileService.loadByFacebookId(facebookId);
-        Tag tag = new Tag(tagName);
-        if (tagService.contains(tag)) {
-            tag = tagService.loadByText(tag.getText()).iterator().next();
-        }
-        else tag = tagService.create(tag);
+        
+    	Profile profile = profileService.loadByFacebookId(facebookId);
+        
+    	tag = tagService.create(tag);
 
 		target.getTags().add(tag);
 		update(target);
@@ -94,19 +97,17 @@ public class TargetServiceImpl extends
     public void scoreTarget(int scoreStars, Target target, String facebookId) {
         Profile profile = profileService.loadByFacebookId(facebookId);
         Score score = scoreService.create(new Score(scoreStars, profile));
-        target.getScores().add(score);
-        target.setScore(this.calcScore(target.getScores()));
-        profile.getMyScoredTargets().add(target.getId());
-        profileService.update(profile);
+        target.addScore(score);
         update(target);
-
+        profile.addScoredTarget(target);
+        profileService.update(profile);
     }
 
     @Log
     @AuditTrail
     @Override
     @Transactional
-    public void addCommentToTarget(String commentText, Target target, String facebookId) {
+    public void addCommentToTarget(String commentText, Target target, String facebookId){
         Profile profile = profileService.loadByFacebookId(facebookId);
         Comment comment = new Comment(commentText, profile);
         if(comment.getId()==null) comment = commentService.create(comment);
@@ -115,7 +116,7 @@ public class TargetServiceImpl extends
     }
 
 
-
+    /*
     @Log
 	@AuditTrail
 	@Override
@@ -129,8 +130,9 @@ public class TargetServiceImpl extends
 
 		target.getTags().remove(tag);
 		update(target);
-	}
+	}*/
 
+    
 	@Override
 	public Collection<Target> loadByTag(Tag tag) {
 		return targetRepository.loadByTag(tag);
@@ -242,17 +244,6 @@ public class TargetServiceImpl extends
 	private double calcDistance(Target t1, Target t2) {
 		return Utils.calcDistanceGCS(t1.getLocation()[0], t1.getLocation()[1],
 				t2.getLocation()[0], t2.getLocation()[1]);
-	}
-
-	private double calcScore(List<Score> scores) {
-		
-		int size = scores.size();
-		int summ = 0;
-		for(Score s : scores){
-			summ += s.getStars();
-		}
-		double result = 1.0*summ/size; 
-		return result;
 	}
 
 }

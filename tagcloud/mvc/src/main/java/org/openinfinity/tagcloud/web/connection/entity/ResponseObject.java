@@ -37,10 +37,6 @@ public class ResponseObject<T> {
 
 		this.initWithSuccess(null, results);
 	}
-	public void setSuccess(T result) {
-		this.result_list.add(result);
-		this.initWithSuccess(null, null);
-	}
 	public void setSuccess(String message) {
 		this.initWithSuccess(message, null);
 	}

@@ -9,7 +9,8 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openinfinity.tagcloud.web.connection.config.Config;
+import org.openinfinity.tagcloud.web.connection.config.ConnectionConfig;
+import org.openinfinity.tagcloud.web.connection.config.LoggingPolicy;
 import org.openinfinity.tagcloud.web.connection.entity.ActiveConnection;
 import org.openinfinity.tagcloud.web.connection.entity.CachedRequest;
 import org.openinfinity.tagcloud.web.connection.entity.ConnectionCredential;
@@ -39,7 +40,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 	private ConnectionCredential credential;
 	private LoggingPolicy loggingPolicy;
 	@Autowired
-	private Config config;
+	private ConnectionConfig config;
 
 	public ConnectionManagerImpl() {
 
@@ -203,7 +204,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 	public void setRedirectUrl(HttpServletRequest request, String url) {
 		ActiveConnection conn = this.getSessionActiveConnection(request
 				.getSession().getId());
-		CachedRequest cache = cache = new CachedRequest();
+		CachedRequest cache = new CachedRequest();
 		cache.setCompleteRedirectUrl(url);
 		conn.setCachedrequest(cache);
 

@@ -62,7 +62,7 @@ public class ProfileServiceImplTest {
 		profileService.create(profile);
 		profile = profileService.loadById(profile.getId());
 		Target target = targetService.create(new Target("asdf",0,0));
-		profile.getMyScoredTargets().add(target.getId());
+		profile.addScoredTarget(target);
 		profileService.update(profile);
 		assertEquals(1, profileService.loadById(profile.getId()).getMyScoredTargets().size());
 		assertEquals(1, profileService.loadAll().size());
@@ -82,7 +82,7 @@ public class ProfileServiceImplTest {
 		assertAmountOfProfiles(1);
 		Profile profile2 = createTestProfile();
 		Target target = targetService.create(new Target("asdf",0,0));
-		profile2.getMyScoredTargets().add(target.getId());
+		profile2.addScoredTarget(target);
 		profileService.create(profile2);
 		assertAmountOfProfiles(2);
 		profileService.delete(profile1);

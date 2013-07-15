@@ -1,3 +1,42 @@
+function initTargetFormValidation() {
+	// "targetModel", "/tagcloud/target"
+	$("#targetModel").submit(function() {
+		var request = $(this).serializeObject();
+		$.postJSON("/tagcloud/target", request, 
+		function(request) {
+			setStatusField("Targer created successfully!");
+			$.each($("#targetModel").serializeArray(), function(i, field) {
+			    fieldValidated(field.name, { valid : true });
+			});
+			window.location= "target?target_id="+request.id;
+		}, 
+		function(error) {
+			// Set default view
+			$.each($("#targetModel").serializeArray(), function(i, field) {
+			    fieldValidated(field.name, { valid : true });
+			});
+			// Set error view
+			var obj = jQuery.parseJSON(error.responseText);
+			var errorCounter = 0;
+			var businessViolation = false;
+			$.each(obj, function(key, val) {
+				if ($.isArray(val)) {
+					var realArray = $.makeArray(val);
+					$.map(realArray, function(item, i) {
+						document.getElementById('statusbox').innerHTML=item;
+						businessViolation = true;
+					});
+				} else {
+					fieldValidated(key, { valid : false, message : val});
+					errorCounter++;
+				}
+			});
+			if (!businessViolation)
+				setStatusField("Product under editing contains " + errorCounter + " warning messages.");
+		});
+		return false;				
+	});
+}
 
 function initFormValidation(model, action) {
 	console.log($("#"+model)+"");

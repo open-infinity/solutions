@@ -23,7 +23,7 @@ public abstract class AbstractTextEntityCrudServiceImpl<T extends TextEntity> ex
 	}
 	
 
-	@Log
+	/*@Log
 	@AuditTrail
 	@Override
 	public boolean contains(T entity) {
@@ -34,7 +34,7 @@ public abstract class AbstractTextEntityCrudServiceImpl<T extends TextEntity> ex
 			return false;
 		}
 		return true;
-	}
+	}*/
 
 	
 }
