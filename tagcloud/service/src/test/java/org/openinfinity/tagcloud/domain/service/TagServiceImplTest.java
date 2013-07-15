@@ -58,13 +58,7 @@ public class TagServiceImplTest {
 		Tag createdTag = tagService.create(expected);
 		tagService.create(createdTag);
 	}
-	
-	@Test(expected=ApplicationException.class)
-	public void testCreateTagFailsWhenTagAlreadyExistsWithSameText() {	
-		tagService.create(new Tag("testi"));
-		tagService.create(new Tag("testi"));
-	}
-	
+
 	
 	
 	@Test 

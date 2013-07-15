@@ -16,17 +16,18 @@
  */
 package org.openinfinity.tagcloud.domain.repository;
 
-import java.math.BigInteger;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
+import org.apache.log4j.Logger;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-
-import com.mongodb.QueryBuilder;
 
 /**
  * TagRepository repository implementation.
@@ -39,9 +40,15 @@ public class TagRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<
 	@Autowired
 	MongoTemplate mongoTemplate;
 
+	private static final Logger LOGGER = Logger.getLogger(TagRepositoryMongoDBImpl.class);
+
+	
 	@Override
 	public List<Tag> searchLike(String input) {
 		Query query = new Query(Criteria.where("text").regex("\\b"+input+"\\.*", "i"));
-		return mongoTemplate.find(query, Tag.class);
+		List<Tag> tags = mongoTemplate.find(query, Tag.class);
+		return tags;
 	}
+	
+
 }

@@ -48,6 +48,8 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/scripts/styling.js" />"></script>
 <script type="text/javascript"
+	src="<c:url value="/resources/scripts/connections.js" />"></script>
+<script type="text/javascript"
 	src="<c:url value="/resources/scripts/mainscript.js" />"></script>
 
 <title>TagCloud</title>
@@ -128,7 +130,8 @@
 				</div>
 				<div id="bc-col3">
 					<div id="login_div">
-						<p>login here</p>
+						<img alt="login_facebook"
+							src="https://github.com/adozenlines/facebook-ios-sdk/diff_blob/adb3a65dfff79dc8dc30a1e3220a6bd0db017540/src/FacebookSDKResources.bundle/FBConnect/images/LoginWithFacebookPressed@2x.png?raw=true" />
 					</div>
 					<div id="scroller">
 						<div id="targetlist"></div>

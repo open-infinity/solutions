@@ -2,6 +2,11 @@ package org.openinfinity.tagcloud.domain.entity;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.validation.constraints.Size;
 
@@ -20,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode
-public class Comment implements TextEntity {
+public class Comment implements TextEntity, Likeable {
 
 	@Id
 	private String id;
@@ -33,12 +38,18 @@ public class Comment implements TextEntity {
 	@NonNull
 	private Profile profile;
 
+	private Set<Like> likes = new HashSet<Like>();	
+
+	private final Date date = new Date();
+	
 	@Override
 	public String toString() {
-		String string = "Comment, id="+id +", profile-id="+profile.getId();
+		return "Comment, id="+id +", profile-id="+profile.getId();
+	}
 
-		
-		return string;
+	@Override
+	public void like(Profile profile) {
+		likes.add(new Like(profile));
 	}
 	
 }
