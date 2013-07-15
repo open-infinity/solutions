@@ -1,372 +1,407 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>welcome to targets home!</title>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        <title>welcome to targets home!</title>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <style type="text/css">
+            html, body{
+                width:100%;
+                overflow-x:hidden;
+            }
+            #map-canvas {
+                margin-top: 2%;
+                margin-right: 2%;
+                margin-left: 1%;
+                padding: 0;
+                /*         height: 40%; */
+                min-width: 34%;
+                min-height: 300px;
+                max-width: 34%;
+                max-height: 300px;
+                /*         border: 5px black solid; */
+                float: right;
+                padding: 0;
+                padding: 0;
+            }
 
-<style>
-html, body{
-width:100%;
-overflow-x:hidden;
-}
-#map-canvas {
-	margin-top: 2%;
-	margin-right: 2%;
-	margin-left: 1%;
-	padding: 0;
-	/*         height: 40%; */
-	min-width: 34%;
-	min-height: 300px;
-	max-width: 34%;
-	max-height: 300px;
-	/*         border: 5px black solid; */
-	float: right;
-	padding: 0;
-	padding: 0;
-}
+            #target_info {
+                margin-left: 2%;
+                margin-top: 2%;
+                /*         height: 40%; */
+                min-width: 60%;
+                min-height: 300px;
+                max-width: 60%%;
+                max-height: 300px;
+                float: left;
+                padding: 0;
+            }
 
-#target_info {
-	margin-left: 2%;
-	margin-top: 2%;
-	/*         height: 40%; */
-	min-width: 60%;
-	min-height: 300px;
-	max-width: 60%%;
-	max-height: 300px;
-	float: left;
-	padding: 0;
-}
+            #tag_bar {
+                display: block;
+                min-height: 100px;
+                /* 	margin-top:20px; */
+                bottom: 0;
+            }
 
-#tag_bar {
-	display: block;
-	min-height: 100px;
-	/* 	margin-top:20px; */
-	bottom: 0;
-}
+            #tag_bar>div>span {
+                background-color: beige;
+                margin: 6px;
+                margin-top: 5px;
+                border-radius: 15px;
+                white-space: nowrap;
+                padding: 5px;
+                display: inline-block;
+            }
 
-#tag_bar>div>span {
-	background-color: beige;
-	margin: 6px;
-	margin-top: 5px;
-	border-radius: 15px;
-	white-space: nowrap;
-	padding: 5px;
-	display: inline-block;
-}
+            #target_header {
+                min-width: 100%;
+                min-height: 350px;
+                /* 	border: 5px black solid; */
+                display: inline-block;
+                background-color: #E0E0E0;
+                border-radius: 15px;
+            }
 
-#target_header {
-	min-width: 100%;
-	min-height: 350px;
-	/* 	border: 5px black solid; */
-	display: inline-block;
-	background-color: #E0E0E0;
-	border-radius: 15px;
-}
+            #target_score_main {
+                min-width: 100%;
+                min-height: 100px;
+                /* 	border: 5px black solid; */
+                display: block;
+                /* 	background-color: #E0E0E0; */
+            }
 
-#target_score_main {
-	min-width: 100%;
-	min-height: 100px;
-	/* 	border: 5px black solid; */
-	display: block;
-	/* 	background-color: #E0E0E0; */
-}
+            .comment {
+                min-width: 100%;
+                min-height: 100px;
+                /* 	border: 5px black solid; */
+                display: block;
+                border-radius: 15px;
+                background-color: #ADD8E6;
+                padding: 5px;
+                margin-top: 10px;
+            }
 
-.comment {
-	min-width: 100%;
-	min-height: 100px;
-	/* 	border: 5px black solid; */
-	display: block;
-	border-radius: 15px;
-	background-color: #ADD8E6;
-	padding: 5px;
-	margin-top: 10px;
-}
+            #target_main {
+                /* 	background-color: silver; */
+                min-width: 1000px;
+                min-height: 600px;
+                max-width: 1000px;
+                /* 	float: right; */
+                margin: 0 auto;
+                /* 	border: 5px black solid; */
+                display: block;
+            }
 
-#target_main {
-	/* 	background-color: silver; */
-	min-width: 1000px;
-	min-height: 600px;
-	max-width: 1000px;
-/* 	float: right; */
-	margin: 0 auto;
-	/* 	border: 5px black solid; */
-	display: block;
-}
+            #target_score_main>div {
+                margin-right: 2%;
+                margin-top: 10px;
+                height: 100%;
+                float: right;
+            }
 
-#target_score_main>div {
-	margin-right: 2%;
-	margin-top: 10px;
-	height: 100%;
-	float: right;
-}
+            .score_symbol {
+                color: #FFD700;
+                font-size: 50px;
+                /* 	width: 1.1em; */
+            }
 
-.score_symbol {
-	color: #FFD700;
-	font-size: 50px;
-	/* 	width: 1.1em; */
-}
+            #target_add_comment_main {
+                min-width: 100%;
+                min-height: 100px;
+                margin-top: 40px;
+                /* 	border: 5px black solid; */
+                display: block;
+            }
 
-#target_add_comment_main {
-	min-width: 100%;
-	min-height: 100px;
-	margin-top: 40px;
-	/* 	border: 5px black solid; */
-	display: block;
-}
+            #target_add_comment_main textarea {
+                min-width: 98%;
+                min-height: 100px;
+                margin: 0 auto;
+            }
 
-#target_add_comment_main textarea {
-	min-width: 98%;
-	min-height: 100px;
-	margin: 0 auto;
-}
+            #target_add_comment_main>div {
+                margin-top: 10px;
+            }
+            /****/
+            .comment img {
+                width: 50px;
+                height: 50px;
+            }
 
-#target_add_comment_main>div {
-	margin-top: 10px;
-}
+            /*           
+            
+            .comment>div {
+                            margin-left: 5px;
+                            margin-top: 5px;
+                        }
+            */
 
-.comment img {
-	width: 50px;
-	height: 50px;
-}
+            .comment_name {
+                font-size: x-large;
+                display:inline-block;
+            }
 
-.comment>div {
-	margin-left: 5px;
-	margin-top: 5px;
-}
+            .comment_text {
+                margin: 10px;
+                margin-top: 20px;
+                margin-bottom: 10px;
+            }
+            .comment_date{
+                display:inline-block;
+                float:right;
+                font-size: medium;
+            }
+            .comment_header{
+                margin:15px;
+            }
 
-.comment_header>span {
-	font-size: x-large;
-}
+            /***/
 
-.comment_text {
-	margin-left: 2px;
-	margin-top: 5px;
-	margin-bottom: 10px;
-}
+            #add_comment_errors,#add_comment_success,#default_login_main {
+                padding: 10px;
+                padding-top: 15px;
+                padding-left: 10%;
+                border-radius: 15px;
+                padding-left: 10%;
+                /* display:none; this should be default value */
+            }
 
-#add_comment_errors,#add_comment_success,#default_login_main {
-	padding: 10px;
-	padding-top: 15px;
-	padding-left: 10%;
-	border-radius: 15px;
-	padding-left: 10%;
-	/* display:none; this should be default value */
-}
+            #comment_errors_header,#comment_success_header {
+                white-space: nowrap;
+                display: block;
+            }
 
-#comment_errors_header,#comment_success_header {
-	white-space: nowrap;
-	display: block;
-}
+            #comment_errors_header>h3,#comment_success_header>h3 {
+                display: inline;
+            }
 
-#comment_errors_header>h3,#comment_success_header>h3 {
-	display: inline;
-}
+            #comment_errors_header>img,#comment_success_header>img {
+                width: 32px;
+                height: 32px;
+            }
 
-#comment_errors_header>img,#comment_success_header>img {
-	width: 32px;
-	height: 32px;
-}
+            #add_comment_success {
+                background-color: #BCF5A9;
+            }
 
-#add_comment_success {
-	background-color: #BCF5A9;
-}
+            #add_comment_errors {
+                background-color: #F6CEE3;
+            }
 
-#add_comment_errors {
-	background-color: #F6CEE3;
-}
-
-#default_login_main {
-	/* 	background-color: #ADD8E6; */
-	color: brown; min-height : 100px;
-	overflow: auto;
-	clear: both;
-	border: 2px silver solid;
-	min-height: 100px;
-}
-
-
-#default_login_main img {
-	width: 200px;
-	margin-top: 50px;
-	float: right;
-	border-radius: 10px;
-	border: 2px outset;
-}
-
-#default_login_main img:active {
-	border: 2px inset;
-}
-</style>
-<script
-	src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-<script>
-	var map;
-	function initialize() {
-		console.log("blaaaa");
-		var mapOptions = {
-			zoom : 16,
-			center : new google.maps.LatLng(60.170293, 24.939473),
-			mapTypeId : google.maps.MapTypeId.ROADMAP,
-			panControl : false,
-			zoomControl : false,
-			scaleControl : false,
-		};
-		map = new google.maps.Map(document.getElementById('map-canvas'),
-				mapOptions);
-	}
-
-	google.maps.event.addDomListener(window, 'load', initialize);
-</script>
-<body>
+            #default_login_main {
+                /* 	background-color: #ADD8E6; */
+                color: brown; min-height : 100px;
+                overflow: auto;
+                clear: both;
+                border: 2px silver solid;
+                min-height: 100px;
+            }
 
 
-	<div id="target_main">
-		<div id="target_header">
-			<div id="target_info">
-				<h1>Kaivokatu</h1>
+            #default_login_main img {
+                width: 200px;
+                margin-top: 50px;
+                float: right;
+                border-radius: 10px;
+                border: 2px outset;
+            }
 
-				<div id="tag_bar">
-					<h3>Tags:</h3>
-					<diV>
-						<span>I love this place!</span> <span>Amazing restaurants
-							and shops in this area!</span> <span>another tag</span><span> and
-							another one ..</span> <span>Nice Hotel right in the corner</span>
-					</div>
-				</div>
-			</div>
-
-			<div id="map-canvas"></div>
-		</div>
-		<div id="target_score_main">
-			<div>
-				<h3>Score: 8.0</h3>
-				<span class="score_symbol">&#x02605;</span> <span
-					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span>
-				<span class="score_symbol">&#x02605;</span> <span
-					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span>
-				<span class="score_symbol">&#x02605;</span> <span
-					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02606;</span>
-				<span class="score_symbol">&#x02606;</span>
-
-			</div>
-
-		</div>
-		<div id="target_add_comment_main">
-
-			<div id="add_comment_success">
-				<div id="comment_success_header">
-					<!--  empty success header-->
-					<img alt="error_png"
-						src="http://sms.smsmarketing360.com/img/success_icon.png" />
-					<h3>Comment created successfully</h3>
-				</div>
-
-			</div>
-			<div id="add_comment_errors">
-				<div id="comment_errors_header">
-					<!--  empty error header-->
-					<img alt="error_png"
-						src="http://www.clker.com/cliparts/8/3/3/4/1195445190322000997molumen_red_round_error_warning_icon.svg.med.png" />
-					<h3>Comment can't be accepted</h3>
-				</div>
+            #default_login_main img:active {
+                border: 2px inset;
+            }
 
 
-				<ul>
-					<li>User is not logged in</li>
-					<li>Comment length too long</li>
-					<li>Comment can't contain a script</li>
-				</ul>
-			</div>
-			<div id="default_login_main">
-			
-					<h3>Login and tell your opinion about this place!</h3>
-					<hr />
-				<img alt="login_facebook"
-					src="https://github.com/adozenlines/facebook-ios-sdk/diff_blob/adb3a65dfff79dc8dc30a1e3220a6bd0db017540/src/FacebookSDKResources.bundle/FBConnect/images/LoginWithFacebookPressed@2x.png?raw=true" />
-			</div>
-			<div>
+        </style>
+        <script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                initialize();
+                setTimeToComments();
+            });
+            var map;
+            function initialize() {
+                console.log("blaaaa");
+                var mapOptions = {
+                    zoom: 16,
+                    center: new google.maps.LatLng(60.170293, 24.939473),
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    panControl: false,
+                    zoomControl: false,
+                    scaleControl: false,
+                };
+                map = new google.maps.Map(document.getElementById('map-canvas'),
+                        mapOptions);
+            }
 
-				<form action="" method="post" id="comment_form">
-					<textarea rows="" cols="" name="text"></textarea>
-					<input value="send" type="submit">
-				</form>
-			</div>
+//            google.maps.event.addDomListener(window, 'load', initialize);
+            function setTimeToComments() {
+                time = (new Date()).toLocaleString();
+                $(".comment_date").html("Created: " + time);
+            }
 
-		</div>
-
-		<div class="comment">
-
-			<div class="comment_header">
-				<img alt="profile image"
-					src="https://fbcdn-sphotos-c-a.akamaihd.net/hphotos-ak-prn1/p480x480/156541_584368431587813_2134142774_n.jpg" />
-				<span>Carlo Sagan</span>
-			</div>
-			<div class="comment_text">Lorem ipsum dolor sit amet,
-				consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a
-				vulputate dictum, massa quam dapibus leo, eget vulputate orci purus
-				ut lorem. In fringilla mi in ligula. Pellentesque aliquam quam vel
-				dolor. Nunc adipiscing. Sed quam odio, tempus ac, aliquam molestie,
-				varius ac, tellus. Vestibulum ut nulla aliquam risus rutrum
-				interdum. Pellentesque lorem.</div>
+        </script>
+    <body>
 
 
-		</div>
+        <div id="target_main">
+            <div id="target_header">
+                <div id="target_info">
+                    <h1>Kaivokatu</h1>
 
-		<div class="comment">
+                    <div id="tag_bar">
+                        <h3>Tags:</h3>
+                        <diV>
+                            <span>I love this place!</span> <span>Amazing restaurants
+                                and shops in this area!</span> <span>another tag</span><span> and
+                                another one ..</span> <span>Nice Hotel right in the corner</span>
+                        </div>
+                    </div>
+                </div>
 
-			<div class="comment_header">
-				<img alt="profile image"
-					src="https://fbcdn-sphotos-c-a.akamaihd.net/hphotos-ak-prn1/p480x480/156541_584368431587813_2134142774_n.jpg" />
-				<span>Jukka Niemi</span>
-			</div>
-			<div class="comment_text">Lorem ipsum dolor sit amet,
-				consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a
-				vulputate dictum, massa quam dapibus leo, eget vulputate orci purus
-				ut lorem. In fringilla mi in ligula. Pellentesque aliquam quam vel
-				dolor. Nunc adipiscing. Sed quam odio, tempus ac, aliquam molestie,
-				varius ac, tellus. Vestibulum ut nulla aliquam risus rutrum
-				interdum. Pellentesque lorem.</div>
+                <div id="map-canvas"></div>
+            </div>
+            <div id="target_score_main">
+                <div>
+                    <h3>Score: 8.0</h3>
+                    <span class="score_symbol">&#x02605;</span> <span
+                        class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span>
+                    <span class="score_symbol">&#x02605;</span> <span
+                        class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span>
+                    <span class="score_symbol">&#x02605;</span> <span
+                        class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02606;</span>
+                    <span class="score_symbol">&#x02606;</span>
 
+                </div>
 
-		</div>
+            </div>
+            <div id="target_add_comment_main">
 
-		<div class="comment">
+                <div id="add_comment_success">
+                    <div id="comment_success_header">
+                        <!--  empty success header-->
+                        <img alt="error_png"
+                             src="http://sms.smsmarketing360.com/img/success_icon.png" />
+                        <h3>Comment created successfully</h3>
+                    </div>
 
-			<div class="comment_header">
-				<img alt="profile image"
-					src="https://fbcdn-sphotos-c-a.akamaihd.net/hphotos-ak-prn1/p480x480/156541_584368431587813_2134142774_n.jpg" />
-				<span>Jamal Karim</span>
-			</div>
-			<div class="comment_text">Lorem ipsum dolor sit amet,
-				consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a
-				vulputate dictum, massa quam dapibus leo, eget vulputate orci purus
-				ut lorem. In fringilla mi in ligula. Pellentesque aliquam quam vel
-				dolor. Nunc adipiscing. Sed quam odio, tempus ac, aliquam molestie,
-				varius ac, tellus. Vestibulum ut nulla aliquam risus rutrum
-				interdum. Pellentesque lorem.</div>
-
-
-		</div>
-
-		<div class="comment">
-
-			<div class="comment_header">
-				<img alt="profile image"
-					src="https://fbcdn-sphotos-c-a.akamaihd.net/hphotos-ak-prn1/p480x480/156541_584368431587813_2134142774_n.jpg" />
-				<span>Kim kardashian</span>
-			</div>
-			<div class="comment_text">Lorem ipsum dolor sit amet,
-				consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a
-				vulputate dictum, massa quam dapibus leo, eget vulputate orci purus
-				ut lorem. In fringilla mi in ligula. Pellentesque aliquam quam vel
-				dolor. Nunc adipiscing. Sed quam odio, tempus ac, aliquam molestie,
-				varius ac, tellus. Vestibulum ut nulla aliquam risus rutrum
-				interdum. Pellentesque lorem.</div>
+                </div>
+                <div id="add_comment_errors">
+                    <div id="comment_errors_header">
+                        <!--  empty error header-->
+                        <img alt="error_png"
+                             src="http://www.clker.com/cliparts/8/3/3/4/1195445190322000997molumen_red_round_error_warning_icon.svg.med.png" />
+                        <h3>Comment can't be accepted</h3>
+                    </div>
 
 
-		</div>
+                    <ul>
+                        <li>User is not logged in</li>
+                        <li>Comment length too long</li>
+                        <li>Comment can't contain a script</li>
+                    </ul>
+                </div>
+                <div id="default_login_main">
 
-	</div>
+                    <h3>Login and tell your opinion about this place!</h3>
+                    <hr />
+                    <img alt="login_facebook"
+                         src="https://github.com/adozenlines/facebook-ios-sdk/diff_blob/adb3a65dfff79dc8dc30a1e3220a6bd0db017540/src/FacebookSDKResources.bundle/FBConnect/images/LoginWithFacebookPressed@2x.png?raw=true" />
+                </div>
+                <div id="comment_form_div">
 
-</body>
+                    <form action="" method="post" id="comment_form">
+                        <textarea rows="10" cols="40" name="text"></textarea>
+                        <input value="send" type="submit">
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="comment">
+
+                <div class="comment_header">
+                    <img alt="profile image"
+                         src="https://fbcdn-sphotos-c-a.akamaihd.net/hphotos-ak-prn1/p480x480/156541_584368431587813_2134142774_n.jpg" />
+                    <span class="comment_name">Carlo Sagan</span>
+                    <span class="comment_date"> Crated:  </span>
+
+                </div>
+                <hr/>
+                <div class="comment_text">Lorem ipsum dolor sit amet,
+                    consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a
+                    vulputate dictum, massa quam dapibus leo, eget vulputate orci purus
+                    ut lorem. In fringilla mi in ligula. Pellentesque aliquam quam vel
+                    dolor. Nunc adipiscing. Sed quam odio, tempus ac, aliquam molestie,
+                    varius ac, tellus. Vestibulum ut nulla aliquam risus rutrum
+                    interdum. Pellentesque lorem.</div>
+
+
+            </div>
+
+            <div class="comment">
+
+                <div class="comment_header">
+                    <img alt="profile image"
+                         src="https://fbcdn-sphotos-c-a.akamaihd.net/hphotos-ak-prn1/p480x480/156541_584368431587813_2134142774_n.jpg" />
+                    <span class="comment_name">Jukka Niemi</span>
+
+                    <span class="comment_date"> Crated:  </span>
+                </div>
+                <hr />
+                <div class="comment_text">Lorem ipsum dolor sit amet,
+                    consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a
+                    vulputate dictum, massa quam dapibus leo, eget vulputate orci purus
+                    ut lorem. In fringilla mi in ligula. Pellentesque aliquam quam vel
+                    dolor. Nunc adipiscing. Sed quam odio, tempus ac, aliquam molestie,
+                    varius ac, tellus. Vestibulum ut nulla aliquam risus rutrum
+                    interdum. Pellentesque lorem.</div>
+
+
+            </div>
+
+            <div class="comment">
+
+                <div class="comment_header">
+                    <img alt="profile image"
+                         src="https://fbcdn-sphotos-c-a.akamaihd.net/hphotos-ak-prn1/p480x480/156541_584368431587813_2134142774_n.jpg" />
+                    <span class="comment_name">Jamal Karim</span>
+                    <span class="comment_date"> Crated:  </span>
+                </div>
+                <hr />
+                <div class="comment_text">Lorem ipsum dolor sit amet,
+                    consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a
+                    vulputate dictum, massa quam dapibus leo, eget vulputate orci purus
+                    ut lorem. In fringilla mi in ligula. Pellentesque aliquam quam vel
+                    dolor. Nunc adipiscing. Sed quam odio, tempus ac, aliquam molestie,
+                    varius ac, tellus. Vestibulum ut nulla aliquam risus rutrum
+                    interdum. Pellentesque lorem.</div>
+
+
+            </div>
+
+            <div class="comment">
+
+                <div class="comment_header">
+                    <img alt="profile image"
+                         src="https://fbcdn-sphotos-c-a.akamaihd.net/hphotos-ak-prn1/p480x480/156541_584368431587813_2134142774_n.jpg" />
+                    <span class="comment_name">Kim kardashian</span>
+                    <span class="comment_date"> Crated:  </span>
+                </div>
+                <hr />
+                <div class="comment_text">Lorem ipsum dolor sit amet,
+                    consectetur adipiscing elit. Sed at ante. Mauris eleifend, quam a
+                    vulputate dictum, massa quam dapibus leo, eget vulputate orci purus
+                    ut lorem. In fringilla mi in ligula. Pellentesque aliquam quam vel
+                    dolor. Nunc adipiscing. Sed quam odio, tempus ac, aliquam molestie,
+                    varius ac, tellus. Vestibulum ut nulla aliquam risus rutrum
+                    interdum. Pellentesque lorem.</div>
+
+
+            </div>
+
+        </div>
+
+    </body>
 </html>
