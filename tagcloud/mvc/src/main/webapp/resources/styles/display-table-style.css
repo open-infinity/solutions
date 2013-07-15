@@ -61,19 +61,19 @@ body {
 }
 
 #bc-col1 {
-	background-color: #AAAA00;
+	background-color: #ffffff;
 	width: 20%;
 	min-width: 320px;
 }
 
 #bc-col2 {
-	background-color: #AA00BB;
+	background-color: #ffffff;
 	width: 60%;
 	min-width: 350px;
 }
 
 #bc-col3 { /*height for firefox*/
-	background-color: #00CCDD;
+	background-color: #ffffff;
 	min-width: 250px;
 	padding-left: 5px;
 	height: 300px;
@@ -93,5 +93,13 @@ body {
 
 #login_div{
 	display: table-cell;
+	height: 50px;
+}
+
+#tabs{
+	height: 100%;
+}
+
+#logo-div {
 	height: 50px;
 }

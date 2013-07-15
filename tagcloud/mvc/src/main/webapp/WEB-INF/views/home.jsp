@@ -58,6 +58,7 @@
 		<div id="bottom-container">
 			<div id="bc-row1">
 				<div id="bc-col1">
+					<div id="logo-div">logo here</div>
 					<div id="tabs">
 						<ul>
 							<li><a href="#search-tab">Search</a></li>
@@ -70,16 +71,22 @@
 								<table id="searchTable">
 									<tr>
 										<td><form:label for="required" path="required">must be</form:label></td>
+									</tr>
+									<tr>
 										<td><form:input type="text" id="required" name="required"
 												path="required" /></td>
 									</tr>
 									<tr>
 										<td><form:label for="preferred" path="preferred">preferably also</form:label></td>
+									</tr>
+									<tr>
 										<td><form:input type="text" id="preferred"
 												name="preferred" path="preferred" /></td>
 									</tr>
 									<tr>
 										<td><form:label for="nearby" path="nearby">and is near to</form:label></td>
+									</tr>
+									<tr>
 										<td><form:input type="text" id="nearby" name="nearby"
 												path="nearby" /></td>
 									</tr>
