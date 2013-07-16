@@ -13,7 +13,6 @@ import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor

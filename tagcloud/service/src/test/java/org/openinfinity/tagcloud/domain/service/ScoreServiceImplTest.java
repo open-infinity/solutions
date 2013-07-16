@@ -14,7 +14,10 @@ import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.BusinessViolationException;
 import org.openinfinity.tagcloud.domain.entity.Profile;
 import org.openinfinity.tagcloud.domain.entity.Score;
+import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
 import org.openinfinity.tagcloud.domain.repository.ScoreRepository;
+import org.openinfinity.tagcloud.domain.repository.TagRepository;
+import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -29,12 +32,25 @@ public class ScoreServiceImplTest {
 	@Autowired
 	ScoreRepository scoreRepository;
 	
+	@Autowired
+	TagRepository tagRepository;
+
+	@Autowired
+	TargetRepository targetRepository;
+
+	@Autowired
+	ProfileRepository profileRepository;
+
+	
 	@Before
 	public void setUp() throws Exception {}
 
 	@After
 	public void tearDown() throws Exception {
 		scoreRepository.dropCollection();
+		targetRepository.dropCollection();
+		tagRepository.dropCollection();
+        profileRepository.dropCollection();
 	}
 
     Profile testProfile = new Profile("testId");

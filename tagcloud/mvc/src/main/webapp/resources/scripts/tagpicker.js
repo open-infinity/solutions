@@ -8,10 +8,11 @@ function initTagSearchOnDocumentReady() {
 		request.required = $("#required").tokenInput("get");
 		request.preferred = $("#preferred").tokenInput("get");
 		request.nearby = $("#nearby").tokenInput("get");
-		var center = getMap().getCenter();
+		var center = getCenter();
 		request.location = new Array(center.lng(), getMap().getCenter().lat());
-		var bounds = getMap().getBounds();
-		request.bounds = new Array(center.lng(), center.lat(), bounds.getNorthEast().lng(), bounds.getNorthEast().lat());
+		var bounds = getBounds();
+		request.bounds = new Array(bounds.getNorthEast().lng(), bounds.getNorthEast().lat(), 
+			bounds.getSouthWest().lng(), bounds.getSouthWest().lat());
 		$.postJSON("/tagcloud/", request, function(resultJson){
 			var $list = $("#targetlist");
 			$list.empty();

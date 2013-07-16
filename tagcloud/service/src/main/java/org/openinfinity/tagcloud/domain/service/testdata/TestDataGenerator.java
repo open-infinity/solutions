@@ -7,6 +7,8 @@ import org.openinfinity.tagcloud.domain.entity.Score;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.service.ProfileService;
+import org.openinfinity.tagcloud.domain.service.ScoreService;
+import org.openinfinity.tagcloud.domain.service.TagService;
 import org.openinfinity.tagcloud.domain.service.TargetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -29,6 +31,12 @@ public class TestDataGenerator {
 
 	@Autowired
 	TargetService targetService;
+
+	@Autowired
+	TagService tagService;
+
+	@Autowired
+	ScoreService scoreService;
 
 	@Autowired
 	ProfileService profileService;
@@ -133,10 +141,10 @@ public class TestDataGenerator {
     	Target target = targetService.create(new Target(targetName, longitude,
                 latitude));
         for (int s : scores) {
-            targetService.scoreTarget(s, target, testProfile.getFacebookId());
+            scoreService.scoreTarget(s, target, testProfile.getFacebookId());
         }
         for (String tagName : tags) {
-            targetService.addTagToTarget(tagName, target, testProfile.getFacebookId());
+            tagService.addTagToTarget(tagName, target, testProfile.getFacebookId());
         }
         return targetService.loadById(target.getId());
     }
@@ -146,10 +154,10 @@ public class TestDataGenerator {
         Target target = targetService.create(new Target(targetName, longitude,
                 latitude));
         for (int s : scores) {
-            targetService.scoreTarget(s, target, testProfile.getFacebookId());
+            scoreService.scoreTarget(s, target, testProfile.getFacebookId());
         }
         for (String tag : tags) {
-            targetService.addTagToTarget(tag, target, testProfile.getFacebookId());
+            tagService.addTagToTarget(tag, target, testProfile.getFacebookId());
         }
         return targetService.loadById(target.getId());
     }

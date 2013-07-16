@@ -17,8 +17,8 @@ import org.openinfinity.tagcloud.domain.entity.Profile;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.NearbyTarget;
-import org.openinfinity.tagcloud.domain.entity.query.Result;
-import org.openinfinity.tagcloud.domain.entity.TagQuery;
+import org.openinfinity.tagcloud.domain.entity.query.Recommendation;
+import org.openinfinity.tagcloud.domain.entity.query.TagQuery;
 import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
 import org.openinfinity.tagcloud.domain.repository.TagRepository;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
@@ -133,28 +133,7 @@ public class TargetServiceImplTest {
 	}
 	
 
-	@Test 
-	public void testAddTagToTarget() {
-		Target target = createTestTarget();
-		
-		Tag tag = new Tag("test tag");
-		targetService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
-		target = targetService.loadById(target.getId());
-		tag = tagService.loadByText(tag.getText()).iterator().next();
-		
-		assertEquals(1, tagService.loadAll().size());
-		assertEquals("test tag", targetService.loadById(target.getId()).getTags().iterator().next().getText());
-		assertEquals(true, profileService.loadById(profile.getId()).getMyTags().get(target.getId()).contains(tag));
-	}
-	
-	@Test(expected=BusinessViolationException.class)  
-	public void testAddTagToTargetFailsIfTagAlreadyExists() {
-		Target target = createTestTarget();
-		
-		targetService.addTagToTarget("test", target, profile.getFacebookId());
-		targetService.addTagToTarget("test", target, profile.getFacebookId());
-	}
-	
+
 	@Test 
 	public void testLoadByTag() {
 		Target target = createTestTarget();
@@ -162,7 +141,7 @@ public class TargetServiceImplTest {
 		Tag tag = new Tag("testi");
 		Tag differentTag = new Tag("testi2");
 		
-		targetService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
+		tagService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
 		
 		assertEquals(1, targetService.loadByTag(tag).size());
 		assertEquals(0, targetService.loadByTag(differentTag).size());
@@ -179,12 +158,16 @@ public class TargetServiceImplTest {
 		List<Tag> testListOk = new ArrayList<Tag>();
 		testListOk.add(tag1);
 		testListOk.add(tag2);
-		assertEquals(1, targetService.loadByQuery(new TagQuery(testListOk, new ArrayList<Tag>(), new ArrayList<Tag>(), 0, 0, 200)).size());
+		TagQuery query = (new TagQuery(0, 0, 200)).requireTags(testListOk);
+		System.out.println("query1");
+		assertEquals(1, targetService.loadByQuery(query).size());
 		
 		List<Tag> testListFail = new ArrayList<Tag>();
 		testListFail.add(tag1);
 		testListFail.add(tag3);
-		assertEquals(0, targetService.loadByQuery(new TagQuery(testListFail, new ArrayList<Tag>(), new ArrayList<Tag>(), 0, 0, 200)).size());
+		query = (new TagQuery(0, 0, 200)).requireTags(testListFail);
+		System.out.println("query2");
+		assertEquals(0, targetService.loadByQuery(query).size());
 	}
 	
 	
@@ -200,15 +183,16 @@ public class TargetServiceImplTest {
 		double[] dLoc = Utils.calcLocation(30, 40, 2*NearbyTarget.MAX_DISTANCE, 0);
 		Target d = createTestTarget("d", Utils.createList(shop, gym), dLoc[0], dLoc[1]);
 		
-		List<Result> results = targetService.loadByQuery(new TagQuery(Utils.createList(shop), new ArrayList<Tag>(), Utils.createList(gym), 30, 40, 5000));
+		TagQuery query = (new TagQuery(30, 40, 5000)).requireTags(Utils.createList(shop)).nearbyTags(Utils.createList(gym));
+		List<Recommendation> results = targetService.loadByQuery(query);
 		assertEquals(false, resultsContainsTarget(results, a));
 		assertEquals(true, resultsContainsTarget(results, b));
 		assertEquals(false, resultsContainsTarget(results, c));
 		assertEquals(true, resultsContainsTarget(results, d));
 	}
 	
-	private boolean resultsContainsTarget(List<Result> results, Target target) {
-		for(Result result : results) {
+	private boolean resultsContainsTarget(List<Recommendation> results, Target target) {
+		for(Recommendation result : results) {
 			if (result.getTarget().equals(target)) return true;
 		}
 		return false;
@@ -227,7 +211,7 @@ public class TargetServiceImplTest {
 		targetService.create(target);
 		
 		for(Tag tag : tags) {
-			targetService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
+			tagService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
 		}
 		
 		return target;

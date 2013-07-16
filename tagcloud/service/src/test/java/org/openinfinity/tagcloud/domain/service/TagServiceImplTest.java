@@ -18,9 +18,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.BusinessViolationException;
+import org.openinfinity.tagcloud.domain.entity.Profile;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
+import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
 import org.openinfinity.tagcloud.domain.repository.TagRepository;
+import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -28,19 +31,42 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations={"classpath*:**/test-service-context.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TagServiceImplTest {
+
+	@Autowired
+	TagRepository tagRepository;
+
+	@Autowired
+	TargetRepository targetRepository;
+
+	@Autowired
+	ProfileRepository profileRepository;
+
+	
 	
 	@Autowired
 	TagService tagService;
 	
-	@Autowired
-	TagRepository tagRepository;
-	
-	@Before
-	public void setUp() throws Exception {}
 
+	@Autowired
+	ProfileService profileService;
+	
+	@Autowired
+	TargetService targetService;
+	
+	
+	Profile profile;
+
+    
+	@Before
+	public void setUp() throws Exception {
+		profile = profileService.create(new Profile("testId"));
+	}
+	
 	@After
 	public void tearDown() throws Exception {
 		tagRepository.dropCollection();
+        profileRepository.dropCollection();
+        targetRepository.dropCollection();
 	}
 
 	@Test 
@@ -120,5 +146,58 @@ public class TagServiceImplTest {
 	}
 	
 
+	@Test 
+	public void testAddTagToTarget() {
+		Target target = createTestTarget();
+		
+		Tag tag = new Tag("test tag");
+		tagService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
+		target = targetService.loadById(target.getId());
+		tag = tagService.loadByText(tag.getText()).iterator().next();
+		
+		assertEquals(1, tagService.loadAll().size());
+		assertEquals("test tag", targetService.loadById(target.getId()).getTags().iterator().next().getText());
+		assertEquals(true, profileService.loadById(profile.getId()).getMyTags().get(target.getId()).contains(tag));
+	}
+	
+	@Test(expected=BusinessViolationException.class)  
+	public void testAddTagToTargetFailsIfTagAlreadyExists() {
+		Target target = createTestTarget();
+		
+		tagService.addTagToTarget("test", target, profile.getFacebookId());
+		tagService.addTagToTarget("test", target, profile.getFacebookId());
+	}
+
+	private final String UNIQUE_RANDOM_NAME = "unique.random.name";
+	private Target createTestTarget(String text, List<Tag> tags, double longitude, double latitude) {
+		Target target = new Target(text,longitude,latitude);
+		if(text.equals(UNIQUE_RANDOM_NAME)) {
+			target.setText("name"+Math.random()+System.currentTimeMillis());
+		}
+		else target.setText(text);
+		target.setLocation(longitude, latitude);
+		targetService.create(target);
+		
+		for(Tag tag : tags) {
+			tagService.addTagToTarget(tag.getText(), target, profile.getFacebookId());
+		}
+		
+		return target;
+	}
+
+	private Target createTestTarget() {
+		return createTestTarget(UNIQUE_RANDOM_NAME, new ArrayList<Tag>(), 0, 0);
+	}
+	
+	private Target createTestTarget(double longitude, double latitude) {
+		return createTestTarget(UNIQUE_RANDOM_NAME, new ArrayList<Tag>(), longitude, latitude);
+	}
+	
+	private Target createTestTarget(List<Tag> tags) {
+		return createTestTarget(UNIQUE_RANDOM_NAME, tags, 0, 0);
+	}
+
+	
+	
 	
 }

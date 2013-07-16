@@ -4,17 +4,16 @@ html,body {
 	padding: 0;
 	margin: 0;
 	overflow-y: hidden;
-	overflow-x: hidden;
+	overflow-x: auto;
 }
 
 body {
 	font-size: 14px;
 }
 
-#container {
+#top-table {
 	display: table;
-	background-color: green;
-	height: 100%;
+	height: 50px;
 	width: 100%;
 	padding: 0;
 	margin: 0;
@@ -22,30 +21,48 @@ body {
 
 #top-container {
 	display: table-row;
-	background-color: blue;
-	height: 20px;
-	max-height: 20px;
+	height: 50px;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+#logo_div{
+	display: table-cell;
+	min-width: 320px;
+	width: 20%;
+	background-color: lightgrey;
+	vertical-align: top;
+}
+#headerMiddle_div{
+	display: table-cell;
+	min-width: 350px;
+	width: 60%;
+	background-color: lightgrey;
+	vertical-align: top;
+}
+
+#login_div{
+	display: table-cell;
+	height: 50px;
+	min-width: 250px;
+	background-color: lightgrey;
+	vertical-align: top;
+}
+
+#bottom-table {
+	display: table;
+	position: absolute;
+	top: 50;
+	height: 100%;
 	width: 100%;
 	padding: 0;
 	margin: 0;
 }
 
 #bottom-container {
-	display: table;
-	position: absolute;
-	top: 0;
-	background-color: red;
-	height: 100%;
-	width: 100%;
-	padding: 0;
-	margin: 0;
-	/*removed  padding-bottom: 20px;*/
-	
-}
-
-#bc-row1 {
 	display: table-row;
-	height: 100%;
+	/* height: 100%; */
 	width: 100%;
 	padding: 0;
 	margin: 0;
@@ -70,6 +87,7 @@ body {
 	background-color: #ffffff;
 	width: 60%;
 	min-width: 350px;
+	overflow: hidden;
 }
 
 #bc-col3 { /*height for firefox*/
@@ -84,6 +102,10 @@ body {
 	height: 100%;
 }
 
+#informationBox {
+	height: 20px;
+}
+
 #scroller {
 	height: 100%;
 	width: 100%;
@@ -91,15 +113,17 @@ body {
 	overflow-x: hidden;
 }
 
-#login_div{
-	display: table-cell;
-	height: 50px;
-}
-
 #tabs{
 	height: 100%;
 }
 
-#logo-div {
-	height: 50px;
+#loginImg{
+	height: 40px;
+	float: right;
+	border-radius: 10px;
+	border: 2px outset;
+}
+
+#loginImg:active {
+	border: 2px inset;
 }

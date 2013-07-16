@@ -141,11 +141,11 @@ public class CommentController {
 
 		ResponseObject<String> responseObject = new ResponseObject<String>();
 		Target target = targetService.loadById(target_id);
-		CommentModel commentmModel = new CommentModel();
-		commentmModel.setText(text);
+		CommentModel commentModel = new CommentModel();
+		commentModel.setText(text);
 
 		Set<ConstraintViolation<CommentModel>> failures = validator
-				.validate(commentmModel);
+				.validate(commentModel);
 
 		try {
 			if (!connectionMnager.isUserLoggedIn(request.getSession().getId())) {
@@ -158,11 +158,12 @@ public class CommentController {
 				throw new Exception("target can't be null!");
 			}
 			Facebook facebook = connectionMnager.getSessionFacebook(request.getSession().getId());
-			targetService.addCommentToTarget(commentmModel.getText(), target,
-					facebook.userOperations().getUserProfile().getId());			
+
+			commentService.addCommentToTarget(commentModel.getText(), target,
+					facebook.userOperations().getUserProfile().getId());
 
 			responseObject.setSuccess("Comment saved successfully!",
-					commentmModel.getText());
+					commentModel.getText());
 
 		} catch (Exception ex) {
 

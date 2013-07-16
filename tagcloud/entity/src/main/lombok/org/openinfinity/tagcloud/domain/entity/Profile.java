@@ -20,8 +20,6 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
-@Document
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
@@ -37,6 +35,8 @@ public class Profile implements Entity {
 	private Map<String, List<Tag>> myTags = new HashMap<String, List<Tag>>(); //String = target.id
 	
 	private Set<String> myScoredTargets = new HashSet<String>();
+
+	private Settings settings;
 	
 	public void addTag(Tag tag, Target target) {
 		if(myTags.containsKey(target.getId())) {

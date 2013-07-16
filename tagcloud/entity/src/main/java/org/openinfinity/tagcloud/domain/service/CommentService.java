@@ -8,4 +8,9 @@ import org.openinfinity.tagcloud.domain.entity.*;
 
 public interface CommentService extends AbstractTextEntityCrudServiceInterface<Comment> {
 
-	Collection<Comment> loadByText(String text);}
+	Collection<Comment> loadByText(String text);
+    
+	void addCommentToTarget(String comment, Target target, String facebookId);
+
+    	
+}
