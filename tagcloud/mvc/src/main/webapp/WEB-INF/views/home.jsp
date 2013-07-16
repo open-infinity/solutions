@@ -56,12 +56,18 @@
 </head>
 
 <body>
-	<div id="container">
-		<div id="bottom-container">
-			<div id="bc-row1">
-				<div id="bc-col1">
-					<div id="logo-div">logo here</div>
-					<div id="tabs">
+	<div id="top-table">
+			<div id="top-container">
+				<div id="logo_div">logo here</div>
+				<div id="headerMiddle_div"> middle part </div>
+				<div id="login_div"><img id="loginImg" alt="login_facebook"
+             	 src="<c:url value="/resources/img/login-facebook.png" />" /> </div>			
+			</div>
+		</div>
+		<div id="bottom-table">	
+			<div id="bottom-container">
+                    <div id="bc-col1">
+                        <div id="tabs">
 						<ul>
 							<li><a href="#search-tab">Search</a></li>
 							<li><a href="#add-target-tab">Add Target</a></li>
@@ -127,18 +133,13 @@
 					<div id="map-canvas"></div>
 				</div>
 				<div id="bc-col3">
-					<div id="login_div">
-						<img id="loginImg" alt="login_facebook"
-							src="<c:url value="/resources/img/login-facebook.png" />" />
-					</div>
+					<div id="informationBox">Info about targets here</div>
 					<div id="scroller">
 						<div id="targetlist"></div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-
 
 
 </body>

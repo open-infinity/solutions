@@ -30,10 +30,12 @@ function styleTargetDivs() {
 }
 
 function resizeRightColumn() {
-	document.getElementById("bc-col3").style.height = $(window).height() +"px";
-	document.getElementById("scroller").style.height = $(window).height() - 60 +"px";
-	document.getElementById("map-canvas").style.height = $(window).height() +"px";
-	var mapwidth = window.getComputedStyle(document.getElementById("bc-col2"),null).getPropertyValue("width");
+	var mapHeight = $(window).height() - 50 +"px";
+	document.getElementById("map-canvas").style.height = mapHeight;
+	var listHeight = $(window).height() - 50 - 20 +"px";
+	document.getElementById("scroller").style.height = listHeight;	
+	
+	var mapwidth = window.getComputedStyle(document.getElementById("headerMiddle_div"),null).getPropertyValue("width");
 	document.getElementById("map-canvas").style.width = mapwidth;
 }
 
