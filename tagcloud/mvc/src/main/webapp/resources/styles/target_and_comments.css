@@ -1,191 +1,198 @@
 html, body{
-width:100%;
-overflow-x:hidden;
+    width:100%;
+    overflow-x:hidden;
 }
 #map-canvas {
-	margin-top: 2%;
-	margin-right: 2%;
-	margin-left: 1%;
-	padding: 0;
-	/*         height: 40%; */
-	min-width: 34%;
-	min-height: 300px;
-	max-width: 34%;
-	max-height: 300px;
-	/*         border: 5px black solid; */
-	float: right;
-	padding: 0;
-	padding: 0;
+    margin-top: 2%;
+    margin-right: 2%;
+    margin-left: 1%;
+    padding: 0;
+    /*         height: 40%; */
+    min-width: 34%;
+    min-height: 300px;
+    max-width: 34%;
+    max-height: 300px;
+    /*         border: 5px black solid; */
+    float: right;
+    padding: 0;
+    padding: 0;
 }
 
 #target_info {
-	margin-left: 2%;
-	margin-top: 2%;
-	/*         height: 40%; */
-	min-width: 60%;
-	min-height: 300px;
-	max-width: 60%%;
-	max-height: 300px;
-	float: left;
-	padding: 0;
+    margin-left: 2%;
+    margin-top: 2%;
+    /*         height: 40%; */
+    min-width: 60%;
+    min-height: 300px;
+    max-width: 60%;
+    max-height: 300px;
+    float: left;
+    padding: 0;
 }
 
 #tag_bar {
-	display: block;
-	min-height: 100px;
-	/* 	margin-top:20px; */
-	bottom: 0;
+    display: block;
+    min-height: 100px;
+    /* 	margin-top:20px; */
+    bottom: 0;
 }
 
 #tag_bar>div>span {
-	background-color: beige;
-	margin: 6px;
-	margin-top: 5px;
-	border-radius: 15px;
-	white-space: nowrap;
-	padding: 5px;
-	display: inline-block;
+    background-color: beige;
+    margin: 6px;
+    margin-top: 5px;
+    border-radius: 15px;
+    white-space: nowrap;
+    padding: 5px;
+    display: inline-block;
 }
 
 #target_header {
-	min-width: 100%;
-	min-height: 350px;
-	/* 	border: 5px black solid; */
-	display: inline-block;
-	background-color: #E0E0E0;
-	border-radius: 15px;
+    min-width: 100%;
+    min-height: 350px;
+    /* 	border: 5px black solid; */
+    display: inline-block;
+    background-color: #E0E0E0;
+    border-radius: 15px;
 }
 
 #target_score_main {
-	min-width: 100%;
-	min-height: 100px;
-	/* 	border: 5px black solid; */
-	display: block;
-	/* 	background-color: #E0E0E0; */
+    min-width: 100%;
+    min-height: 100px;
+    /* 	border: 5px black solid; */
+    display: block;
+    /* 	background-color: #E0E0E0; */
 }
 
 .comment {
-	min-width: 100%;
-	min-height: 100px;
-	/* 	border: 5px black solid; */
-	display: block;
-	border-radius: 15px;
-	background-color: #ADD8E6;
-	padding: 5px;
-	margin-top: 10px;
+    min-width: 100%;
+    min-height: 100px;
+    /* 	border: 5px black solid; */
+    display: block;
+    border-radius: 15px;
+    background-color: #ADD8E6;
+    padding: 5px;
+    margin-top: 10px;
 }
 
 #target_main {
-	/* 	background-color: silver; */
-	min-width: 1000px;
-	min-height: 600px;
-	max-width: 1000px;
-/* 	float: right; */
-	margin: 0 auto;
-	/* 	border: 5px black solid; */
-	display: block;
+    /* 	background-color: silver; */
+    min-width: 1000px;
+    min-height: 600px;
+    max-width: 1000px;
+    /* 	float: right; */
+    margin: 0 auto;
+    /* 	border: 5px black solid; */
+    display: block;
 }
 
 #target_score_main>div {
-	margin-right: 2%;
-	margin-top: 10px;
-	height: 100%;
-	float: right;
+    margin-right: 2%;
+    margin-top: 10px;
+    height: 100%;
+    float: right;
 }
 
 .score_symbol {
-	color: #FFD700;
-	font-size: 50px;
-	/* 	width: 1.1em; */
+    color: #FFD700;
+    font-size: 50px;
+    /* 	width: 1.1em; */
 }
 
 #target_add_comment_main {
-	min-width: 100%;
-	min-height: 100px;
-	margin-top: 40px;
-	/* 	border: 5px black solid; */
-	display: block;
+    min-width: 100%;
+    min-height: 100px;
+    margin-top: 40px;
+    /* 	border: 5px black solid; */
+    display: block;
 }
 
 #target_add_comment_main textarea {
-	min-width: 98%;
-	min-height: 100px;
-	margin: 0 auto;
+    min-width: 98%;
+    min-height: 100px;
+    margin: 0 auto;
 }
 
 #target_add_comment_main>div {
-	margin-top: 10px;
+    margin-top: 10px;
 }
 
+/****/
 .comment img {
-	width: 50px;
-	height: 50px;
+    width: 50px;
+    height: 50px;
 }
 
-.comment>div {
-	margin-left: 5px;
-	margin-top: 5px;
-}
-
-.comment_header>span {
-	font-size: x-large;
+.comment_name {
+    font-size: x-large;
+    display:inline-block;
 }
 
 .comment_text {
-	margin-left: 2px;
-	margin-top: 5px;
-	margin-bottom: 10px;
+    margin: 10px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+.comment_date{
+    display:inline-block;
+    float:right;
+    font-size: medium;
+}
+.comment_header{
+    margin:15px;
 }
 
+/***/
+
 #add_comment_errors,#add_comment_success,#default_login_main {
-	padding: 10px;
-	padding-top: 15px;
-	padding-left: 10%;
-	border-radius: 15px;
-	padding-left: 10%;
-	display:none; 
+    padding: 10px;
+    padding-top: 15px;
+    padding-left: 10%;
+    border-radius: 15px;
+    padding-left: 10%;
+    display:none; 
 }
 
 #comment_errors_header,#comment_success_header {
-	white-space: nowrap;
-	display: block;
+    white-space: nowrap;
+    display: block;
 }
 
 #comment_errors_header>h3,#comment_success_header>h3 {
-	display: inline;
+    display: inline;
 }
 
 #comment_errors_header>img,#comment_success_header>img {
-	width: 32px;
-	height: 32px;
+    width: 32px;
+    height: 32px;
 }
 
 #add_comment_success {
-	background-color: #BCF5A9;
+    background-color: #BCF5A9;
 }
 
 #add_comment_errors {
-	background-color: #F6CEE3;
+    background-color: #F6CEE3;
 }
 
 #default_login_main {
-	/* 	background-color: #ADD8E6; */
-	color: brown; min-height : 100px;
-	overflow: auto;
-	clear: both;
-	border: 2px silver solid;
-	min-height: 100px;
+    /* 	background-color: #ADD8E6; */
+    color: brown; min-height : 100px;
+    overflow: auto;
+    clear: both;
+    border: 2px silver solid;
+    min-height: 100px;
 }
 
 
 #default_login_main img {
-	width: 200px;
-	margin-top: 50px;
-	float: right;
-	border-radius: 10px;
-	border: 2px outset;
+    width: 200px;
+    margin-top: 50px;
+    float: right;
+    border-radius: 10px;
+    border: 2px outset;
 }
 
 #default_login_main img:active {
-	border: 2px inset;
+    border: 2px inset;
 }
