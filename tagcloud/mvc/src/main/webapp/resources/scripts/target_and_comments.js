@@ -3,6 +3,7 @@ var star = "&#x02605;";
 var empty_star = "&#x02606;";
 var default_author_img = "http://www.howsimple.com/assets/imgs/person_empty.png";
 var current_target = null;
+var default_score;
 var test_object;
 $('document').ready(function() {
 
@@ -39,29 +40,35 @@ function getTargeAndUpdateUi(target_id) {
 function setTargetInUi(target) {
 	current_target = target;
 	$("#target_title").html(target.text);
-	$("#score_value").html(target.score);	
+	$("#score_value").html(target.score);
 	setTagsInTagBar(target.tags);
 	google_map_initialize(target.location[0], target.location[1]);
 	getTargetCommentsAndUpdateUi(target.id);
-	if(isUserLoggedIn()){
+	default_score = 6;
+	if (isUserLoggedIn()) {
 		postLoginView(target);
-	}else{
+	} else {
 		preLoginView(target);
 	}
 }
 
-function preLoginView(target){
-	$("#comment_form_div").css('display','none');
-	$("#default_login_main").css('display','block');
-	$("#default_login_main img").click(function(){ window.location ="login?next=target?target_id="+target.id;});
+function preLoginView(target) {
+	$("#comment_form_div").css('display', 'none');
+	$("#default_login_main").css('display', 'inline-block');
+	$("#default_login_main img").click(function() {
+		window.location = "login?next=target?target_id=" + target.id;
+	});
+	setScoreStars(default_score, true);
 }
-function postLoginView(target){
-	$("#default_login_main").css('display','none');
-	$("#comment_form_div").css('display','block');
+
+function postLoginView(target) {
+	$("#default_login_main").css('display', 'none');
+	$("#comment_form_div").css('display', 'inline-block');
 	$("#comment_form_div form").submit(function() {
 		submitComment(this, target.id);
 		return false;// disable the default action of the form
 	});
+	animateScore(default_score,true);
 }
 function isUserLoggedIn() {
 	var logged_in = false;
@@ -131,21 +138,22 @@ function getTargetCommentsAndUpdateUi(target_id) {
 	$.getJSON("comment/list/" + target_id, function(data) {
 		$.each(data, function(i, comment) {
 
-			createNewComment("facebook/photo/"+comment.profile.facebookId, getFacebookName_synchronized(comment.profile.facebookId),
-					comment.id,(new Date(comment.date)).toLocaleString() ,comment.text);
+			createNewComment("facebook/photo/" + comment.profile.facebookId,
+					getFacebookName_synchronized(comment.profile.facebookId),
+					comment.id, (new Date(comment.date)).toLocaleString(),
+					comment.text);
 
 		});
 	});
 
 }
 
-
-function getFacebookName_synchronized(facebook_id){
+function getFacebookName_synchronized(facebook_id) {
 	var name = "anonymous";
 	$.ajax({
 		type : 'GET',
 		async : false,
-		url : 'facebook/profile/'+facebook_id,
+		url : 'facebook/profile/' + facebook_id,
 		success : function(data) {
 			if (!hasError(data) && data.result_list[0] != null) {
 				name = data.result_list[0].name;
@@ -155,7 +163,8 @@ function getFacebookName_synchronized(facebook_id){
 	return name;
 }
 
-function createNewComment(author_img, author_name, comment_id, comment_date,text) {
+function createNewComment(author_img, author_name, comment_id, comment_date,
+		text) {
 
 	var comment = $("<div></div>");
 	$(comment).attr('class', 'comment');
@@ -167,11 +176,13 @@ function createNewComment(author_img, author_name, comment_id, comment_date,text
 
 	$(comment_head).html(
 			"<img alt='" + author_name + " image' src='" + author_img
-					+ "' /> <span class='comment_name'>" + author_name + "</span><span class='comment_date'>Created: "+comment_date+"</span> ");
+					+ "' /> <span class='comment_name'>" + author_name
+					+ "</span><span class='comment_date'>Created: "
+					+ comment_date + "</span> ");
 	$(comment_text).html(text);
 
 	$(comment).append($(comment_head));
-        $(comment).append("<hr />");
+	$(comment).append("<hr />");
 	$(comment).append($(comment_text));
 
 	$("#comment_container").append($(comment));
@@ -212,4 +223,46 @@ function getURLParameter(sParam) {
 			return sParameterName[1];
 		}
 	}
+}
+function animateScore(num,default_value){
+	$.when(setScoreStars(num,default_value)).done(setHandlers);
+}
+function setHandlers() {
+	$.each($('.score_symbol'), function(i, span) {
+		$(span).attr('onmouseover',
+				'animateScore(' + $(span).index() + ',false)');
+		$(span).attr('onmouseout',
+				'animateScore(' + default_score + ',true)');
+	});
+}
+function setScoreStars(num, default_value) {
+
+		
+		var div = $("#score_container");
+		var head = $("<div id='score_head'></div>")
+		try {
+			$(head).html(
+					"<span id='default_score' >Score: "
+							+ default_score.toFixed(1) + "/10 </span>");
+			if (!default_value) {
+				var num_str = num;
+				if (num < 10) {
+					num_str = "<span style='color:white;'>0</span>" + num;
+				}
+				$(head).append(
+						"<span id='new_user_score'>Score it by  " + num_str
+								+ " /10 </span>");
+			}
+
+			$(div).html($(head));
+			var i;
+			for (i = 0; i < num; i++) {
+				$(div).append("<span class='score_symbol'>&#x02605;</span>")
+			}
+			for (i; i < 10; i++) {
+				$(div).append("<span class='score_symbol'>&#x02606;</span>")
+			}
+		} catch (e) {
+			console.log("Error " + e.toString());
+		}			
 }

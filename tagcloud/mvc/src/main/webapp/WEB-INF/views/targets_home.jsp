@@ -41,18 +41,18 @@
 			</div>
 		</div>
 		<div id="target_score_main">
-			<div>
-				<h3>
-					Score: <span id="score_value"> <!-- empty scroe value-->
-					</span>
-				</h3>
-				<span class="score_symbol">&#x02605;</span> <span
-					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span>
-				<span class="score_symbol">&#x02605;</span> <span
-					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span>
-				<span class="score_symbol">&#x02605;</span> <span
-					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02606;</span>
-				<span class="score_symbol">&#x02606;</span>
+			<div id="score_container">
+<!-- 				<h3> -->
+<!-- 					Score: <span id="score_value"> empty scroe value -->
+<!-- 					</span> -->
+<!-- 				</h3> -->
+<!-- 				<span class="score_symbol">&#x02605;</span> <span -->
+<!-- 					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span> -->
+<!-- 				<span class="score_symbol">&#x02605;</span> <span -->
+<!-- 					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span> -->
+<!-- 				<span class="score_symbol">&#x02605;</span> <span -->
+<!-- 					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02606;</span> -->
+<!-- 				<span class="score_symbol">&#x02606;</span> -->
 
 			</div>
 
@@ -92,7 +92,7 @@
 			<div id="comment_form_div">
 				<form action="" method="post" id="comment_form">
 					<textarea rows="" cols="" name="text"></textarea>
-					<input value="send" type="submit">
+					<input id="form_submit" value="send" type="submit">
 				</form>
 
 
