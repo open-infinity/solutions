@@ -32,6 +32,9 @@ function styleTargetDivs() {
 function resizeRightColumn() {
 	document.getElementById("bc-col3").style.height = $(window).height() +"px";
 	document.getElementById("scroller").style.height = $(window).height() - 60 +"px";
+	document.getElementById("map-canvas").style.height = $(window).height() +"px";
+	var mapwidth = window.getComputedStyle(document.getElementById("bc-col2"),null).getPropertyValue("width");
+	document.getElementById("map-canvas").style.width = mapwidth;
 }
 
 $(document).ready(function() {

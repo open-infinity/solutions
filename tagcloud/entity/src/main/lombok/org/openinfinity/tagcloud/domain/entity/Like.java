@@ -10,7 +10,7 @@ import org.apache.james.mime4j.message.Entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
+
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor

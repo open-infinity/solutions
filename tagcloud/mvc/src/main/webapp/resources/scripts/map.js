@@ -2,6 +2,11 @@ var map;
 var markers = [];
 var tabIndex = 0;
 var addedMarker;
+var center;
+var bounds;
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
 
 function initialize() {
 
@@ -13,6 +18,12 @@ function initialize() {
 	};
 
 	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+	google.maps.event.addListener(map, 'idle', function() {
+		bounds = map.getBounds();
+		center = map.getCenter();
+		$("#searchModel").submit();
+	});
 
 	map.setOptions({
 		styles : [ {
@@ -77,7 +88,7 @@ function initialize() {
 	});
 
 }
-google.maps.event.addDomListener(window, 'load', initialize);
+
 
 function clearMarkers() {
 	for ( var i = 0; i < markers.length; i++) {
@@ -153,4 +164,12 @@ function setMarkerHighlight(index, highlight) {
 
 function getMap() {
 	return map;
+}
+
+function getCenter(){
+	return center;
+}
+
+function getBounds(){
+	return bounds;
 }

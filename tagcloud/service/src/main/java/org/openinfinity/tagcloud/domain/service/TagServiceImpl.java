@@ -23,10 +23,13 @@ import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.exception.ExceptionLevel;
 import org.openinfinity.core.util.ExceptionUtil;
+import org.openinfinity.tagcloud.domain.entity.Profile;
 import org.openinfinity.tagcloud.domain.entity.Tag;
+import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Product service implementation with specification.
@@ -39,7 +42,41 @@ public class TagServiceImpl extends AbstractTextEntityCrudServiceImpl<Tag> imple
 	@Autowired
 	private TagRepository tagRepository;
 	
+	@Autowired
+	private ProfileService profileService;
+
+	@Autowired
+	private TargetService targetService;
+
 	@Override
 	public List<Tag> searchLike(String input) {
 		return tagRepository.searchLike(input);
-	}}
+	}
+	
+
+    @Log
+	@AuditTrail
+	@Override
+	@Transactional
+	public void addTagToTarget(String tagName, Target target, String facebookId) {
+    	Tag tag = new Tag(tagName);
+        
+    	if(target.getTags().contains(tag)) {
+			ExceptionUtil.throwBusinessViolationException(
+					"Tag with the same name already exists in the target",
+					ExceptionLevel.INFORMATIVE,
+					TargetService.UNIQUE_EXCEPTION_TAG_ALREADY_INCLUDED);
+		}
+        
+    	Profile profile = profileService.loadByFacebookId(facebookId);
+        
+    	tag = create(tag);
+
+		target.getTags().add(tag);
+		targetService.update(target);
+
+		profile.addTag(tag, target);
+		profileService.update(profile);
+	}
+
+}

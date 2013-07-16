@@ -15,19 +15,17 @@
  */
 package org.openinfinity.tagcloud.domain.service;
 
-import java.math.BigInteger;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
-import org.openinfinity.core.exception.ExceptionLevel;
-import org.openinfinity.core.util.ExceptionUtil;
+import org.openinfinity.tagcloud.domain.entity.Profile;
 import org.openinfinity.tagcloud.domain.entity.Score;
-import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
-import org.openinfinity.tagcloud.domain.repository.ScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Product service implementation with specification.
@@ -35,4 +33,61 @@ import org.springframework.stereotype.Service;
  * @author Ilkka Leinonen
  */
 @Service
-public class ScoreServiceImpl extends AbstractCrudServiceImpl<Score> implements ScoreService {}
+public class ScoreServiceImpl extends AbstractCrudServiceImpl<Score> implements ScoreService {
+  
+	@Autowired
+	private ProfileService profileService;
+
+	@Autowired
+	private TargetService targetService;
+
+	@Log
+    @AuditTrail
+    @Override
+    @Transactional
+    public void scoreTarget(int scoreStars, Target target, String facebookId) {
+        Profile profile = profileService.loadByFacebookId(facebookId);
+        Score score = create(new Score(scoreStars, profile));
+        target.addScore(score);
+        targetService.update(target);
+        profile.addScoredTarget(target);
+        profileService.update(profile);
+    }
+
+	@Override
+	public List<Score> getFriendsScores(List<String> friendFacebookIds, Target target) {
+		List<Score> friendScores = new ArrayList<Score>();
+		for(Score score : target.getScores()) {
+			if(friendFacebookIds.contains(score.getProfile().getFacebookId())) {
+				friendScores.add(score);
+			}
+		}
+		return friendScores;
+	}
+
+	@Override
+	public double getAverageFriendScore(List<String> friendFacebookIds, Target target) {
+		List<Score> friendScores = getFriendsScores(friendFacebookIds, target);
+		if(friendScores.size()==0) return -1;
+		int sum = 0;
+		for(Score score : friendScores) {
+			sum += score.getStars();
+		}
+		return 1.0*sum/friendScores.size();
+	}
+
+	@Override
+	public Score getOwnScore(Profile profile, Target target) {
+		if(!profile.getMyScoredTargets().contains(target.getId()))
+			return null;
+		
+		for(Score score : target.getScores()) {
+			if (score.getProfile().equals(profile)) {
+				return score;
+			}
+		}
+		
+		return null;
+	}
+
+}

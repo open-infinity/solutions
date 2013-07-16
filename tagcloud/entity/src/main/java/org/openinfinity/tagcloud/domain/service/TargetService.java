@@ -3,9 +3,11 @@ package org.openinfinity.tagcloud.domain.service;
 import java.util.Collection;
 import java.util.List;
 
-import org.openinfinity.tagcloud.domain.entity.*;
-import org.openinfinity.tagcloud.domain.entity.query.Result;
-import org.openinfinity.tagcloud.domain.entity.TagQuery;
+import org.openinfinity.tagcloud.domain.entity.Profile;
+import org.openinfinity.tagcloud.domain.entity.Tag;
+import org.openinfinity.tagcloud.domain.entity.Target;
+import org.openinfinity.tagcloud.domain.entity.query.Recommendation;
+import org.openinfinity.tagcloud.domain.entity.query.TagQuery;
 
 public interface TargetService extends AbstractTextEntityCrudServiceInterface<Target> {
 	
@@ -16,13 +18,13 @@ public interface TargetService extends AbstractTextEntityCrudServiceInterface<Ta
 
 	Collection<Target> loadByTag(Tag tag);
 
-	List<Result> loadByQuery(TagQuery tagQuery);
+	List<Recommendation> loadByQuery(TagQuery tagQuery);
 
-    void addTagToTarget(String tag, Target target, String facebookId);
+	
 
     //void removeTagFromTarget(Tag tag, Target target);
 
-    void addCommentToTarget(String comment, Target target, String facebookId);
 
-    void scoreTarget(int scoreStars, Target target, String facebookId);
+    
+    
 }

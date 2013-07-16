@@ -15,7 +15,11 @@
  */
 package org.openinfinity.tagcloud.web.controller;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.validation.Validator;
 
@@ -25,8 +29,8 @@ import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.aspect.ArgumentStrategy;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
-import org.openinfinity.tagcloud.domain.entity.query.Result;
-import org.openinfinity.tagcloud.domain.entity.TagQuery;
+import org.openinfinity.tagcloud.domain.entity.query.Recommendation;
+import org.openinfinity.tagcloud.domain.entity.query.TagQuery;
 import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
 import org.openinfinity.tagcloud.domain.repository.ScoreRepository;
 import org.openinfinity.tagcloud.domain.repository.TagRepository;
@@ -91,12 +95,6 @@ public class HomeController {
 		return "home";
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value="json")
-	public @ResponseBody Date home() {
-		
-		return new Date();
-	}
-
 	
 	
 	@Log
@@ -119,8 +117,11 @@ public class HomeController {
 
         double radius = Utils.calcDistanceGCS(searchModel.getBounds()[0], searchModel.getBounds()[1],
                 searchModel.getBounds()[2], searchModel.getBounds()[3])/2;
-		List<Result> results = targetService.loadByQuery(
-                new TagQuery(required, preferred, nearby, searchModel.getLocation()[0], searchModel.getLocation()[1], radius));
+		
+        TagQuery query = new TagQuery(searchModel.getLocation()[0], searchModel.getLocation()[1], radius);
+		query = query.requireTags(required).preferTags(preferred).nearbyTags(nearby);
+        
+		List<Recommendation> results = targetService.loadByQuery(query);
 
         Collections.sort(results);
 		return new ModelMap("results", results);
@@ -140,7 +141,7 @@ public class HomeController {
         }
 
         List<Target> targets = testDataGenerator.generate();
-        LOGGER.info("Created "+targets.size()+" targets:");
+        LOGGER.debug("Created "+targets.size()+" targets:");
 
         for(Target target : targets){
             String s = target.getText();
@@ -153,7 +154,7 @@ public class HomeController {
                 s += ")";
             }
 
-            LOGGER.info(s);
+            LOGGER.debug(s);
         }
 		return "redirect:/";
 	}

@@ -15,8 +15,14 @@
  */
 package org.openinfinity.tagcloud.domain.service;
 
+import org.openinfinity.core.annotation.AuditTrail;
+import org.openinfinity.core.annotation.Log;
 import org.openinfinity.tagcloud.domain.entity.Comment;
+import org.openinfinity.tagcloud.domain.entity.Profile;
+import org.openinfinity.tagcloud.domain.entity.Target;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Product service implementation with specification.
@@ -24,4 +30,24 @@ import org.springframework.stereotype.Service;
  * @author Ilkka Leinonen
  */
 @Service
-public class CommentServiceImpl extends AbstractTextEntityCrudServiceImpl<Comment> implements CommentService {}
+public class CommentServiceImpl extends AbstractTextEntityCrudServiceImpl<Comment> implements CommentService {
+
+	@Autowired
+	private ProfileService profileService;
+
+	@Autowired
+	private TargetService targetService;
+
+    @Log
+    @AuditTrail
+    @Override
+    @Transactional
+    public void addCommentToTarget(String commentText, Target target, String facebookId){
+        Profile profile = profileService.loadByFacebookId(facebookId);
+        Comment comment = new Comment(commentText, profile);
+        if(comment.getId()==null) comment = create(comment);
+        target.getComments().add(comment);
+        targetService.update(target);
+    }
+
+}

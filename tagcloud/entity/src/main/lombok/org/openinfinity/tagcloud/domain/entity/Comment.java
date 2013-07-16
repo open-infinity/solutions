@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-@Document
+
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
