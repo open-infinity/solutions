@@ -131,8 +131,8 @@ function getTargetCommentsAndUpdateUi(target_id) {
 	$.getJSON("comment/list/" + target_id, function(data) {
 		$.each(data, function(i, comment) {
 
-			createNewComment(default_author_img, comment.profile.facebookId,
-					comment.id,(new Date()).toLocaleString() ,comment.text);
+			createNewComment("facebook/photo/"+comment.profile.facebookId, getFacebookName_synchronized(comment.profile.facebookId),
+					comment.id,(new Date(comment.date)).toLocaleString() ,comment.text);
 
 		});
 	});
