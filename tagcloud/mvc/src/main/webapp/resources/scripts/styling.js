@@ -31,7 +31,7 @@ function styleTargetDivs() {
 
 function resizeRightColumn() {
 	document.getElementById("bc-col3").style.height = $(window).height() +"px";
-	document.getElementById("scroller").style.height = $(window).height() - 50 +"px";
+	document.getElementById("scroller").style.height = $(window).height() - 60 +"px";
 }
 
 $(document).ready(function() {

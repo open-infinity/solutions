@@ -92,17 +92,15 @@
 										<td><form:input type="text" id="nearby" name="nearby"
 												path="nearby" /></td>
 									</tr>
-									<tr>
-										<td><input id="search" type="submit" value="Save" /></td>
-									</tr>
 								</table>
 							</form:form>
 						</div>
 						<div id="add-target-tab">
+							<div id="Instructions">Select location by clicking map</div>
 							<div id="statusbox"></div>
 							<div id="targetForm" class="span-12 last">
 								<form:form modelAttribute="targetModel"
-									action="/tagcloud/targetaaaaaaaaaaa" method="post">
+									action="/tagcloud/target" method="post">
 									<table id="targetTable">
 										<tr>
 											<td><form:label for="text" path="text"
@@ -130,8 +128,8 @@
 				</div>
 				<div id="bc-col3">
 					<div id="login_div">
-						<img alt="login_facebook"
-							src="https://github.com/adozenlines/facebook-ios-sdk/diff_blob/adb3a65dfff79dc8dc30a1e3220a6bd0db017540/src/FacebookSDKResources.bundle/FBConnect/images/LoginWithFacebookPressed@2x.png?raw=true" />
+						<img id="loginImg" alt="login_facebook"
+							src="<c:url value="/resources/img/login-facebook.png" />" />
 					</div>
 					<div id="scroller">
 						<div id="targetlist"></div>

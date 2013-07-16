@@ -15,26 +15,3 @@
     margin-right: 10px;
     float:right;
 }
-
-#login_div {
-	/* 	background-color: #ADD8E6; */
-	color: brown; 
-	width=100%;
-	overflow: auto;
-	clear: both;
-	float:right;
-}
-
-
-#login_div img {
-	width: 70%;
-	margin: 5px;
-	margin-bottom: 15px;
-	float: right;
-	border-radius: 10px;
-	border: 2px outset;
-}
-
-#login_div img:active {
-	border: 2px inset;
-}

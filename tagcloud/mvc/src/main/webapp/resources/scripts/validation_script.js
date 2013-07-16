@@ -4,7 +4,7 @@ function initTargetFormValidation() {
 		var request = $(this).serializeObject();
 		$.postJSON("/tagcloud/target", request, 
 		function(request) {
-			setStatusField("Targer created successfully!");
+			setStatusField("Target created successfully!");
 			$.each($("#targetModel").serializeArray(), function(i, field) {
 			    fieldValidated(field.name, { valid : true });
 			});
