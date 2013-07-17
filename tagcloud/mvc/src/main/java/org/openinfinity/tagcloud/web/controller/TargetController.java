@@ -177,26 +177,7 @@ public class TargetController {
 		}
 		return result;
 	}
-	/**
-	 * Refactoring needed
-	 * 
-	 * @param target_id
-	 * @param text
-	 * @return
-	 */
-	@Log
-	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
-	@RequestMapping(method = RequestMethod.POST, value = "score/{target_id}")
-	public @ResponseBody
-	ResponseObject<String> scoreTarget(
-			@PathVariable("target_id") String target_id,
-			@RequestParam("score") String score, HttpServletRequest request) {
-
-		ResponseObject<String> responseObject = new ResponseObject<String>();
-		
-
-		return responseObject;
-	}
+	
 
 	@Log
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)

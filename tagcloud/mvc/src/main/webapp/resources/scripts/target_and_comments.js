@@ -17,6 +17,24 @@ $('document').ready(function() {
 	}
 
 });
+function scoreTarget(stars) {
+	var result = null;
+	var obj = null;
+	var form = $("<form><input name='score' value='" + stars + "'/></form>");
+	if (current_target != null && current_user != null) {
+		obj = $.ajax({
+			type : 'POST',
+			async : false,
+			url : 'score/' + current_target.id,
+			data : $(form).serialize()
+
+		});
+	} else {
+		console.log("score target failed target or user can't be null");
+	}
+	result = $.parseJSON(obj.responseText);
+	return result;
+}
 function getAndPrintTargetListInConsole() {
 
 	$.getJSON("target/list", function(data) {
@@ -30,13 +48,23 @@ function getAndPrintTargetListInConsole() {
 	});
 
 }
+function getTarget(target_id) {
+	var result = null;
+	var obj = null;
+	obj = $.ajax({
+		type : 'GET',
+		async : false,
+		url : 'target/' + target_id,
+	});
+	result = $.parseJSON(obj.responseText);
+	return result.result_list[0];
+}
 function getTargetAndUpdateUi(target_id) {
 
-	$.getJSON("target/" + target_id, function(data) {
-		target = data.result_list[0];
+	var target = getTarget(target_id);
+	if (target != null) {
 		setTargetInUi(target);
-	});
-
+	}
 }
 function setTargetInUi(target) {
 	current_target = target;
@@ -68,7 +96,7 @@ function postLoginView(target) {
 		submitComment(this, target.id);
 		return false;// disable the default action of the form
 	});
-	animateScore(default_score,true);
+	animateScore(default_score, true);
 }
 function isUserLoggedIn() {
 	var logged_in = false;
@@ -131,22 +159,28 @@ function submitComment(form, target_id) {
 	}
 }
 function hasError(data) {
+	if (data == null) {
+		return true;
+	}
 	return ((data.status != null && data.status != "200") || (data.is_error != null && data.is_error == true));
 }
 function getTargetCommentsAndUpdateUi(target_id) {
 	$("#comment_container").html("");
-	$.getJSON("comment/list/" + target_id, function(data) {
-		$.each(data, function(i, comment) {
-			var fb_user = getFacebookProfile_synchronized(comment.profile.facebookId); 
-			createNewComment("facebook/photo/" + fb_user.id,
-					fb_user.name,
-					comment.id, (new Date(comment.date)).toLocaleString(),
-					comment.text);
+	$.getJSON("comment/list/" + target_id,
+					function(data) {
+						$.each(data,function(i, comment) {
+											var fb_user = getFacebookProfile_synchronized(comment.profile.facebookId);
+											createNewComment("facebook/photo/"
+													+ fb_user.id, fb_user.name,
+													comment.id, (new Date(
+															comment.date))
+															.toLocaleString(),
+													comment.text);
 
-		});
-	});
+										});
+					});
 }
-function getUserFacebookProfile_synchronized(){
+function getUserFacebookProfile_synchronized() {
 	var facebook_profile = null;
 	$.ajax({
 		type : 'GET',
@@ -236,60 +270,74 @@ function getURLParameter(sParam) {
 		}
 	}
 }
-function animateScore(num,isDefault){
-	$.when(setScoreStars(num,isDefault)).done(setHandlers);
+function animateScore(num, isDefault) {
+	$.when(setScoreStars(num, isDefault)).done(setHandlers);
 }
 function setHandlers() {
 	$.each($('.score_symbol'), function(i, span) {
 		$(span).attr('onmouseover',
 				'animateScore(' + $(span).index() + ',false)');
-		$(span).attr('onmouseout',
-				'animateScore(' + default_score + ',true)');
+		$(span).attr('onmouseout', 'animateScore(' + default_score + ',true)');
+		$(span).click(function(){
+			 $.when(scoreTarget($(span))).done(function(data){
+				 if(!hasError(data.result)){
+					 concole.log("id .... " + current_target.id);
+				 }
+			 });
+			
+		});
 	});
 }
 function setScoreStars(num, isDefault) {
 
-		var div = $("#score_container");
-		var head = $("<div id='score_head'></div>")
-		try {
-			$(head).html(
-					"<span id='default_score' >Score: "
-							+ default_score.toFixed(1) + " </span>");
-			if (!isDefault) {
-				var num_str = num;
-				if (num < 10) {
-					num_str = "<span style='color:white;'>0</span>" + num;
-				}
-				$(head).append(
-						"<span id='new_user_score'>click on star to submit " + num_str
-								+ " /10 </span>");
+	var div = $("#score_container");
+	var head = $("<div id='score_head'></div>")
+	try {
+		$(head).html(
+				"<span id='default_score' >Score: " + default_score.toFixed(1)
+						+ " </span>");
+		if (!isDefault) {
+			var num_str = num;
+			if (num < 10) {
+				num_str = "<span style='color:white;'>0</span>" + num;
 			}
+			$(head).append(
+					"<span id='new_user_score'>click on star to submit "
+							+ num_str + " /10 </span>");
+		}
 
-			$(div).html($(head));
-			var i;
-			for (i = 0; i < num; i++) {
-				$(div).append("<span class='score_symbol'>&#x02605;</span>")
-			}
-			for (i; i < 10; i++) {
-				$(div).append("<span class='score_symbol'>&#x02606;</span>")
-			}					
-				$(div).append($(getScoreFooter()));
-			
-			
-		} catch (e) {
-			console.log("Error " + e.toString());
-		}			
-}
-function getScoreFooter(){
-	var footer = $("<div id='score_footer'></div>");
-	if(current_user != null && current_target != null){
-		$.each(current_target.scores,function(i,score){
-			if(score.profile.facebookId === current_user.id){
-				footer.append("You scored this Target by " + score.stars);
-				return footer;
-			}			
-		});
-		footer.append("You're not scored this target yet! ");	
+		$(div).html($(head));
+		var i;
+		for (i = 0; i < num; i++) {
+			$(div).append("<span class='score_symbol'>&#x02605;</span>")
+		}
+		for (i; i < 10; i++) {
+			$(div).append("<span class='score_symbol'>&#x02606;</span>")
+		}
+		$(div).append($(getScoreFooter()));
+
+	} catch (e) {
+		console.log("Error " + e.toString());
 	}
-	return footer;	
+}
+function getScoreFooter() {
+	var footer = $("<div id='score_footer'></div>");
+	var score_str = "";
+	footer.html("");
+	var isUserScored = false;
+	if (current_user != null && current_target != null) {
+		$.each(current_target.scores, function(i, score) {
+			if (score.profile.facebookId === current_user.id) {
+				score_str = "You scored this target by " + score.stars;
+				isUserScored = true;
+				return;
+			}
+		});
+		footer.append(score_str);
+		if (!isUserScored) {
+			footer.append("You're not scored this target yet! ");
+		}
+
+	}
+	return footer;
 }
