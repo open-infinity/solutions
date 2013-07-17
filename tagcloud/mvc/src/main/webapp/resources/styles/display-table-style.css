@@ -39,7 +39,13 @@ body {
 	min-width: 350px;
 	width: 60%;
 	background-color: lightgrey;
-	vertical-align: top;
+	vertical-align: middle;
+	text-align: center;
+}
+
+#searchTextField{
+	width: 99%;
+	height: 40px;
 }
 
 #login_div{

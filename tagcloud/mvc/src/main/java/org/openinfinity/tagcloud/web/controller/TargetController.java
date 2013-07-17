@@ -118,6 +118,8 @@ public class TargetController {
 		return "targets_home";
 	}
 
+
+	
 	@Log
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
 	@RequestMapping(method = RequestMethod.GET, value = "create")
