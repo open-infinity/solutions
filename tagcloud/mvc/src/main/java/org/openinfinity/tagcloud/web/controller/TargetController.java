@@ -22,6 +22,7 @@ import org.openinfinity.core.exception.BusinessViolationException;
 import org.openinfinity.core.exception.SystemException;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
+import org.openinfinity.tagcloud.domain.service.ScoreService;
 import org.openinfinity.tagcloud.domain.service.TargetService;
 import org.openinfinity.tagcloud.web.connection.ConnectionManager;
 import org.openinfinity.tagcloud.web.connection.entity.ResponseObject;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -49,6 +51,9 @@ public class TargetController {
 
 	@Autowired
 	private TargetService targetService;
+	
+	@Autowired
+	private ScoreService scoreService;
 
 	@Autowired
 	private Validator validator;
@@ -169,6 +174,26 @@ public class TargetController {
 
 		}
 		return result;
+	}
+	/**
+	 * Refactoring needed
+	 * 
+	 * @param target_id
+	 * @param text
+	 * @return
+	 */
+	@Log
+	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
+	@RequestMapping(method = RequestMethod.POST, value = "score/{target_id}")
+	public @ResponseBody
+	ResponseObject<String> scoreTarget(
+			@PathVariable("target_id") String target_id,
+			@RequestParam("score") String score, HttpServletRequest request) {
+
+		ResponseObject<String> responseObject = new ResponseObject<String>();
+		
+
+		return responseObject;
 	}
 
 	@Log

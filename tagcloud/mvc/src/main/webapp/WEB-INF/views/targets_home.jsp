@@ -42,17 +42,7 @@
 		</div>
 		<div id="target_score_main">
 			<div id="score_container">
-<!-- 				<h3> -->
-<!-- 					Score: <span id="score_value"> empty scroe value -->
-<!-- 					</span> -->
-<!-- 				</h3> -->
-<!-- 				<span class="score_symbol">&#x02605;</span> <span -->
-<!-- 					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span> -->
-<!-- 				<span class="score_symbol">&#x02605;</span> <span -->
-<!-- 					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span> -->
-<!-- 				<span class="score_symbol">&#x02605;</span> <span -->
-<!-- 					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02606;</span> -->
-<!-- 				<span class="score_symbol">&#x02606;</span> -->
+
 
 			</div>
 

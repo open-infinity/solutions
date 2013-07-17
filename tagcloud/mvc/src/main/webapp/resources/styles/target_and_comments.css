@@ -105,6 +105,12 @@ font-weight: bolder;
 	font-size: 50px;
 	cursor: pointer;
 }
+#score_footer{
+	margin: 0 auto;
+	width: 60%;
+	color: #808080;
+	font-weight: bolder;	
+}
 /***/
 
 #target_add_comment_main {
