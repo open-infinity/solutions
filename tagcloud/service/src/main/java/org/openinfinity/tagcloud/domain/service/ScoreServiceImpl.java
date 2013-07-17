@@ -46,9 +46,19 @@ public class ScoreServiceImpl extends AbstractCrudServiceImpl<Score> implements 
     @Override
     @Transactional
     public void scoreTarget(int scoreStars, Target target, String facebookId) {
-        Profile profile = profileService.loadByFacebookId(facebookId);
-        Score score = create(new Score(scoreStars, profile));
-        target.addScore(score);
+		List<Score> scores = target.getScores();
+		Profile profile = profileService.loadByFacebookId(facebookId);
+		Score score = create(new Score(scoreStars, profile));
+		boolean exists = false;
+        for(Score s : scores){
+        	if(s.getProfile().getFacebookId() == facebookId){
+        		s = score;
+        		exists = true;
+        	}
+        }
+        if(!exists){
+        	target.addScore(score);
+        }              
         targetService.update(target);
         profile.addScoredTarget(target);
         profileService.update(profile);

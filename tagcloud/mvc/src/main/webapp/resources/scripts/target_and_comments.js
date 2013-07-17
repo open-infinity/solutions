@@ -133,30 +133,34 @@ function submitComment(form, target_id) {
 				console.log(data);
 				test_object = data;
 				if (hasError(data)) {
-					$("#comment_errors_header > h3").html(data.message);
-					var list = $("#add_comment_errors > ul");
-					$(list).html("");
-					if (data.error_reasons != null) {
-						$.each(data.error_reasons, function(i, reason) {
-							$(list).append("<li>" + reason + "</li>");
-						});
-					}
-					$("#add_comment_errors").css('display', 'block');
-					$("#add_comment_success").css('display', 'none');
-
+					handleSubmitCommentErrors(data);
 				} else {
-					$("#comment_success_header > h3").html(data.message);
-					$("#add_comment_errors").css('display', 'none');
-					$("#add_comment_success").css('display', 'block');
-					$("#target_add_comment_main textarea").val("");
-					getTargetCommentsAndUpdateUi(target.id);
-
+					handleSubmitCommentSuccess(data,target_id);
 				}
 			}
 		});
 	} catch (e) {
 		console.log("error" + e);
 	}
+}
+function handleSubmitCommentSuccess(data, target_id) {
+	$("#comment_success_header > h3").html(data.message);
+	$("#add_comment_errors").css('display', 'none');
+	$("#add_comment_success").css('display', 'block');
+	$("#target_add_comment_main textarea").val("");
+	getTargetCommentsAndUpdateUi(target_id);
+}
+function handleSubmitCommentErrors(error) {
+	$("#comment_errors_header > h3").html(data.message);
+	var list = $("#add_comment_errors > ul");
+	$(list).html("");
+	if (data.error_reasons != null) {
+		$.each(data.error_reasons, function(i, reason) {
+			$(list).append("<li>" + reason + "</li>");
+		});
+	}
+	$("#add_comment_errors").css('display', 'block');
+	$("#add_comment_success").css('display', 'none');
 }
 function hasError(data) {
 	if (data == null) {
@@ -166,9 +170,14 @@ function hasError(data) {
 }
 function getTargetCommentsAndUpdateUi(target_id) {
 	$("#comment_container").html("");
-	$.getJSON("comment/list/" + target_id,
+	$
+			.getJSON(
+					"comment/list/" + target_id,
 					function(data) {
-						$.each(data,function(i, comment) {
+						$
+								.each(
+										data,
+										function(i, comment) {
 											var fb_user = getFacebookProfile_synchronized(comment.profile.facebookId);
 											createNewComment("facebook/photo/"
 													+ fb_user.id, fb_user.name,
@@ -278,15 +287,21 @@ function setHandlers() {
 		$(span).attr('onmouseover',
 				'animateScore(' + $(span).index() + ',false)');
 		$(span).attr('onmouseout', 'animateScore(' + default_score + ',true)');
-		$(span).click(function(){
-			 $.when(scoreTarget($(span))).done(function(data){
-				 if(!hasError(data.result)){
-					 concole.log("id .... " + current_target.id);
-				 }
-			 });
-			
-		});
+        $(span).attr('onmousedown', 'submitScoreAndUpdateView(' + $(span).index() + ')');
+
 	});
+
+}
+function submitScoreAndUpdateView(stars){
+	var result = scoreTarget(stars);
+	if(!hasError(result) && current_target != null){
+		current_target = getTarget(current_target.id);
+		default_score = math.round(current_target.score);
+		setScoreStars(default_score,true);
+		$("#score_note").css('display','none');
+	}else{
+		$("#score_note").css('display','block');
+	}
 }
 function setScoreStars(num, isDefault) {
 
