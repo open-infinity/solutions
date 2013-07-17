@@ -1,9 +1,19 @@
 package org.openinfinity.tagcloud.web.model;
 
 import java.math.BigInteger;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.validation.constraints.Size;
+
+import org.openinfinity.core.annotation.NotScript;
 
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 public class TagModel {
+
+	private Map<String, Collection<String>> errorStatuses = new HashMap<String, Collection<String>>();
 
 	
 	public TagModel() {
@@ -16,7 +26,23 @@ public class TagModel {
 	}
 
 	private String id;
+	
+	@NonNull
+	@NotScript
+	@Size(min=1, max=30)
 	private String text;
+	
+	public void addErrorStatuses(String level, Collection<String> ids) {
+		errorStatuses.put(level, ids);
+	}
+
+	public Map<String, Collection<String>> getErrorStatuses() {
+		return errorStatuses;
+	}
+
+	public void setErrorStatuses(Map<String, Collection<String>> errorStatuses) {
+		this.errorStatuses = errorStatuses;
+	}
 	
 	public String getText() {
 		return text;
