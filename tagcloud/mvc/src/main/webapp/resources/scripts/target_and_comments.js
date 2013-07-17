@@ -296,7 +296,7 @@ function submitScoreAndUpdateView(stars){
 	var result = scoreTarget(stars);
 	if(!hasError(result) && current_target != null){
 		current_target = getTarget(current_target.id);
-		default_score = math.round(current_target.score);
+		default_score = Math.round(current_target.score);
 		setScoreStars(default_score,true);
 		$("#score_note").css('display','none');
 	}else{
