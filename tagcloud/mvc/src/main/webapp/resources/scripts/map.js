@@ -7,7 +7,6 @@ var bounds;
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
-
 function initialize() {
 
 	var mapOptions = {
@@ -33,6 +32,26 @@ function initialize() {
 				visibility : "off"
 			} ]
 		} ]
+	});
+
+	var input = document.getElementById('searchTextField');
+	var options = {
+		types : [ 'geocode' ]
+	};
+
+	var autocomplete = new google.maps.places.Autocomplete(input, options);
+
+	google.maps.event.addListener(autocomplete, 'place_changed', function() {
+		var place = autocomplete.getPlace();
+		if (!place.geometry) {
+			return;
+		}
+		if (place.geometry.viewport) {
+			map.fitBounds(place.geometry.viewport);
+		} else {
+			map.setCenter(place.geometry.location);
+			map.setZoom(13);
+		}
 	});
 
 	$(function() {
@@ -89,7 +108,6 @@ function initialize() {
 
 }
 
-
 function clearMarkers() {
 	for ( var i = 0; i < markers.length; i++) {
 		markers[i].setMap(null);
@@ -109,13 +127,13 @@ function showMarkers() {
 	}
 }
 
-function hideAddedMarker(){
+function hideAddedMarker() {
 	if (addedMarker) {
 		addedMarker.setMap(null);
 	}
 }
 
-function showAddedMarker(){
+function showAddedMarker() {
 	if (addedMarker) {
 		addedMarker.setMap(map);
 	}
@@ -166,10 +184,10 @@ function getMap() {
 	return map;
 }
 
-function getCenter(){
+function getCenter() {
 	return center;
 }
 
-function getBounds(){
+function getBounds() {
 	return bounds;
 }
