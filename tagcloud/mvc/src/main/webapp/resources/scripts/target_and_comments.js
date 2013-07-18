@@ -135,7 +135,7 @@ function submitComment(form, target_id) {
 				if (hasError(data)) {
 					handleSubmitCommentErrors(data);
 				} else {
-					handleSubmitCommentSuccess(data,target_id);
+					handleSubmitCommentSuccess(data, target_id);
 				}
 			}
 		});
@@ -149,6 +149,7 @@ function handleSubmitCommentSuccess(data, target_id) {
 	$("#add_comment_success").css('display', 'block');
 	$("#target_add_comment_main textarea").val("");
 	getTargetCommentsAndUpdateUi(target_id);
+	$("#add_comment_success").delay(5000).slideUp(3000);
 }
 function handleSubmitCommentErrors(error) {
 	$("#comment_errors_header > h3").html(data.message);
@@ -170,23 +171,17 @@ function hasError(data) {
 }
 function getTargetCommentsAndUpdateUi(target_id) {
 	$("#comment_container").html("");
-	$
-			.getJSON(
-					"comment/list/" + target_id,
-					function(data) {
-						$
-								.each(
-										data,
-										function(i, comment) {
-											var fb_user = getFacebookProfile_synchronized(comment.profile.facebookId);
-											createNewComment("facebook/photo/"
-													+ fb_user.id, fb_user.name,
-													comment.id, (new Date(
-															comment.date))
-															.toLocaleString(),
-													comment.text);
-
-										});
+	$.getJSON("comment/list/" + target_id, function(data) {
+		createComments(data);
+	});
+}
+function createComments(data_array) {
+	$.each(data_array,function(i, comment) {
+						var fb_user = getFacebookProfile_synchronized(comment.profile.facebookId);
+						createNewComment("facebook/photo/" + fb_user.id,
+								fb_user.name, comment.id, (new Date(
+										comment.date)).toLocaleString(),
+								comment.text);
 					});
 }
 function getUserFacebookProfile_synchronized() {
@@ -287,20 +282,21 @@ function setHandlers() {
 		$(span).attr('onmouseover',
 				'animateScore(' + $(span).index() + ',false)');
 		$(span).attr('onmouseout', 'animateScore(' + default_score + ',true)');
-        $(span).attr('onmousedown', 'submitScoreAndUpdateView(' + $(span).index() + ')');
+		$(span).attr('onmousedown',
+				'submitScoreAndUpdateView(' + $(span).index() + ')');
 
 	});
 
 }
-function submitScoreAndUpdateView(stars){
+function submitScoreAndUpdateView(stars) {
 	var result = scoreTarget(stars);
-	if(!hasError(result) && current_target != null){
+	if (!hasError(result) && current_target != null) {
 		current_target = getTarget(current_target.id);
 		default_score = Math.round(current_target.score);
-		setScoreStars(default_score,true);
-		$("#score_note").css('display','none');
-	}else{
-		$("#score_note").css('display','block');
+		setScoreStars(default_score, true);
+		$("#score_note").css('display', 'none');
+	} else {
+		$("#score_note").css('display', 'block');
 	}
 }
 function setScoreStars(num, isDefault) {
