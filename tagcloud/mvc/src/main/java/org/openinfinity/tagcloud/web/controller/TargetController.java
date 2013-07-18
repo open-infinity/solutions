@@ -3,6 +3,7 @@ package org.openinfinity.tagcloud.web.controller;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -21,7 +22,9 @@ import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.BusinessViolationException;
 import org.openinfinity.core.exception.SystemException;
 import org.openinfinity.tagcloud.domain.entity.Target;
+import org.openinfinity.tagcloud.domain.entity.query.TargetQuery;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
+import org.openinfinity.tagcloud.domain.service.LocationService;
 import org.openinfinity.tagcloud.domain.service.ScoreService;
 import org.openinfinity.tagcloud.domain.service.TargetService;
 import org.openinfinity.tagcloud.web.connection.ConnectionManager;
@@ -55,6 +58,9 @@ public class TargetController {
 	@Autowired
 	private ScoreService scoreService;
 
+	@Autowired
+	private LocationService locationService;
+	
 	@Autowired
 	private Validator validator;
 
@@ -206,6 +212,21 @@ public class TargetController {
 		}
 		return failureMessages;
 	}
+	
+
+	@RequestMapping(method = RequestMethod.GET, value="autocomplete")
+	public @ResponseBody Collection<TargetQuery> getAutocompleteSuggestions(@RequestParam(value="term") String term, HttpServletResponse response) {
+	    response.setContentType("application/json");
+	    List<TargetQuery> suggestions = new ArrayList<TargetQuery>();
+	    suggestions.addAll(locationService.getLocations(term));
+	    
+	    for(Target target : targetService.searchLike(term)) {
+	    	suggestions.add(new TargetQuery(target.getText(), TargetQuery.Category.Target, target.getId()));
+	    }
+	    
+	    return suggestions;
+	}
+
 	
 
 }

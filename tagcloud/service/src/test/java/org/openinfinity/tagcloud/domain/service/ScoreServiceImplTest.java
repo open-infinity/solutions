@@ -14,6 +14,7 @@ import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.BusinessViolationException;
 import org.openinfinity.tagcloud.domain.entity.Profile;
 import org.openinfinity.tagcloud.domain.entity.Score;
+import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.repository.ProfileRepository;
 import org.openinfinity.tagcloud.domain.repository.ScoreRepository;
 import org.openinfinity.tagcloud.domain.repository.TagRepository;
@@ -33,6 +34,9 @@ public class ScoreServiceImplTest {
 	ScoreRepository scoreRepository;
 	
 	@Autowired
+	ProfileService profileService;
+	
+	@Autowired
 	TagRepository tagRepository;
 
 	@Autowired
@@ -41,9 +45,16 @@ public class ScoreServiceImplTest {
 	@Autowired
 	ProfileRepository profileRepository;
 
+	@Autowired
+	TargetService targetService;
+
+    Profile testProfile;
 	
 	@Before
-	public void setUp() throws Exception {}
+	public void setUp() throws Exception {
+		 testProfile = new Profile("testId");
+		 testProfile = profileService.create(testProfile);
+	}
 
 	@After
 	public void tearDown() throws Exception {
@@ -52,8 +63,6 @@ public class ScoreServiceImplTest {
 		tagRepository.dropCollection();
         profileRepository.dropCollection();
 	}
-
-    Profile testProfile = new Profile("testId");
 
 	@Test 
 	public void testCreateScore() {
@@ -123,7 +132,26 @@ public class ScoreServiceImplTest {
 	public void testLoadByIdFailsWhenScoreDoesNotExist() {
 		scoreService.loadById("testcommentnotexisting");
 	}
-	
+
+	@Test
+	public void testOldScoreRemoval() {
+		Target target = new Target("test", 0, 0);
+		target = targetService.create(target);
+		scoreService.scoreTarget(3, target, testProfile.getFacebookId());
+		targetService.update(target);
+		assertEquals(1, scoreService.loadAll().size());
+		assertEquals(1, targetService.loadById(target.getId()).getScores().size());
+		assertEquals(3, targetService.loadById(target.getId()).getScores().get(0).getStars());
+		
+		target = targetService.loadById(target.getId());
+		scoreService.scoreTarget(7, target, testProfile.getFacebookId());
+		targetService.update(target);
+		assertEquals(1, scoreService.loadAll().size());
+		assertEquals(1, targetService.loadById(target.getId()).getScores().size());
+		assertEquals(7, targetService.loadById(target.getId()).getScores().get(0).getStars());
+		
+		
+	}
 	
 
 	private void assertAmountOfScores(int amount) {

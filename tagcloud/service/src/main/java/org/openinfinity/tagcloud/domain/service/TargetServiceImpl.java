@@ -58,7 +58,11 @@ public class TargetServiceImpl extends
     @Autowired
     private RecommendationService recommendationService;
 
-
+	@Override
+	public List<Target> searchLike(String input) {
+		return targetRepository.searchLike(input);
+	}
+	
   
 	@Override
 	public Collection<Target> loadByTag(Tag tag) {
@@ -68,13 +72,10 @@ public class TargetServiceImpl extends
     @Override
 	public List<Recommendation> loadByQuery(TagQuery tagQuery) {
 		List<Target> targets = targetRepository.loadByCoordinates(tagQuery.getLongitude(), tagQuery.getLatitude(), tagQuery.getRadius());
-		System.out.println(targets.size());
 		List<Recommendation> results = requireTags(targets, tagQuery);
-		System.out.println(results.size());
 		if(tagQuery.getNearby().size()>0) {
 			results = nearbySearch(targetRepository.loadByCoordinates(tagQuery.getLongitude(), tagQuery.getLatitude(), tagQuery.getRadius() +NearbyTarget.MAX_DISTANCE), results, tagQuery.getNearby());
 		}
-		System.out.println(results.size());
         if(tagQuery.getPreferred().size() > 0){
             checkPreferredTags(results, tagQuery);
         }

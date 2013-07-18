@@ -159,14 +159,12 @@ public class TargetServiceImplTest {
 		testListOk.add(tag1);
 		testListOk.add(tag2);
 		TagQuery query = (new TagQuery(0, 0, 200)).requireTags(testListOk);
-		System.out.println("query1");
 		assertEquals(1, targetService.loadByQuery(query).size());
 		
 		List<Tag> testListFail = new ArrayList<Tag>();
 		testListFail.add(tag1);
 		testListFail.add(tag3);
 		query = (new TagQuery(0, 0, 200)).requireTags(testListFail);
-		System.out.println("query2");
 		assertEquals(0, targetService.loadByQuery(query).size());
 	}
 	
