@@ -391,8 +391,6 @@ font-weight:bolder;
 margin-top:10px;
 width:52px;
 height:52px;
-max-width:52px;
-max-height:52px;
 border-radius: 7px;
 }
 #header_user_name{
