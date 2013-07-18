@@ -64,7 +64,8 @@ public class Target implements TextEntity {
 		ListIterator<Score> iterator = scores.listIterator();
 		while (iterator.hasNext()) {
 			Score existingScore = iterator.next();
-			if(existingScore.getProfile().getFacebookId() == score.getProfile().getFacebookId()) {
+		
+			if(existingScore.getProfile().getId().equals(score.getProfile().getId())) {
 				oldScore = existingScore;
 				iterator.remove();
 				break;
