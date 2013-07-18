@@ -38,7 +38,7 @@ public class Recommendation implements Comparable<Recommendation> {
 	public int compareTo(Recommendation o) {
 		if(this.getRecommendationScore() > o.getRecommendationScore()) return -1;
 		if(this.getRecommendationScore() < o.getRecommendationScore()) return 1;
-		return 0;
+		return (this.getTarget().getText().compareToIgnoreCase(o.getTarget().getText()));
 	}
 	
 	public void updateNearbyTargetList() {

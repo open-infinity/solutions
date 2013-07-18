@@ -58,7 +58,11 @@ public class TargetServiceImpl extends
     @Autowired
     private RecommendationService recommendationService;
 
-
+	@Override
+	public List<Target> searchLike(String input) {
+		return targetRepository.searchLike(input);
+	}
+	
   
 	@Override
 	public Collection<Target> loadByTag(Tag tag) {

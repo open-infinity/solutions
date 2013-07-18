@@ -6,14 +6,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Settings {
-	public static final Settings NO_USER_SETTINGS = new Settings(1, 1, 1, 1, 0, 0);
+	public static final Settings NO_USER_SETTINGS = new Settings(0, 1, 1, 1, 0, 0);
 	
-    private double distanceScoreWeight = 1;
-    private double preferredScoreWeight = 1;
-    private double nearScoreWeight = 1;
-    private double avgScoreWeight = 1;
-    private double ownScoreWeight = 1;
-    private double friendScoreWeight = 1;
+    private double distanceScoreWeight;
+    private double preferredScoreWeight;
+    private double nearScoreWeight;
+    private double avgScoreWeight;
+    private double ownScoreWeight;
+    private double friendScoreWeight;
 
     public Settings(double distanceScoreWeight, double preferredScoreWeight,
 			double nearScoreWeight, double avgScoreWeight,

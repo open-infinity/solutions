@@ -20,6 +20,8 @@ public interface TargetService extends AbstractTextEntityCrudServiceInterface<Ta
 
 	List<Recommendation> loadByQuery(TagQuery tagQuery);
 
+	List<Target> searchLike(String input);
+
 	
 
     //void removeTagFromTarget(Tag tag, Target target);
