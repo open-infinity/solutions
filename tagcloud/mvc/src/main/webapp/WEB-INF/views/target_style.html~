@@ -378,7 +378,7 @@ html,body {
 
 					<div id="tag_header">
 						<strong id="tag_title">Tags:</strong>
-						<div id="new_tag_div" style="display:inline;">
+						<div id="new_tag_div">
 							<small> add new tag: </small> <input id="tag_field" name="text"
 								type="text" />
 						</div>
