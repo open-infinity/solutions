@@ -258,6 +258,7 @@ margin-right:10px;
 
 #new_tag_div {
 	margin-left: 20%;
+	display:inline;
 }
 
 #tag_field {
