@@ -18,14 +18,28 @@
 <link rel="stylesheet"
 	href="<spring:url value="/resources/styles/token-input-facebook.css" />"
 	type="text/css" />
-<link rel="stylesheet"
+<%--<link rel="stylesheet"
 	href="<spring:url value="/resources/styles/jquery-ui-1.10.3.custom.css" />"
-	type="text/css" />
+	type="text/css" />--%>
+ <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+	
+<style>
+  .ui-autocomplete-category {
+    font-weight: bold;
+    padding: .2em .4em;
+    margin: .8em 0 .2em;
+    line-height: 1.5;
+  }
+</style>
 
 <script type="text/javascript"
 	src="<c:url value="/resources/scripts/jquery.min.js" />"></script>
-<script type="text/javascript"
-	src="<c:url value="/resources/scripts/jquery-ui-1.10.3.custom.js" />"></script>
+<%--<script type="text/javascript"
+	src="<c:url value="/resources/scripts/jquery-ui-1.10.3.custom.js" />"></script>--%>
+
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		
 <script type="text/javascript"
 	src="<c:url value="/resources/scripts/json.min.js" />"></script>
 <script type="text/javascript"

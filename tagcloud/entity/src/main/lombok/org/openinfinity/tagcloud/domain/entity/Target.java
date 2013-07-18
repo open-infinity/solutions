@@ -56,18 +56,24 @@ public class Target implements TextEntity {
 
 	/*
 	 * removes existing score from the same user, adds a new one and updates the average score
+	 * returns users old score or null if it does not exist
 	 */
-	public void addScore(Score score) {
+	public Score addScore(Score score) {
+		Score oldScore = null;
+		
 		ListIterator<Score> iterator = scores.listIterator();
 		while (iterator.hasNext()) {
 			Score existingScore = iterator.next();
-			if(existingScore.getProfile().getId() == score.getProfile().getId()) {
+		
+			if(existingScore.getProfile().getId().equals(score.getProfile().getId())) {
+				oldScore = existingScore;
 				iterator.remove();
 				break;
 			}
 		}
 		scores.add(score);
 		calcScore();
+		return oldScore;
 	}
 	
 	@Override

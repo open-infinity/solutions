@@ -4,11 +4,13 @@ var tabIndex = 0;
 var addedMarker;
 var center;
 var bounds;
+var placesService;
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
 function initialize() {
-
+	
+	
 	var mapOptions = {
 		zoom : 13,
 		center : new google.maps.LatLng(60.172983, 24.940332),
@@ -39,21 +41,10 @@ function initialize() {
 		types : [ 'geocode' ]
 	};
 
-	var autocomplete = new google.maps.places.Autocomplete(input, options);
+	
+	initAutocomplete();
 
-	google.maps.event.addListener(autocomplete, 'place_changed', function() {
-		var place = autocomplete.getPlace();
-		if (!place.geometry) {
-			return;
-		}
-		if (place.geometry.viewport) {
-			map.fitBounds(place.geometry.viewport);
-		} else {
-			map.setCenter(place.geometry.location);
-			map.setZoom(13);
-		}
-	});
-
+	
 	$(function() {
 		$('#tabs')
 				.tabs(
@@ -127,6 +118,49 @@ function initialize() {
 
 }
 
+function initAutocomplete() {
+	placesService = new google.maps.places.PlacesService(map);	
+	
+	$.widget( "custom.catcomplete", $.ui.autocomplete, {
+		    _renderMenu: function( ul, items ) {
+		      var that = this,
+		        currentCategory = "";
+		      $.each( items, function( index, item ) {
+		        if ( item.category != currentCategory ) {
+		          ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+		          currentCategory = item.category;
+		        }
+		        that._renderItemData( ul, item );
+		      });
+		    }
+		  });	
+	  
+	  $( "#searchTextField" ).catcomplete({
+	      delay: 0,
+	      source: "/tagcloud/target/autocomplete",
+	      select: function( event, ui ) {
+		  	var request = new Object();
+		  	request.reference = ui.item.id;
+		  	
+		  	if(ui.item.category == "Location"){
+		  		placesService.getDetails(request, function(place, placesServiceStatus){
+	    	  		if (place.geometry.viewport) {
+	    	  	      map.fitBounds(place.geometry.viewport);
+	    	  	    } else {
+	    	  	      map.setCenter(place.geometry.location);
+	    	  	      map.setZoom(17);  // Why 17? Because it looks good.
+	    	  	    }
+	    	  	});		  		
+		  	}
+		  	
+		  	if(ui.item.category == "Target"){
+		  		window.location = "/tagcloud/target?target_id="+ui.item.id;  		
+		  	}
+  		}
+    });  
+}
+
+
 function clearMarkers() {
 	for ( var i = 0; i < markers.length; i++) {
 		markers[i].setMap(null);
@@ -151,7 +185,7 @@ function populateCoordinates(lat, lng) {
 	document.getElementById("longitude").setAttribute("value", lng);
 }
 
-function placeNewMarkerWithIndex(location, index) {
+function placeNewMarkerWithIndex(location, index, target_id) {
 
 	var marker = new google.maps.Marker({
 		position : location,
@@ -161,19 +195,63 @@ function placeNewMarkerWithIndex(location, index) {
 		ind : index
 	});
 
+	if(target_id){
+		marker.target = target_id;
+	}
+	
+
 	markers.push(marker);
 
 	google.maps.event.addListener(marker, 'mouseover', function(event) {
 		setMarkerHighlight(index, true);
 		setTargetDivHighlight($("#targetlist").children().eq(index), true);
+		var parentDiv = $("#scroller");
+		var innerListItem = $("#targetlist").children().eq(index);
+		
+		if(!isScrolledIntoView(innerListItem, parentDiv)){
+			var scrollTopValue = parentDiv.scrollTop() + (innerListItem.position().top - parentDiv.position().top) - (parentDiv.height()/2) + (innerListItem.height()/2);
+			parentDiv.animate({
+				scrollTop: scrollTopValue
+			}, {
+				duration : 800,
+				queue : false
+			});	
+		}
+		
+			
+		
 	});
 
 	google.maps.event.addListener(marker, 'mouseout', function(event) {
 		setMarkerHighlight(index, false);
 		setTargetDivHighlight($("#targetlist").children().eq(index), false);
 	});
+	
+	
+	google.maps.event.addListener(marker, 'click', function(event) {
+		if(marker.target){
+			window.location = "/tagcloud/target?target_id="+marker.target;
+		}
+		
+	});
+	
+	
 
 }
+
+
+function isScrolledIntoView(elem, view)
+{
+    var viewTop = view.position().top;
+    var viewBottom = viewTop + view.height();
+
+    var elemTop = elem.position().top;
+    var elemBottom = elemTop + elem.height();
+
+    return ((elemBottom <= viewBottom) && (elemTop >= viewTop));
+}
+
+
 
 function setMarkerHighlight(index, highlight) {
 	if (highlight) {

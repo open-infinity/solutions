@@ -107,7 +107,7 @@ public class TestDataGenerator {
                 double longitude = result.getAsJsonObject("geometry").getAsJsonObject("location").get("lng").getAsDouble();
                 String name = result.get("name").getAsString();
                 double score = -1;
-                if(result.get("rating") != null) score = result.get("rating").getAsDouble();
+                if(result.get("rating") != null) score = 2*result.get("rating").getAsDouble();
                 List<String> tags = new ArrayList<String>();
                 JsonArray tagArray = result.getAsJsonArray("types");
                 for(int j=0; j<tagArray.size(); j++){

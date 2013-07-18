@@ -16,4 +16,6 @@ public interface TargetRepository  extends AbstractCrudRepositoryInterface<Targe
 	Collection<Target> loadByTag(Tag tag);
 
     List<Target> loadByCoordinates(CoordinateBounds b, double radius);
+
+	List<Target> searchLike(String input);
 }

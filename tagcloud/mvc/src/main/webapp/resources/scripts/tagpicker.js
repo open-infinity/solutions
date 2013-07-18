@@ -21,7 +21,7 @@ function initTagSearchOnDocumentReady() {
 				  $list.append(createDiv(value, index));
 				  var loc = new google.maps.LatLng(value.target.location[1], value.target.location[0]);
 				  
-				  placeNewMarkerWithIndex(loc, index);
+				  placeNewMarkerWithIndex(loc, index, value.target.id);
 			});
 			
 			styleTargetDivs();

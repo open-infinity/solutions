@@ -1,6 +1,6 @@
 function createDiv(result, index) {
 	var div = $("<div class=\"targetItemDiv\"></div>");
-	div.append("<div>" + index + 1 + ": " + result.target.text + "</div>");
+	div.append("<div>" + (index + 1) + ": " + result.target.text + "</div>");
 	div.append("<div>Recommendation Score: " + result.recommendationScore
 			+ "</div>");
 	div.append("<div>User Score: " + result.target.score + "</div>");

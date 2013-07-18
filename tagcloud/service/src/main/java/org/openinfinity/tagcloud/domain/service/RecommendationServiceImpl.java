@@ -36,19 +36,22 @@ public class RecommendationServiceImpl implements RecommendationService{
         		settings.getDistanceScoreWeight() + 
         		settings.getPreferredScoreWeight() +
         		settings.getNearScoreWeight() +
-        		settings.getAvgScoreWeight() +
         		settings.getOwnScoreWeight()); 
         
         double recommendationScoreSum = (
         		distanceScore * settings.getDistanceScoreWeight() +
                 preferredScore * settings.getPreferredScoreWeight() +
                 nearScore * settings.getNearScoreWeight() +
-                avgScore * settings.getAvgScoreWeight() +
                 ownScore * settings.getOwnScoreWeight());
         
         if(friendFacebookIds.size() > 0) {
         	weightSum += settings.getFriendScoreWeight();
         	recommendationScoreSum += friendScore * settings.getFriendScoreWeight();
+        }
+        
+        if(recommendation.getTarget().getScores().size() > 0) {
+        	weightSum += settings.getAvgScoreWeight();
+        	recommendationScoreSum += avgScore * settings.getAvgScoreWeight();
         }
         
         recommendation.setRecommendationScore(recommendationScoreSum / weightSum);

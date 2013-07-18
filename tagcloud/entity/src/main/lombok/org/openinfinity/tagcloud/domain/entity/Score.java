@@ -23,7 +23,7 @@ public class Score implements Entity {
 	private String id;
 	
 	@NonNull
-	private Integer stars;
+	private int stars;
 
 	@NonNull
 	private Profile profile;
