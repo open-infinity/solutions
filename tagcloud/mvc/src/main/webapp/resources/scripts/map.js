@@ -71,6 +71,7 @@ function initialize() {
 
 								}
 								if ($activeTab == 1) {
+									$('#targetModel')[0].style.visibility="hidden";
 									clearMarkers();
 									var $list = $("#targetlist");
 									$list.empty();
@@ -106,6 +107,8 @@ function initialize() {
 														populateCoordinates(
 																lat, lng);
 
+														$('#targetModel')[0].style.visibility="visible";
+														
 														searchNearbyTargets(
 																lat, lng);
 
