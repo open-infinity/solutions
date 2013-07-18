@@ -40,6 +40,7 @@ import org.openinfinity.tagcloud.domain.service.TargetService;
 import org.openinfinity.tagcloud.domain.service.testdata.TestDataGenerator;
 import org.openinfinity.tagcloud.utils.Utils;
 import org.openinfinity.tagcloud.web.model.SearchModel;
+import org.openinfinity.tagcloud.web.model.SearchRadiusModel;
 import org.openinfinity.tagcloud.web.model.TagModel;
 import org.openinfinity.tagcloud.web.model.TargetModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,16 +60,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping(value = "/")
 public class HomeController {
-	
-	//private static final Logger LOGGER = LoggerFactory.getLogger(HomeController.class);
+
+	// private static final Logger LOGGER =
+	// LoggerFactory.getLogger(HomeController.class);
 	private static final Logger LOGGER = Logger.getLogger(HomeController.class);
 
 	@Autowired
 	private TagService tagService;
-	
+
 	@Autowired
 	private TargetService targetService;
-	
+
 	@Autowired
 	private Validator validator;
 
@@ -80,9 +82,9 @@ public class HomeController {
 	@Autowired
 	private TargetRepository targetRepository;
 	@Autowired
-    private ProfileRepository profileRepository;
-    @Autowired
-    private ScoreRepository scoreRepository;
+	private ProfileRepository profileRepository;
+	@Autowired
+	private ScoreRepository scoreRepository;
 
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -95,80 +97,94 @@ public class HomeController {
 		return "home";
 	}
 
-	
-	
 	@Log
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
 	@RequestMapping(method = RequestMethod.POST)
-	public @ResponseBody Map<String, ? extends Object> create(@RequestBody SearchModel searchModel) {
+	public @ResponseBody
+	Map<String, ? extends Object> create(@RequestBody SearchModel searchModel) {
 		List<Tag> required = new ArrayList<Tag>();
 		List<Tag> preferred = new ArrayList<Tag>();
 		List<Tag> nearby = new ArrayList<Tag>();
-		
-		for(TagModel tagModel : searchModel.getRequired()) {
+
+		for (TagModel tagModel : searchModel.getRequired()) {
 			required.add(tagService.loadById(tagModel.getId()));
 		}
-		for(TagModel tagModel : searchModel.getPreferred()) {
+		for (TagModel tagModel : searchModel.getPreferred()) {
 			preferred.add(tagService.loadById(tagModel.getId()));
 		}
-		for(TagModel tagModel : searchModel.getNearby()) {
+		for (TagModel tagModel : searchModel.getNearby()) {
 			nearby.add(tagService.loadById(tagModel.getId()));
 		}
 
-        double radius = Utils.calcDistanceGCS(searchModel.getBounds()[0], searchModel.getBounds()[1],
-                searchModel.getBounds()[2], searchModel.getBounds()[3])/2;
-		
-        TagQuery query = new TagQuery(searchModel.getLocation()[0], searchModel.getLocation()[1], radius);
-		query = query.requireTags(required).preferTags(preferred).nearbyTags(nearby);
-        
+		double radius = Utils.calcDistanceGCS(searchModel.getBounds()[0],
+				searchModel.getBounds()[1], searchModel.getBounds()[2],
+				searchModel.getBounds()[3]) / 2;
+
+		TagQuery query = new TagQuery(searchModel.getLocation()[0],
+				searchModel.getLocation()[1], radius);
+		query = query.requireTags(required).preferTags(preferred)
+				.nearbyTags(nearby);
+
 		List<Recommendation> results = targetService.loadByQuery(query);
 
-        Collections.sort(results);
+		Collections.sort(results);
 		return new ModelMap("results", results);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value="reset")
+	@Log
+	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
+	@RequestMapping(method = RequestMethod.POST, value="nearby")
+	public @ResponseBody
+	Map<String, ? extends Object> create(@RequestBody SearchRadiusModel searchRadiusModel) {
+
+		TagQuery query = new TagQuery(searchRadiusModel.getLocation()[0],
+				searchRadiusModel.getLocation()[1], SearchRadiusModel.RADIUS);
+
+		List<Recommendation> results = targetService.loadByQuery(query);
+
+		Collections.sort(results);
+		return new ModelMap("results", results);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "reset")
 	public String resetDB() {
 		tagRepository.dropCollection();
 		targetRepository.dropCollection();
-        profileRepository.dropCollection();
-        scoreRepository.dropCollection();
+		profileRepository.dropCollection();
+		scoreRepository.dropCollection();
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace(); // To change body of catch statement use File |
+									// Settings | File Templates.
+		}
 
-        List<Target> targets = testDataGenerator.generate();
-        LOGGER.debug("Created "+targets.size()+" targets:");
+		List<Target> targets = testDataGenerator.generate();
+		LOGGER.debug("Created " + targets.size() + " targets:");
 
-        for(Target target : targets){
-            String s = target.getText();
-            if(target.getTags().size()>0){
-                s += " (";
-                for(Tag tag : target.getTags()){
-                    s += tag.getText()+", ";
-                }
-                s = s.substring(0, s.length()-2);
-                s += ")";
-            }
+		for (Target target : targets) {
+			String s = target.getText();
+			if (target.getTags().size() > 0) {
+				s += " (";
+				for (Tag tag : target.getTags()) {
+					s += tag.getText() + ", ";
+				}
+				s = s.substring(0, s.length() - 2);
+				s += ")";
+			}
 
-            LOGGER.debug(s);
-        }
+			LOGGER.debug(s);
+		}
 		return "redirect:/";
 	}
 
-
-
-	
-//	//kavan test home
-//	@RequestMapping(method = RequestMethod.GET)
-//	public @ResponseBody String resetTagDB() {
-//		
-//
-//		return "welcome to tagclod!";
-//	}
-	
+	// //kavan test home
+	// @RequestMapping(method = RequestMethod.GET)
+	// public @ResponseBody String resetTagDB() {
+	//
+	//
+	// return "welcome to tagclod!";
+	// }
 
 }
