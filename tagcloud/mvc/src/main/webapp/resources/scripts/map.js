@@ -20,12 +20,6 @@ function initialize() {
 
 	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
-	google.maps.event.addListener(map, 'idle', function() {
-		bounds = map.getBounds();
-		center = map.getCenter();
-		$("#searchModel").submit();
-	});
-
 	map.setOptions({
 		styles : [ {
 			featureType : "poi",
@@ -34,6 +28,12 @@ function initialize() {
 				visibility : "off"
 			} ]
 		} ]
+	});
+
+	google.maps.event.addListener(map, 'idle', function() {
+		bounds = map.getBounds();
+		center = map.getCenter();
+		$("#searchModel").submit();
 	});
 
 	var input = document.getElementById('searchTextField');
@@ -50,19 +50,34 @@ function initialize() {
 				.tabs(
 						{
 							activate : function(event, ui) {
+
 								var $activeTab = $("#tabs").tabs('option',
 										'active');
 
 								if ($activeTab == 0) {
-									hideAddedMarker();
-									showMarkers();
+									$("#searchModel").submit();
+									document.getElementById('informationBox').innerHTML = "Targets found";
+									google.maps.event.addListener(map, 'idle',
+											function() {
+												bounds = map.getBounds();
+												center = map.getCenter();
+												$("#searchModel").submit();
+											});
+
 									google.maps.event.clearListeners(map,
 											'click');
+									clearAddedMarker();
+									$('#targetModel')[0].reset();
+
 								}
 								if ($activeTab == 1) {
-									showAddedMarker();
-									hideMarkers();
-
+									$('#targetModel')[0].style.visibility="hidden";
+									clearMarkers();
+									var $list = $("#targetlist");
+									$list.empty();
+									document.getElementById('informationBox').innerHTML = "Targets nearby";
+									google.maps.event.clearListeners(map,
+											'idle');
 									google.maps.event
 											.addListener(
 													map,
@@ -77,6 +92,7 @@ function initialize() {
 														if (addedMarker) {
 															addedMarker
 																	.setPosition(myLatLng);
+															showAddedMarker();
 														}
 
 														else {
@@ -90,6 +106,12 @@ function initialize() {
 
 														populateCoordinates(
 																lat, lng);
+
+														$('#targetModel')[0].style.visibility="visible";
+														
+														searchNearbyTargets(
+																lat, lng);
+
 													});
 
 								}
@@ -149,19 +171,7 @@ function clearMarkers() {
 	markers.length = 0;
 }
 
-function hideMarkers() {
-	for ( var i = 0; i < markers.length; i++) {
-		markers[i].setMap(null);
-	}
-}
-
-function showMarkers() {
-	for ( var i = 0; i < markers.length; i++) {
-		markers[i].setMap(map);
-	}
-}
-
-function hideAddedMarker() {
+function clearAddedMarker() {
 	if (addedMarker) {
 		addedMarker.setMap(null);
 	}

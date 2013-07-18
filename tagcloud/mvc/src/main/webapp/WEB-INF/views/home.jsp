@@ -45,7 +45,7 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/scripts/jquery.tokeninput.js" />"></script>
 <script
-	src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
+	src="http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/scripts/map.js" />"></script>
 
@@ -57,6 +57,8 @@
 
 <script type="text/javascript"
 	src="<c:url value="/resources/scripts/tagpicker.js" />"></script>
+<script type="text/javascript"
+	src="<c:url value="/resources/scripts/searchNearbyTargets.js" />"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/scripts/validation_script.js" />"></script>
 <script type="text/javascript"
@@ -92,8 +94,8 @@
 					</ul>
 					<div id="search-tab">
 						<p>I want to go to a place that...</p>
-						<form:form modelAttribute="searchModel" action="/tagcloud"
-							method="post">
+						<form:form modelAttribute="searchModel"
+							action="/tagcloud" method="post">
 							<table id="searchTable">
 								<tr>
 									<td><form:label for="required" path="required">must be</form:label></td>
@@ -116,6 +118,9 @@
 									<td><form:input type="text" id="nearby" name="nearby"
 											path="nearby" /></td>
 								</tr>
+								<tr>
+									<td><input id="search" type="submit" value="Refresh" /></td>
+								</tr>
 							</table>
 						</form:form>
 					</div>
@@ -123,8 +128,8 @@
 						<div id="Instructions">Select location by clicking map</div>
 						<div id="statusbox"></div>
 						<div id="targetForm" class="span-12 last">
-							<form:form modelAttribute="targetModel" action="/tagcloud/target"
-								method="post">
+							<form:form modelAttribute="targetModel"
+								action="/tagcloud/target" method="post">
 								<table id="targetTable">
 									<tr>
 										<td><form:label for="text" path="text"
@@ -151,7 +156,7 @@
 				<div id="map-canvas"></div>
 			</div>
 			<div id="bc-col3">
-				<div id="informationBox">Info about targets here</div>
+				<div id="informationBox">Targets found</div>
 				<div id="scroller">
 					<div id="targetlist"></div>
 				</div>
