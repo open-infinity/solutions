@@ -41,21 +41,12 @@
 			</div>
 		</div>
 		<div id="target_score_main">
-			<div id="score_container">
-<!-- 				<h3> -->
-<!-- 					Score: <span id="score_value"> empty scroe value -->
-<!-- 					</span> -->
-<!-- 				</h3> -->
-<!-- 				<span class="score_symbol">&#x02605;</span> <span -->
-<!-- 					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span> -->
-<!-- 				<span class="score_symbol">&#x02605;</span> <span -->
-<!-- 					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span> -->
-<!-- 				<span class="score_symbol">&#x02605;</span> <span -->
-<!-- 					class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02606;</span> -->
-<!-- 				<span class="score_symbol">&#x02606;</span> -->
-
+			<div id="score_container"></div>
+			<div id="score_note">
+				<img alt="error_png"
+					src="http://www.clker.com/cliparts/8/3/3/4/1195445190322000997molumen_red_round_error_warning_icon.svg.med.png" />
+				Error on submit new score!
 			</div>
-
 		</div>
 		<div id="target_add_comment_main">
 
@@ -81,9 +72,9 @@
 				</ul>
 			</div>
 			<div id="default_login_main">
-			
-					<h3>Login and tell your opinion about this place!</h3>
-					<hr />
+
+				<h3>Login and tell your opinion about this place!</h3>
+				<hr />
 				<img alt="login_facebook"
 					src="https://github.com/adozenlines/facebook-ios-sdk/diff_blob/adb3a65dfff79dc8dc30a1e3220a6bd0db017540/src/FacebookSDKResources.bundle/FBConnect/images/LoginWithFacebookPressed@2x.png?raw=true" />
 			</div>

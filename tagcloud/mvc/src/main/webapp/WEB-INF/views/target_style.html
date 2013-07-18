@@ -88,6 +88,7 @@ html,body {
 	min-width: 100%;
 	min-height: 100px;
 	display: inline-block;
+	clear:both;
 }
 
 #score_container {
@@ -95,6 +96,7 @@ html,body {
 	margin-top: 10px;
 	height: 100%;
 	float: right;
+
 }
 
 #default_score {
@@ -112,6 +114,31 @@ html,body {
 	color: #FFD700;
 	font-size: 50px;
 	cursor: pointer;
+}
+#score_footer{
+	margin: 0 auto;
+	width: 60%;
+	color: #808080;
+	font-weight: bolder;
+	
+}
+#score_note{
+color:black;
+width:300px;
+float:right;
+margin-right:7%;
+margin-top:10px;
+border-radius:15px;
+background-color: #F6CEE3;
+display:block;
+padding:10px;
+clear:both;
+font-weight:bolder;
+text-align: center;
+}
+#score_note img{
+ width:32px;
+ height:32px;
 }
 /***/
 #target_add_comment_main {
@@ -261,8 +288,8 @@ html,body {
 		time = (new Date()).toLocaleString();
 		$(".comment_date").html("Created: " + time);
 	}
-	function animateScore(num,default_value){
-			$.when(setScoreStars(num,default_value)).done(setHandlers);
+	function animateScore(num, default_value) {
+		$.when(setScoreStars(num, default_value)).done(setHandlers);
 	}
 
 	function setHandlers() {
@@ -273,36 +300,47 @@ html,body {
 					'animateScore(' + default_score + ',true)');
 		});
 	}
-	function setScoreStars(num, default_value) {
-	
-			
-			var div = $("#score_container");
-			var head = $("<div id='score_head'></div>")
-			try {
-				$(head).html(
-						"<span id='default_score' >Score: "
-								+ default_score.toFixed(1) + "/10 </span>");
-				if (!default_value) {
-					var num_str = num;
-					if (num < 10) {
-						num_str = "<span style='color:white;'>0</span>" + num;
-					}
-					$(head).append(
-							"<span id='new_user_score'>Score it by  " + num_str
-									+ " /10 </span>");
-				}
+	function setScoreStars(num, isDefault) {
 
-				$(div).html($(head));
-				var i;
-				for (i = 0; i < num; i++) {
-					$(div).append("<span class='score_symbol'>&#x02605;</span>")
+		
+		var div = $("#score_container");
+		var head = $("<div id='score_head'></div>");
+		try {
+			$(head).html(
+					"<span id='default_score' >Score: "
+							+ default_score.toFixed(1) + "/10 </span>");
+			if (!isDefault) {
+				var num_str = num;
+				if (num < 10) {
+					num_str = "<span style='color:white;'>0</span>" + num;
 				}
-				for (i; i < 10; i++) {
-					$(div).append("<span class='score_symbol'>&#x02606;</span>")
-				}
-			} catch (e) {
-				console.log("Error " + e.toString());
-			}			
+				$(head).append(
+						"<span id='new_user_score'>click on star to submit " + num_str
+								+ " /10 </span>");
+			}
+
+			$(div).html($(head));
+			var i;
+			for (i = 0; i < num; i++) {
+				$(div).append("<span class='score_symbol'>&#x02605;</span>")
+			}
+			for (i; i < 10; i++) {
+				$(div).append("<span class='score_symbol'>&#x02606;</span>")
+			}
+			if(!isDefault){
+				$(div).append($(getScoreFooter("click on the star to submit your score!")));
+			}else{				
+				$(div).append($(getScoreFooter()));
+			}
+		} catch (e) {
+			console.log("Error " + e.toString());
+		}
+	}
+	
+	function getScoreFooter(){
+		var footer = $("<div id='score_footer'>You're not scored this target yet!</div>");
+		return footer;
+		
 	}
 </script>
 <body>
@@ -326,23 +364,11 @@ html,body {
 			<div id="map-canvas"></div>
 		</div>
 		<div id="target_score_main">
-			<div id="score_container">
-				<!--                    <h3>Score: 8.0</h3>
-                                        <span class="score_symbol">&#x02605;</span> <span
-                                            class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span>
-                                        <span class="score_symbol">&#x02605;</span> <span
-                                            class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02605;</span>
-                                        <span class="score_symbol">&#x02605;</span> <span
-                                            class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02606;</span>
-                                        <span class="score_symbol">&#x02606;</span>-->
-
-			</div>
-			<!--                 <div>
-                                    <h3>Score: 8.0</h3>
-                                    <span class="score_symbol">&#x02605;</span> <span class="score_symbol">&#x02606;</span>
-                                    <span class="score_symbol">&#x02606;</span>
-                
-                                </div>-->
+			<div id="score_container"></div>
+			<div id="score_note">
+			<img alt="error_png"
+						src="http://www.clker.com/cliparts/8/3/3/4/1195445190322000997molumen_red_round_error_warning_icon.svg.med.png" />
+						 Error on submit new score!</div>
 
 		</div>
 

@@ -41,15 +41,21 @@ public class ScoreServiceImpl extends AbstractCrudServiceImpl<Score> implements 
 	@Autowired
 	private TargetService targetService;
 
+	
+	
 	@Log
     @AuditTrail
     @Override
     @Transactional
     public void scoreTarget(int scoreStars, Target target, String facebookId) {
-        Profile profile = profileService.loadByFacebookId(facebookId);
-        Score score = create(new Score(scoreStars, profile));
-        target.addScore(score);
-        targetService.update(target);
+		List<Score> scores = target.getScores();
+		Profile profile = profileService.loadByFacebookId(facebookId);
+		Score score = create(new Score(scoreStars, profile));
+		Score oldScore = target.addScore(score);
+		if(oldScore != null) {
+			delete(oldScore);
+		}
+		targetService.update(target);
         profile.addScoredTarget(target);
         profileService.update(profile);
     }

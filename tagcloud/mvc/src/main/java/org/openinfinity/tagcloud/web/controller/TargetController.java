@@ -3,7 +3,6 @@ package org.openinfinity.tagcloud.web.controller;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -22,17 +21,14 @@ import org.openinfinity.core.exception.AbstractCoreException;
 import org.openinfinity.core.exception.ApplicationException;
 import org.openinfinity.core.exception.BusinessViolationException;
 import org.openinfinity.core.exception.SystemException;
-import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
-import org.openinfinity.tagcloud.domain.entity.query.TagQuery;
 import org.openinfinity.tagcloud.domain.entity.query.TargetQuery;
 import org.openinfinity.tagcloud.domain.repository.TargetRepository;
 import org.openinfinity.tagcloud.domain.service.LocationService;
+import org.openinfinity.tagcloud.domain.service.ScoreService;
 import org.openinfinity.tagcloud.domain.service.TargetService;
-import org.openinfinity.tagcloud.utils.Utils;
 import org.openinfinity.tagcloud.web.connection.ConnectionManager;
 import org.openinfinity.tagcloud.web.connection.entity.ResponseObject;
-import org.openinfinity.tagcloud.web.model.TagModel;
 import org.openinfinity.tagcloud.web.model.TargetModel;
 import org.openinfinity.tagcloud.web.support.SerializerUtil;
 import org.openinfinity.tagcloud.web.support.ServletUtil;
@@ -58,6 +54,9 @@ public class TargetController {
 
 	@Autowired
 	private TargetService targetService;
+	
+	@Autowired
+	private ScoreService scoreService;
 
 	@Autowired
 	private LocationService locationService;
@@ -184,6 +183,7 @@ public class TargetController {
 		}
 		return result;
 	}
+	
 
 	@Log
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)

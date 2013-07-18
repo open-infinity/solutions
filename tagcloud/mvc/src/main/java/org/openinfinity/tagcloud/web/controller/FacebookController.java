@@ -3,6 +3,7 @@ package org.openinfinity.tagcloud.web.controller;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
@@ -29,24 +30,53 @@ public class FacebookController {
 
 	@Autowired
 	ConnectionManager connectionManager;
-	
+
 	@Log
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
 	@RequestMapping(method = RequestMethod.GET, value = "/profile/{fb_id}")
 	public @ResponseBody
-	ResponseObject<FacebookProfile> loadAllComments(@PathVariable("fb_id") String fb_id, HttpServletRequest request) {
+	ResponseObject<FacebookProfile> facebookProfile(
+			@PathVariable("fb_id") String fb_id, HttpServletRequest request) {
 		ResponseObject<FacebookProfile> obj = new ResponseObject<FacebookProfile>();
 		Facebook facebook = connectionManager.getPublicFacebook();
-		obj.setSuccess("succuss",facebook.userOperations().getUserProfile(fb_id));
+		obj.setSuccess("succuss",
+				facebook.userOperations().getUserProfile(fb_id));
 		return obj;
-		
+
 	}
+
+	@Log
+	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
+	@RequestMapping(method = RequestMethod.GET, value = "/user/profile")
+	public @ResponseBody
+	ResponseObject<FacebookProfile> userFacebookProfile(
+			HttpServletRequest request) {
+		ResponseObject<FacebookProfile> obj = new ResponseObject<FacebookProfile>();
+		Facebook facebook = connectionManager.getSessionFacebook(request
+				.getSession().getId());
+		if (facebook != null) {
+			obj.setSuccess("succuss", facebook.userOperations()
+					.getUserProfile());
+		} else {
+			obj.setIs_error(true);
+			obj.setError_code("login_error");
+			obj.setMessage("no user logged in");
+			obj.setStatus(HttpServletResponse.SC_BAD_REQUEST + " bad request");
+		}
+		return obj;
+
+	}
+
 	@RequestMapping("/photo/{fb_id}")
-	public ResponseEntity<byte[]> profilePhoto(@PathVariable("fb_id") String fb_id) throws IOException {
+	public ResponseEntity<byte[]> profilePhoto(
+			@PathVariable("fb_id") String fb_id) throws IOException {
 		Facebook facebook = connectionManager.getPublicFacebook();
-		byte[] profile_photo = facebook.userOperations().getUserProfileImage(fb_id,ImageType.LARGE);
-	    final HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.IMAGE_PNG);
-	    return new ResponseEntity<byte[]>(profile_photo, headers, HttpStatus.CREATED);
+		byte[] profile_photo = facebook.userOperations().getUserProfileImage(
+				fb_id, ImageType.LARGE);
+		final HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.IMAGE_PNG);
+		return new ResponseEntity<byte[]>(profile_photo, headers,
+				HttpStatus.CREATED);
 	}
+
 }

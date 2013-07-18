@@ -105,6 +105,30 @@ font-weight: bolder;
 	font-size: 50px;
 	cursor: pointer;
 }
+#score_footer{
+	margin: 0 auto;
+	width: 60%;
+	color: #808080;
+	font-weight: bolder;	
+}
+#score_note{
+color:black;
+width:300px;
+float:right;
+margin-right:7%;
+margin-top:10px;
+border-radius:15px;
+background-color: #F6CEE3;
+display:none;
+padding:10px;
+clear:both;
+font-weight:bolder;
+text-align: center;
+}
+#score_note img{
+ width:32px;
+ height:32px;
+}
 /***/
 
 #target_add_comment_main {

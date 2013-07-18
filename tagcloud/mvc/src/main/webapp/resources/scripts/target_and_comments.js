@@ -3,6 +3,7 @@ var star = "&#x02605;";
 var empty_star = "&#x02606;";
 var default_author_img = "http://www.howsimple.com/assets/imgs/person_empty.png";
 var current_target = null;
+var current_user = null;
 var default_score;
 var test_object;
 $('document').ready(function() {
@@ -12,10 +13,28 @@ $('document').ready(function() {
 	if (target_id != null) {
 
 		console.log("target_id: " + target_id);
-		getTargeAndUpdateUi(target_id);
+		getTargetAndUpdateUi(target_id);
 	}
 
 });
+function scoreTarget(stars) {
+	var result = null;
+	var obj = null;
+	var form = $("<form><input name='score' value='" + stars + "'/></form>");
+	if (current_target != null && current_user != null) {
+		obj = $.ajax({
+			type : 'POST',
+			async : false,
+			url : 'score/' + current_target.id,
+			data : $(form).serialize()
+
+		});
+	} else {
+		console.log("score target failed target or user can't be null");
+	}
+	result = $.parseJSON(obj.responseText);
+	return result;
+}
 function getAndPrintTargetListInConsole() {
 
 	$.getJSON("target/list", function(data) {
@@ -29,13 +48,23 @@ function getAndPrintTargetListInConsole() {
 	});
 
 }
-function getTargeAndUpdateUi(target_id) {
-
-	$.getJSON("target/" + target_id, function(data) {
-		target = data.result_list[0];
-		setTargetInUi(target);
+function getTarget(target_id) {
+	var result = null;
+	var obj = null;
+	obj = $.ajax({
+		type : 'GET',
+		async : false,
+		url : 'target/' + target_id,
 	});
+	result = $.parseJSON(obj.responseText);
+	return result.result_list[0];
+}
+function getTargetAndUpdateUi(target_id) {
 
+	var target = getTarget(target_id);
+	if (target != null) {
+		setTargetInUi(target);
+	}
 }
 function setTargetInUi(target) {
 	current_target = target;
@@ -44,14 +73,13 @@ function setTargetInUi(target) {
 	setTagsInTagBar(target.tags);
 	google_map_initialize(target.location[0], target.location[1]);
 	getTargetCommentsAndUpdateUi(target.id);
-	default_score = 6;
+	default_score = Math.round(target.score);
 	if (isUserLoggedIn()) {
 		postLoginView(target);
 	} else {
 		preLoginView(target);
 	}
 }
-
 function preLoginView(target) {
 	$("#comment_form_div").css('display', 'none');
 	$("#default_login_main").css('display', 'inline-block');
@@ -60,15 +88,15 @@ function preLoginView(target) {
 	});
 	setScoreStars(default_score, true);
 }
-
 function postLoginView(target) {
+	current_user = getUserFacebookProfile_synchronized();
 	$("#default_login_main").css('display', 'none');
 	$("#comment_form_div").css('display', 'inline-block');
 	$("#comment_form_div form").submit(function() {
 		submitComment(this, target.id);
 		return false;// disable the default action of the form
 	});
-	animateScore(default_score,true);
+	animateScore(default_score, true);
 }
 function isUserLoggedIn() {
 	var logged_in = false;
@@ -105,24 +133,9 @@ function submitComment(form, target_id) {
 				console.log(data);
 				test_object = data;
 				if (hasError(data)) {
-					$("#comment_errors_header > h3").html(data.message);
-					var list = $("#add_comment_errors > ul");
-					$(list).html("");
-					if (data.error_reasons != null) {
-						$.each(data.error_reasons, function(i, reason) {
-							$(list).append("<li>" + reason + "</li>");
-						});
-					}
-					$("#add_comment_errors").css('display', 'block');
-					$("#add_comment_success").css('display', 'none');
-
+					handleSubmitCommentErrors(data);
 				} else {
-					$("#comment_success_header > h3").html(data.message);
-					$("#add_comment_errors").css('display', 'none');
-					$("#add_comment_success").css('display', 'block');
-					$("#target_add_comment_main textarea").val("");
-					getTargetCommentsAndUpdateUi(target.id);
-
+					handleSubmitCommentSuccess(data,target_id);
 				}
 			}
 		});
@@ -130,37 +143,79 @@ function submitComment(form, target_id) {
 		console.log("error" + e);
 	}
 }
+function handleSubmitCommentSuccess(data, target_id) {
+	$("#comment_success_header > h3").html(data.message);
+	$("#add_comment_errors").css('display', 'none');
+	$("#add_comment_success").css('display', 'block');
+	$("#target_add_comment_main textarea").val("");
+	getTargetCommentsAndUpdateUi(target_id);
+}
+function handleSubmitCommentErrors(error) {
+	$("#comment_errors_header > h3").html(data.message);
+	var list = $("#add_comment_errors > ul");
+	$(list).html("");
+	if (data.error_reasons != null) {
+		$.each(data.error_reasons, function(i, reason) {
+			$(list).append("<li>" + reason + "</li>");
+		});
+	}
+	$("#add_comment_errors").css('display', 'block');
+	$("#add_comment_success").css('display', 'none');
+}
 function hasError(data) {
+	if (data == null) {
+		return true;
+	}
 	return ((data.status != null && data.status != "200") || (data.is_error != null && data.is_error == true));
 }
 function getTargetCommentsAndUpdateUi(target_id) {
 	$("#comment_container").html("");
-	$.getJSON("comment/list/" + target_id, function(data) {
-		$.each(data, function(i, comment) {
+	$
+			.getJSON(
+					"comment/list/" + target_id,
+					function(data) {
+						$
+								.each(
+										data,
+										function(i, comment) {
+											var fb_user = getFacebookProfile_synchronized(comment.profile.facebookId);
+											createNewComment("facebook/photo/"
+													+ fb_user.id, fb_user.name,
+													comment.id, (new Date(
+															comment.date))
+															.toLocaleString(),
+													comment.text);
 
-			createNewComment("facebook/photo/" + comment.profile.facebookId,
-					getFacebookName_synchronized(comment.profile.facebookId),
-					comment.id, (new Date(comment.date)).toLocaleString(),
-					comment.text);
-
-		});
-	});
-
+										});
+					});
 }
-
-function getFacebookName_synchronized(facebook_id) {
-	var name = "anonymous";
+function getUserFacebookProfile_synchronized() {
+	var facebook_profile = null;
+	$.ajax({
+		type : 'GET',
+		async : false,
+		url : 'facebook/user/profile/',
+		success : function(data) {
+			if (!hasError(data) && data.result_list[0] != null) {
+				facebook_profile = data.result_list[0];
+			}
+		}
+	});
+	return facebook_profile;
+}
+function getFacebookProfile_synchronized(facebook_id) {
+	var facebook_profile = null;
 	$.ajax({
 		type : 'GET',
 		async : false,
 		url : 'facebook/profile/' + facebook_id,
 		success : function(data) {
 			if (!hasError(data) && data.result_list[0] != null) {
-				name = data.result_list[0].name;
+				facebook_profile = data.result_list[0];
 			}
 		}
 	});
-	return name;
+	return facebook_profile;
 }
 
 function createNewComment(author_img, author_name, comment_id, comment_date,
@@ -224,45 +279,80 @@ function getURLParameter(sParam) {
 		}
 	}
 }
-function animateScore(num,default_value){
-	$.when(setScoreStars(num,default_value)).done(setHandlers);
+function animateScore(num, isDefault) {
+	$.when(setScoreStars(num, isDefault)).done(setHandlers);
 }
 function setHandlers() {
 	$.each($('.score_symbol'), function(i, span) {
 		$(span).attr('onmouseover',
 				'animateScore(' + $(span).index() + ',false)');
-		$(span).attr('onmouseout',
-				'animateScore(' + default_score + ',true)');
+		$(span).attr('onmouseout', 'animateScore(' + default_score + ',true)');
+        $(span).attr('onmousedown', 'submitScoreAndUpdateView(' + $(span).index() + ')');
+
 	});
+
 }
-function setScoreStars(num, default_value) {
+function submitScoreAndUpdateView(stars){
+	var result = scoreTarget(stars);
+	if(!hasError(result) && current_target != null){
+		current_target = getTarget(current_target.id);
+		default_score = Math.round(current_target.score);
+		setScoreStars(default_score,true);
+		$("#score_note").css('display','none');
+	}else{
+		$("#score_note").css('display','block');
+	}
+}
+function setScoreStars(num, isDefault) {
 
-		
-		var div = $("#score_container");
-		var head = $("<div id='score_head'></div>")
-		try {
-			$(head).html(
-					"<span id='default_score' >Score: "
-							+ default_score.toFixed(1) + "/10 </span>");
-			if (!default_value) {
-				var num_str = num;
-				if (num < 10) {
-					num_str = "<span style='color:white;'>0</span>" + num;
-				}
-				$(head).append(
-						"<span id='new_user_score'>Score it by  " + num_str
-								+ " /10 </span>");
+	var div = $("#score_container");
+	var head = $("<div id='score_head'></div>")
+	try {
+		$(head).html(
+				"<span id='default_score' >Score: " + default_score.toFixed(1)
+						+ " </span>");
+		if (!isDefault) {
+			var num_str = num;
+			if (num < 10) {
+				num_str = "<span style='color:white;'>0</span>" + num;
 			}
+			$(head).append(
+					"<span id='new_user_score'>click on star to submit "
+							+ num_str + " /10 </span>");
+		}
 
-			$(div).html($(head));
-			var i;
-			for (i = 0; i < num; i++) {
-				$(div).append("<span class='score_symbol'>&#x02605;</span>")
+		$(div).html($(head));
+		var i;
+		for (i = 0; i < num; i++) {
+			$(div).append("<span class='score_symbol'>&#x02605;</span>")
+		}
+		for (i; i < 10; i++) {
+			$(div).append("<span class='score_symbol'>&#x02606;</span>")
+		}
+		$(div).append($(getScoreFooter()));
+
+	} catch (e) {
+		console.log("Error " + e.toString());
+	}
+}
+function getScoreFooter() {
+	var footer = $("<div id='score_footer'></div>");
+	var score_str = "";
+	footer.html("");
+	var isUserScored = false;
+	if (current_user != null && current_target != null) {
+		$.each(current_target.scores, function(i, score) {
+			if (score.profile.facebookId === current_user.id) {
+				score_str = "You scored this target by " + score.stars;
+				isUserScored = true;
+				return;
 			}
-			for (i; i < 10; i++) {
-				$(div).append("<span class='score_symbol'>&#x02606;</span>")
-			}
-		} catch (e) {
-			console.log("Error " + e.toString());
-		}			
+		});
+		footer.append(score_str);
+		if (!isUserScored) {
+			footer.append("You're not scored this target yet! ");
+		}
+
+	}
+	return footer;
 }
