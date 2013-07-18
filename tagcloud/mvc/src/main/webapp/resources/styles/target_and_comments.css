@@ -242,3 +242,24 @@ margin-right:10px;
 	height:30px;
 	border-radius:15px;
 }
+/*****************/
+#tag_container {
+	margin-top: 30px;
+}
+
+#tag_header {
+	dsiplay: block;
+	white-space: nowrap;
+}
+
+#tag_header strong {
+	font-size: x-large;
+}
+
+#new_tag_div {
+	margin-left: 20%;
+}
+
+#tag_field {
+	border-radius: 15px;
+}

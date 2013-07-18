@@ -51,9 +51,7 @@ function initTagAddOnDocumentReady() {
 		var request = $(this).serializeObject();
 		request.text = $("#text").tokenInput("get")[0].text
 		request.id = "not yet generated";
-
 		var action = document.getElementById("tagAddForm").getAttribute("action");
-
 		$.postJSON(action, request, 
 			function(resultJson){
 				window.location = action;

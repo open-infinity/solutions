@@ -88,7 +88,7 @@ html,body {
 	min-width: 100%;
 	min-height: 100px;
 	display: inline-block;
-	clear:both;
+	clear: both;
 }
 
 #score_container {
@@ -96,7 +96,6 @@ html,body {
 	margin-top: 10px;
 	height: 100%;
 	float: right;
-
 }
 
 #default_score {
@@ -115,30 +114,32 @@ html,body {
 	font-size: 50px;
 	cursor: pointer;
 }
-#score_footer{
+
+#score_footer {
 	margin: 0 auto;
 	width: 60%;
 	color: #808080;
 	font-weight: bolder;
-	
 }
-#score_note{
-color:black;
-width:300px;
-float:right;
-margin-right:7%;
-margin-top:10px;
-border-radius:15px;
-background-color: #F6CEE3;
-display:block;
-padding:10px;
-clear:both;
-font-weight:bolder;
-text-align: center;
+
+#score_note {
+	color: black;
+	width: 300px;
+	float: right;
+	margin-right: 7%;
+	margin-top: 10px;
+	border-radius: 15px;
+	background-color: #F6CEE3;
+	display: block;
+	padding: 10px;
+	clear: both;
+	font-weight: bolder;
+	text-align: center;
 }
-#score_note img{
- width:32px;
- height:32px;
+
+#score_note img {
+	width: 32px;
+	height: 32px;
 }
 /***/
 #target_add_comment_main {
@@ -252,6 +253,27 @@ text-align: center;
 	border-radius: 15px;
 	float: right;
 }
+/*****************/
+#tag_container {
+	margin-top: 30px;
+}
+
+#tag_header {
+	dsiplay: block;
+	white-space: nowrap;
+}
+
+#tag_header strong {
+	font-size: x-large;
+}
+
+#new_tag_div {
+	margin-left: 20%;
+}
+
+#tag_field {
+	border-radius: 15px;
+}
 </style>
 <script
 	src="http:
@@ -302,7 +324,6 @@ text-align: center;
 	}
 	function setScoreStars(num, isDefault) {
 
-		
 		var div = $("#score_container");
 		var head = $("<div id='score_head'></div>");
 		try {
@@ -315,8 +336,8 @@ text-align: center;
 					num_str = "<span style='color:white;'>0</span>" + num;
 				}
 				$(head).append(
-						"<span id='new_user_score'>click on star to submit " + num_str
-								+ " /10 </span>");
+						"<span id='new_user_score'>click on star to submit "
+								+ num_str + " /10 </span>");
 			}
 
 			$(div).html($(head));
@@ -327,20 +348,22 @@ text-align: center;
 			for (i; i < 10; i++) {
 				$(div).append("<span class='score_symbol'>&#x02606;</span>")
 			}
-			if(!isDefault){
-				$(div).append($(getScoreFooter("click on the star to submit your score!")));
-			}else{				
+			if (!isDefault) {
+				$(div)
+						.append(
+								$(getScoreFooter("click on the star to submit your score!")));
+			} else {
 				$(div).append($(getScoreFooter()));
 			}
 		} catch (e) {
 			console.log("Error " + e.toString());
 		}
 	}
-	
-	function getScoreFooter(){
+
+	function getScoreFooter() {
 		var footer = $("<div id='score_footer'>You're not scored this target yet!</div>");
 		return footer;
-		
+
 	}
 </script>
 <body>
@@ -352,8 +375,16 @@ text-align: center;
 				<h1>Kaivokatu</h1>
 
 				<div id="tag_bar">
-					<h3>Tags:</h3>
-					<diV>
+
+					<div id="tag_header">
+						<strong id="tag_title">Tags:</strong>
+						<div id="new_tag_div">
+							<small> add new tag: </small> <input id="tag_field" name="text"
+								type="text" />
+						</div>
+
+					</div>
+					<diV id="tag_container">
 						<span>I love this place!</span> <span>Amazing restaurants
 							and shops in this area!</span> <span>another tag</span><span> and
 							another one ..</span> <span>Nice Hotel right in the corner</span>
@@ -366,9 +397,10 @@ text-align: center;
 		<div id="target_score_main">
 			<div id="score_container"></div>
 			<div id="score_note">
-			<img alt="error_png"
-						src="http://www.clker.com/cliparts/8/3/3/4/1195445190322000997molumen_red_round_error_warning_icon.svg.med.png" />
-						 Error on submit new score!</div>
+				<img alt="error_png"
+					src="http://www.clker.com/cliparts/8/3/3/4/1195445190322000997molumen_red_round_error_warning_icon.svg.med.png" />
+				Error on submit new score!
+			</div>
 
 		</div>
 

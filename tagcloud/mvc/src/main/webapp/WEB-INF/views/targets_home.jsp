@@ -27,13 +27,16 @@
 				</h1>
 
 				<div id="tag_bar">
-					<h3>Tags:</h3>
-					<div>
-						<!-- 						empty tag bar! -->
-						<!-- 						<span>I love this place!</span> <span>Amazing restaurants -->
-						<!-- 							and shops in this area!</span> <span>another tag</span><span> and -->
-						<!-- 							another one ..</span> <span>Nice Hotel right in the corner</span> -->
+
+					<div id="tag_header">
+						<strong id="tag_title">Tags:</strong>
+						<div id="new_tag_div">
+							<small> add new tag: </small> <input id="tag_field" name="text"
+								type="text" />
+						</div>
+
 					</div>
+					<diV id="tag_container"></div>
 				</div>
 			</div>
 

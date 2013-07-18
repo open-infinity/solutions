@@ -23,7 +23,8 @@ $('document')
 					});
 				});
 function getLoadingElement(id, style) {
-	var loading_div = $("<div id='" + id + "' style= '"+ style+ "'> Loading... </div>");
+	var loading_div = $("<div id='" + id + "' style= '" + style
+			+ "'> Loading... </div>");
 	return loading_div;
 }
 function init() {
@@ -34,6 +35,8 @@ function init() {
 		console.log("target_id: " + target_id);
 		getTargetAndUpdateUi(target_id);
 	}
+
+	// initTagAutoComplete();
 }
 function scoreTarget(stars) {
 	var result = null;
@@ -106,6 +109,7 @@ function preLoginView(target) {
 		window.location = "login?next=target?target_id=" + target.id;
 	});
 	setScoreStars(default_score, true);
+	$("#new_tag_div").css('display', 'none');
 }
 function postLoginView(target) {
 	current_user = getUserFacebookProfile_synchronized();
@@ -116,6 +120,19 @@ function postLoginView(target) {
 		return false;// disable the default action of the form
 	});
 	animateScore(default_score, true);
+	setAddTagfeature();
+}
+function setAddTagfeature() {
+	$("#new_tag_div").css('display', 'block');
+	$("#tag_field").keypress(function(e) {
+		if (e.which == 13) {
+			$.when(sendNewtag($("#tag_field").val())).done(function() {
+				$("#tag_field").val("");
+				var tags = getTargetTags(current_target.id);
+				setTagsInTagBar(tags);
+			});
+		}
+	});
 }
 function isUserLoggedIn() {
 	var logged_in = false;
@@ -209,16 +226,16 @@ function getCurrentTargetCommentsAndUpdateUi() {
 
 }
 function getTargetCommentsAndUpdateUi(target_id) {
-		$.when({
-			loading: setCommentsDivInLoadingStage(),
-			comments_list : getTargetComments(target_id)
-		}).done(function(data) {
-			if (data.comments_list != null) {
-				createComments(data.comments_list);
-			}else{
-				console.log("comments null [getTargetCommentsAndUpdateUi] ");
-			}
-		});					
+	$.when({
+		loading : setCommentsDivInLoadingStage(),
+		comments_list : getTargetComments(target_id)
+	}).done(function(data) {
+		if (data.comments_list != null) {
+			createComments(data.comments_list);
+		} else {
+			console.log("comments null [getTargetCommentsAndUpdateUi] ");
+		}
+	});
 }
 function getTargetComments(target_id) {
 	var obj = $.ajax({
@@ -301,7 +318,7 @@ function createNewComment(author_img, author_name, comment_id, comment_date,
 	$("#comment_container").append($(comment));
 }
 function setTagsInTagBar(tags) {
-	var bar = $("#tag_bar > div");
+	var bar = $("#tag_container");
 	bar.html("");
 
 	$.each(tags, function(i, tag) {
@@ -414,4 +431,44 @@ function getScoreFooter() {
 
 	}
 	return footer;
+}
+// //****************
+
+function initTagAutoComplete() {
+	$("#tag_field").tokenInput("/tagcloud/tag/autocomplete", {
+		propertyToSearch : "text",
+		preventDuplicates : true,
+		theme : "facebook",
+		resultsLimit : 8,
+		tokenLimit : 1,
+		onAdd : function() {
+			sendNewtag($("#tag_field").tokenInput("get")[0].text);
+			$("#tag_field").tokenInput("clear");
+		}
+	});
+}
+function getTargetTags(target_id) {
+	var obj = $.ajax({
+		type : 'GET',
+		async : false,
+		url : 'tag/json/' + current_target.id,
+	});
+	var data = $.parseJSON(obj.responseText);
+	if (!hasError(data)) {
+		return data.result_list;
+	}
+	return null;
+}
+function sendNewtag(tag_text) {
+	console.log("submittaa");
+	var form = $("<form><input name='text' value='" + tag_text + "' /> </form>");
+	$.ajax({
+		type : 'POST',
+		async : false,
+		url : 'tag/json/' + current_target.id,
+		data : $(form).serialize(),
+		success : function(data) {
+			console.log(data);
+		}
+	});
 }
