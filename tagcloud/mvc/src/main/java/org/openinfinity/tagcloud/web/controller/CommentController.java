@@ -117,11 +117,12 @@ public class CommentController {
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
 	@RequestMapping(method = RequestMethod.GET, value = "/list/{target_id}")
 	public @ResponseBody
-	List<Comment> loadAllComments(@PathVariable("target_id") String target_id) {
+	ResponseObject<Comment> loadAllComments(@PathVariable("target_id") String target_id) {
+		ResponseObject<Comment> result = new ResponseObject<Comment>();
 		List<Comment> comments = targetService.loadById(target_id)
 				.getComments();
-
-		return comments;
+		result.setSuccess(comments);
+		return result;
 	}
 
 	/**

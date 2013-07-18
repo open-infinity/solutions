@@ -1,8 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Tagcloud</title>
 
@@ -13,7 +14,7 @@
 <script type="text/javascript"
 	src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script
-	src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+	src="http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 <script type="text/javascript"
 	src="/tagcloud/resources/scripts/target_and_comments.js"></script>
 </head>

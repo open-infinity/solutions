@@ -6,8 +6,27 @@ var current_target = null;
 var current_user = null;
 var default_score;
 var test_object;
-$('document').ready(function() {
+$('document')
+		.ready(
+				function() {
 
+					var loading_element_style = "position:absolute;text-align:center; width:100%; margin:0 auto; font-size:xx-large; color:silver;display:block;";
+					var main_loading_element = getLoadingElement(
+							"main_loading_div", loading_element_style);
+
+					$('#target_main').css('display', 'none');
+					$('body').prepend($(main_loading_element));
+					$.when(init()).done(function() {
+						$(main_loading_element).fadeOut(1000);
+						$('#target_main').fadeIn(2000);
+						// $(main_loading_element).remove();
+					});
+				});
+function getLoadingElement(id, style) {
+	var loading_div = $("<div id='" + id + "' style= '"+ style+ "'> Loading... </div>");
+	return loading_div;
+}
+function init() {
 	getAndPrintTargetListInConsole();
 	target_id = getURLParameter("target_id");
 	if (target_id != null) {
@@ -15,8 +34,7 @@ $('document').ready(function() {
 		console.log("target_id: " + target_id);
 		getTargetAndUpdateUi(target_id);
 	}
-
-});
+}
 function scoreTarget(stars) {
 	var result = null;
 	var obj = null;
@@ -72,7 +90,8 @@ function setTargetInUi(target) {
 	$("#score_value").html(target.score);
 	setTagsInTagBar(target.tags);
 	google_map_initialize(target.location[0], target.location[1]);
-	getTargetCommentsAndUpdateUi(target.id);
+	// getTargetCommentsAndUpdateUi(target.id);
+	createComments(target.comments);
 	default_score = Math.round(target.score);
 	if (isUserLoggedIn()) {
 		postLoginView(target);
@@ -123,6 +142,7 @@ function submitComment(form, target_id) {
 	console.log("sendig comment to server, comment's text is: "
 			+ $($(form).find("textarea")[0]).val());
 	console.log("server path " + path);
+	setCommentsDivInLoadingStage();
 	try {
 		$.ajax({
 			type : 'POST',
@@ -135,7 +155,7 @@ function submitComment(form, target_id) {
 				if (hasError(data)) {
 					handleSubmitCommentErrors(data);
 				} else {
-					handleSubmitCommentSuccess(data, target_id);
+					handleSubmitCommentSuccess(data);
 				}
 			}
 		});
@@ -144,13 +164,15 @@ function submitComment(form, target_id) {
 	}
 }
 function handleSubmitCommentSuccess(data, target_id) {
+
 	$("#comment_success_header > h3").html(data.message);
 	$("#add_comment_errors").css('display', 'none');
 	$("#add_comment_success").css('display', 'block');
 	$("#target_add_comment_main textarea").val("");
-	getTargetCommentsAndUpdateUi(target_id);
-	$("#add_comment_success").delay(5000).slideUp(3000);
+	$.when(getCurrentTargetCommentsAndUpdateUi()).done();
+	$("#add_comment_success").delay(4000).slideUp(2000);
 }
+
 function handleSubmitCommentErrors(error) {
 	$("#comment_errors_header > h3").html(data.message);
 	var list = $("#add_comment_errors > ul");
@@ -169,14 +191,55 @@ function hasError(data) {
 	}
 	return ((data.status != null && data.status != "200") || (data.is_error != null && data.is_error == true));
 }
+
+function setCommentsDivInLoadingStage() {
+	var loading_element_style = "text-align:center; width:65%; margin:0 auto; font-size:xx-large; color:silver;display:block;";
+	var div_id = "comments_loading_div";
+	var comments_loading_element = getLoadingElement(div_id,
+			loading_element_style);
+	$("#comment_container").html(comments_loading_element);
+}
+function getCurrentTargetCommentsAndUpdateUi() {
+	if (current_target != null) {
+		var target_id = current_target.id;
+		getTargetCommentsAndUpdateUi(target_id);
+	} else {
+		console.log("current_target is null!!");
+	}
+
+}
 function getTargetCommentsAndUpdateUi(target_id) {
-	$("#comment_container").html("");
-	$.getJSON("comment/list/" + target_id, function(data) {
-		createComments(data);
+		$.when({
+			loading: setCommentsDivInLoadingStage(),
+			comments_list : getTargetComments(target_id)
+		}).done(function(data) {
+			if (data.comments_list != null) {
+				createComments(data.comments_list);
+			}else{
+				console.log("comments null [getTargetCommentsAndUpdateUi] ");
+			}
+		});					
+}
+function getTargetComments(target_id) {
+	var obj = $.ajax({
+		type : 'GET',
+		async : false,
+		url : 'comment/list/' + target_id,
+
 	});
+	var result = $.parseJSON(obj.responseText);
+	if (!hasError(result)) {
+		return result.result_list;
+	}
+	return null;
+
 }
 function createComments(data_array) {
-	$.each(data_array,function(i, comment) {
+	$("#comment_container").html("");
+	$
+			.each(
+					data_array,
+					function(i, comment) {
 						var fb_user = getFacebookProfile_synchronized(comment.profile.facebookId);
 						createNewComment("facebook/photo/" + fb_user.id,
 								fb_user.name, comment.id, (new Date(
