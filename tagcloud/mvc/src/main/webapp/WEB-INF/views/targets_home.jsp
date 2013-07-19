@@ -10,9 +10,10 @@
 <link rel="stylesheet"
 	href="/tagcloud/resources/styles/target_and_comments.css" />
 <!-- 	autocomplete  -->
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-	 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-	 <!-- 	autocomplete end -->
+<link rel="stylesheet"
+	href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<!-- 	autocomplete end -->
 <script type="text/javascript"
 	src="/tagcloud/resources/scripts/jquery.min.js"></script>
 
@@ -22,8 +23,55 @@
 	src="http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 <script type="text/javascript"
 	src="/tagcloud/resources/scripts/target_and_comments.js"></script>
+<style>
+#header {
+	top: 0;
+	margin: 0 auto;
+	width: 100%;
+	height: 70px;
+	min-height: 70px;
+	margin-bottom: 15px;
+	border-bottom: 6px black solid;
+	display:none;
+}
+
+#header_inner {
+	width: 59%;
+	margin: 0 auto;
+	color: black;
+	font-weight: bolder;
+}
+
+#header_inner img {
+	margin-top: 10px;
+	width: 52px;
+	height: 52px;
+	max-width: 52px;
+	max-height: 52px;
+	border-radius: 7px;
+}
+
+#header_user_name {
+	margin-left: 5px;
+}
+
+#header_loging_switch {
+	float: right;
+	margin-right: 5px;
+	margin-top: 30px;
+}
+</style>
 </head>
 <body>
+	<header id="header">
+		<div id="header_inner">
+			<img alt="user_img"
+				src="http://graph.facebook.com/kavan.sole/picture" /> <span
+				id="header_user_name"> Kavan Soleimanbeigi</span> 
+<!-- 				<span -->
+<!-- 				id="header_loging_switch">Logout</span> -->
+		</div>
+	</header>
 	<div id="target_main">
 		<div id="target_header">
 			<div id="target_info">

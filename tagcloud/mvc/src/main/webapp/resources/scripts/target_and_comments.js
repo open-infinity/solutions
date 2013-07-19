@@ -109,6 +109,7 @@ function preLoginView(target) {
 	});
 	setScoreStars(default_score, true);
 	$("#new_tag_div").css('display', 'none');
+	$("#header").css('display','none');
 }
 function postLoginView(target) {
 	current_user = getUserFacebookProfile_synchronized();
@@ -120,6 +121,10 @@ function postLoginView(target) {
 	});
 	animateScore(default_score, true);
 	setupAddNewTagFeature();
+	$("#header").css('display','block');
+	$("#header img").attr('src','/tagcloud/facebook/photo/'+ current_user.id);
+	$("#header_user_name").html(current_user.name);
+	$("#header").append(getLogoutElement());
 }
 function setupAddNewTagFeature() {
 	$("#new_tag_div").css('display', 'inline');
@@ -482,4 +487,21 @@ function initTagFieldAutoComplete(){
 		    minLength: 1		  
 		  });
 		});
+}
+function getLogoutElement() {
+	var span = $("<span id='main_logout' style='font-weight:bolder;color:brown;cursor:pointer;'> Logout </span>");
+	$(span).click(function() {
+		$.getJSON('/tagcloud/logout', function(data) {
+			window.location = "/tagcloud/target?target_id="+current_target.id;
+		});
+	});
+
+	$(span).mouseover(function() {
+		$(this).css('color:red');
+	});
+	$(span).mouseleave(function() {
+		$(this).css('color:brown');
+	});
+
+	return $(span);
 }
