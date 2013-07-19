@@ -125,15 +125,6 @@ public class TargetController {
 	}
 
 
-	
-	@Log
-	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
-	@RequestMapping(method = RequestMethod.GET, value = "create")
-	public String createNewTarget(Model model) {
-		model.addAttribute("targetModel", new TargetModel());
-		return "createTarget";
-	}
-
 	@RequestMapping(method = RequestMethod.GET, value = "reset")
 	public String resetTargetDB(HttpServletRequest request) {
 		String session_id = request.getSession().getId();
