@@ -489,7 +489,7 @@ function initTagFieldAutoComplete(){
 		});
 }
 function getLogoutElement() {
-	var span = $("<span id='main_logout' style='font-weight:bolder;color:brown;cursor:pointer;'> Logout </span>");
+	var span = $("<span id='header_loging_switch' style='font-weight:bolder;color:brown;cursor:pointer;'> Logout </span>");
 	$(span).click(function() {
 		$.getJSON('/tagcloud/logout', function(data) {
 			window.location = "/tagcloud/target?target_id="+current_target.id;
