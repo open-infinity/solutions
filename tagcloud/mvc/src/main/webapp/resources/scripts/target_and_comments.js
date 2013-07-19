@@ -336,6 +336,19 @@ function google_map_initialize(long, lat) {
 		scaleControl : false,
 	};
 	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+	map.setOptions({
+		styles : [ {
+			featureType : "poi",
+			elementType : "labels",
+			stylers : [ {
+				visibility : "off"
+			} ]
+		} ]
+	});
+	var marker = new google.maps.Marker({
+		position: new google.maps.LatLng(lat, long),
+		map: map
+	});
 }
 
 function getURLParameter(sParam) {

@@ -179,12 +179,4 @@ public class HomeController {
 		return "redirect:/";
 	}
 
-	// //kavan test home
-	// @RequestMapping(method = RequestMethod.GET)
-	// public @ResponseBody String resetTagDB() {
-	//
-	//
-	// return "welcome to tagclod!";
-	// }
-
 }
