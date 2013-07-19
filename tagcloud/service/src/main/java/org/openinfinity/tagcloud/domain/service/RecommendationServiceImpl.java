@@ -31,13 +31,14 @@ public class RecommendationServiceImpl implements RecommendationService{
         double friendScore = calcFriendScore(recommendation, friendFacebookIds);
 
         if(recommendation.getTarget().getScores().size() == 0) {
-        	avgScore = 5;
+        	avgScore = 0.5;
         }
         
         //calculate weighted sum of partial scores
         double weightSum = (
         		settings.getDistanceScoreWeight() + 
         		settings.getPreferredScoreWeight() +
+        		settings.getAvgScoreWeight() +
         		settings.getNearScoreWeight() +
         		settings.getOwnScoreWeight()); 
         

@@ -1,8 +1,19 @@
 function createDiv(result, index) {
 	var div = $("<div class=\"targetItemDiv\"></div>");
 	div.append("<div>" + (index + 1) + ": " + result.target.text + "</div>");
-	div.append("<div>Recommendation Score: " + result.recommendationScore
-			+ "</div>");
+	var tags = [];
+	$.each(result.requiredTags, function(index, value) {
+		tags.push(value.text);
+	});
+	$.each(result.preferredTags, function(index, value) {
+		tags.push(value.text);
+	});
+	$.each(result.target.tags, function(index, value) {
+		if(tags.length >= 5) return false;
+		if(jQuery.inArray(value.text, tags) == -1) tags.push(value.text); 
+	});
+	
+	div.append("<div class=\"recommendation_tags\">"+tags.join(", ")+"</div>");
 	div.append("<div>User Score: " + result.target.score + "</div>");
 	var t_id = result.target.id;
 	$(div).click(function (){ window.location= "target?target_id="+t_id;});
