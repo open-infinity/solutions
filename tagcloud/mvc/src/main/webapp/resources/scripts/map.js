@@ -5,6 +5,7 @@ var addedMarker;
 var center;
 var bounds;
 var placesService;
+var animTimeout;
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -213,12 +214,16 @@ function placeNewMarkerWithIndex(location, index, target_id) {
 		
 		if(!isScrolledIntoView(innerListItem, parentDiv)){
 			var scrollTopValue = parentDiv.scrollTop() + (innerListItem.position().top - parentDiv.position().top) - (parentDiv.height()/2) + (innerListItem.height()/2);
-			parentDiv.animate({
-				scrollTop: scrollTopValue
-			}, {
-				duration : 800,
-				queue : false
-			});	
+			animTimeout = setTimeout(function() {
+				parentDiv.animate({
+					scrollTop: scrollTopValue
+				}, {
+					duration : 1000,
+					queue : false
+				});
+			}, 350);			
+			
+				
 		}
 		
 			
@@ -228,6 +233,9 @@ function placeNewMarkerWithIndex(location, index, target_id) {
 	google.maps.event.addListener(marker, 'mouseout', function(event) {
 		setMarkerHighlight(index, false);
 		setTargetDivHighlight($("#targetlist").children().eq(index), false);
+		if(animTimeout){
+			clearTimeout(animTimeout)
+		}
 	});
 	
 	

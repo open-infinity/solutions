@@ -35,8 +35,7 @@ function init() {
 		console.log("target_id: " + target_id);
 		getTargetAndUpdateUi(target_id);
 	}
-
-	// initTagAutoComplete();
+	
 }
 function scoreTarget(stars) {
 	var result = null;
@@ -124,15 +123,17 @@ function postLoginView(target) {
 }
 function setupAddNewTagFeature() {
 	$("#new_tag_div").css('display', 'inline');
+	initTagFieldAutoComplete();
 	$("#tag_field").keypress(function(e) {
 		if (e.which == 13) {
+			console.log("field value" + $('#tag_field').val());
 			$.when(sendNewtag($("#tag_field").val())).done(function() {
 				$("#tag_field").val("");
 				var tags = getTargetTags(current_target.id);
 				setTagsInTagBar(tags);
 			});
 		}
-	});
+	});	
 }
 function isUserLoggedIn() {
 	var logged_in = false;
@@ -447,19 +448,7 @@ function getScoreFooter() {
 }
 // //****************
 
-function initTagAutoComplete() {
-	$("#tag_field").tokenInput("/tagcloud/tag/autocomplete", {
-		propertyToSearch : "text",
-		preventDuplicates : true,
-		theme : "facebook",
-		resultsLimit : 8,
-		tokenLimit : 1,
-		onAdd : function() {
-			sendNewtag($("#tag_field").tokenInput("get")[0].text);
-			$("#tag_field").tokenInput("clear");
-		}
-	});
-}
+
 function getTargetTags(target_id) {
 	var obj = $.ajax({
 		type : 'GET',
@@ -484,4 +473,13 @@ function sendNewtag(tag_text) {
 			console.log(data);
 		}
 	});
+}
+function initTagFieldAutoComplete(){
+	$(function() {
+		 
+		  $( "#tag_field" ).autocomplete({
+		    source: "/tagcloud/tag/autocomplete_2",
+		    minLength: 1		  
+		  });
+		});
 }

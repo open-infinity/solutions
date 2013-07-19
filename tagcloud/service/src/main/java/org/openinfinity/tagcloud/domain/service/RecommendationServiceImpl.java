@@ -30,6 +30,9 @@ public class RecommendationServiceImpl implements RecommendationService{
         double ownScore = calcOwnScore(recommendation, user);
         double friendScore = calcFriendScore(recommendation, friendFacebookIds);
 
+        if(recommendation.getTarget().getScores().size() == 0) {
+        	avgScore = 5;
+        }
         
         //calculate weighted sum of partial scores
         double weightSum = (
@@ -41,6 +44,7 @@ public class RecommendationServiceImpl implements RecommendationService{
         double recommendationScoreSum = (
         		distanceScore * settings.getDistanceScoreWeight() +
                 preferredScore * settings.getPreferredScoreWeight() +
+                avgScore * settings.getAvgScoreWeight() +
                 nearScore * settings.getNearScoreWeight() +
                 ownScore * settings.getOwnScoreWeight());
         
@@ -49,10 +53,7 @@ public class RecommendationServiceImpl implements RecommendationService{
         	recommendationScoreSum += friendScore * settings.getFriendScoreWeight();
         }
         
-        if(recommendation.getTarget().getScores().size() > 0) {
-        	weightSum += settings.getAvgScoreWeight();
-        	recommendationScoreSum += avgScore * settings.getAvgScoreWeight();
-        }
+        
         
         recommendation.setRecommendationScore(recommendationScoreSum / weightSum);
 	}

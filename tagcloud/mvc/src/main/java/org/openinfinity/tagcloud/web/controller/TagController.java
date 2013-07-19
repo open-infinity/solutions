@@ -99,7 +99,6 @@ public class TagController {
 			tagModel.addErrorStatuses("informativeLevelExceptions",
 					localizedErrorMessages);
 		}
-		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		SerializerUtil.jsonSerialize(ServletUtil.getWriter(response),
 				tagModel.getErrorStatuses());
 	}
@@ -127,6 +126,17 @@ public class TagController {
 		return tagModels;
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "autocomplete_2")
+	public @ResponseBody
+	Collection<String> getAutocompleteSuggestions2(
+			@RequestParam(value = "term") String term) {
+		Set<String> tagModels = new HashSet<String>();
+		for (Tag tag : tagService.searchLike(term)) {
+			tagModels.add(tag.getText());
+		}
+		return tagModels;
+	}
+
 	@RequestMapping(method = RequestMethod.GET, value = "reset")
 	public String resetTagDB() {
 		tagRepository.dropCollection();
@@ -149,17 +159,20 @@ public class TagController {
 		model.addAttribute("target_id", target.getId());
 		return "tagAdd";
 	}
+
 	@Log
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
 	@RequestMapping(method = RequestMethod.GET, value = "json/{target_id}")
 	public @ResponseBody
-	ResponseObject<Tag> getTargetTags(@PathVariable("target_id") String target_id,
+	ResponseObject<Tag> getTargetTags(
+			@PathVariable("target_id") String target_id,
 			HttpServletResponse response, HttpServletRequest request) {
 		ResponseObject<Tag> result = new ResponseObject<Tag>();
 		Target target = targetService.loadById(target_id);
 		result.setSuccess(convertTagSetToList(target.getTags()));
 		return result;
 	}
+
 	@Log
 	@AuditTrail(argumentStrategy = ArgumentStrategy.ALL)
 	@RequestMapping(method = RequestMethod.POST, value = "json/{target_id}")
@@ -171,11 +184,7 @@ public class TagController {
 		Set<ConstraintViolation<TagModel>> failures = checkNewTag(text);
 		String session_id = request.getSession().getId();
 		if (failures.isEmpty() && connectionManager.isUserLoggedIn(session_id)) {
-			Target target = targetService.loadById(target_id);
-			tagService.addTagToTarget(text, target,
-					getSessionFacebookId(session_id));
-			targetService.update(target);
-			result.setSuccess();
+			addTagToTarget(result, text, target_id, session_id);
 		} else {
 			result.setIs_error(true);
 			if (!connectionManager.isUserLoggedIn(session_id)) {
@@ -186,6 +195,21 @@ public class TagController {
 			this.setErrorReasons(result, failures);
 		}
 		return result;
+	}
+
+	private void addTagToTarget(ResponseObject<String> result, String text,
+			String target_id, String session_id) {
+		try {
+			Target target = targetService.loadById(target_id);
+			tagService.addTagToTarget(text, target,
+					getSessionFacebookId(session_id));
+			targetService.update(target);
+			result.setSuccess("tag added to target successfully!", text);
+		} catch (Exception e) {
+			result.setError_code("tag_error");
+			result.setIs_error(true);
+			result.setMessage(e.getMessage());			
+		}
 	}
 
 	private String getSessionFacebookId(String session_id) {
@@ -218,13 +242,14 @@ public class TagController {
 					+ c.getMessage() + "]");
 		}
 	}
-	private List<Tag> convertTagSetToList( Set<Tag> tags){
+
+	private List<Tag> convertTagSetToList(Set<Tag> tags) {
 		List<Tag> list = new LinkedList<Tag>();
 		Iterator<Tag> iter = tags.iterator();
-		while(iter.hasNext()){
+		while (iter.hasNext()) {
 			list.add(iter.next());
 		}
 		return list;
-		
+
 	}
 }

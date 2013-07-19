@@ -66,7 +66,15 @@ public class FacebookController {
 		return obj;
 
 	}
-
+	@RequestMapping("/user/photo")
+	public ResponseEntity<byte[]> userProfilePhoto(HttpServletRequest request) throws IOException {
+		Facebook facebook = connectionManager.getSessionFacebook(request.getSession().getId());
+		byte[] profile_photo = facebook.userOperations().getUserProfileImage(ImageType.LARGE);
+		final HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.IMAGE_PNG);
+		return new ResponseEntity<byte[]>(profile_photo, headers,
+				HttpStatus.CREATED);
+	}
 	@RequestMapping("/photo/{fb_id}")
 	public ResponseEntity<byte[]> profilePhoto(
 			@PathVariable("fb_id") String fb_id) throws IOException {
