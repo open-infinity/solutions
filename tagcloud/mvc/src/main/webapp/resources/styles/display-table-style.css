@@ -8,7 +8,8 @@ html,body {
 }
 
 body {
-	font-size: 14px;
+	font-family: Verdana,Arial,sans-serif;
+	font-size: 0.88em;
 }
 
 #top-table {
@@ -46,6 +47,7 @@ body {
 #searchTextField{
 	width: 99%;
 	height: 40px;
+	font-size: 1em;
 }
 
 #login_div{
