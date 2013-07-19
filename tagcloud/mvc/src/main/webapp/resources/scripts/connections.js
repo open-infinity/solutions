@@ -63,7 +63,7 @@ function getUserFacebookProfile_synchronized() {
 	return facebook_profile;
 }
 function getLogoutElement() {
-	var span = $("<span style='font-weight:bolder;color:brown;float:right; cursor:pointer;'> Logout </span>");
+	var span = $("<span style='font-weight:bolder;color:brown;float:right; margin-right:5px; cursor:pointer;'> Logout </span>");
 	$(span).click(function() {
 		$.getJSON('/tagcloud/logout', function(data) {
 			window.location = "/tagcloud";
