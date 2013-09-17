@@ -1,24 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openinfinity</groupId>
-  <artifactId>tagcloud</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <dependencies>
-  	<dependency>
-  		<groupId>org.openinfinity</groupId>
-  		<artifactId>open-infinity-core</artifactId>
-  		<version>1.0.2.RELEASE</version>
-  		<scope>provided</scope>
-  	</dependency>
-  </dependencies>
-  <repositories>
-		<repository>
-			<id>projectlombok.org</id>
-			<url>http://projectlombok.org/mavenrepo</url>
-		</repository>
-	</repositories>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openinfinity</groupId>
+	<artifactId>tagcloud</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<properties>
+		<springframework.version>3.2.4.RELEASE</springframework.version>
+		<maven-war-plugin.version>2.4</maven-war-plugin.version>
+		<lombok.version>0.12.0</lombok.version>
+		<lombok-maven-plugin.version>0.12.0.0</lombok-maven-plugin.version>
+		<junit.version>4.11</junit.version>
+		<mockito.version>1.9.5</mockito.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<!-- to install from http://sourceforge.net/projects/openinfinity/files/1.1.0.RELEASE/:
+			put open-infinity-core-1.1.0.RELEASE.jar into pwd. then, on command line:
+			mvn install:install-file -Dfile=open-infinity-core-1.1.0.RELEASE.jar -Dpackaging=jar -Dversion=1.1.0.RELEASE -DartifactId=open-infinity-core -DgroupId=org.openinfinity
+			 -->
+			<groupId>org.openinfinity</groupId>
+			<artifactId>open-infinity-core</artifactId>
+			<version>1.1.0.RELEASE</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>6.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok-maven-plugin</artifactId>
+			<version>${lombok-maven-plugin.version}</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<defaultGoal>install</defaultGoal>
@@ -27,12 +47,12 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.1.1</version>
+				<version>${maven-war-plugin.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.1</version>
 				<configuration>
 					<compilerVersion>1.6</compilerVersion>
 					<source>1.6</source>
@@ -44,7 +64,7 @@
 			<plugin>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok-maven-plugin</artifactId>
-				<version>0.10.8.0</version>
+				<version>${lombok-maven-plugin.version}</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -72,7 +92,7 @@
 					<plugin>
 						<groupId>org.projectlombok</groupId>
 						<artifactId>lombok-maven-plugin</artifactId>
-						<version>0.10.8.0</version>
+						<version>${lombok-maven-plugin.version}</version>
 						<dependencies>
 							<dependency>
 								<groupId>sun.jdk</groupId>
@@ -87,10 +107,10 @@
 			</build>
 		</profile>
 	</profiles>
-  <modules>
-    <module>mvc</module>
-    <module>service</module>
-    <module>repository</module>
-    <module>entity</module>
-  </modules>
+	<modules>
+		<module>mvc</module>
+		<module>service</module>
+		<module>repository</module>
+		<module>entity</module>
+	</modules>
 </project>
