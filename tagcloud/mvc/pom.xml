@@ -15,9 +15,9 @@
 
 		<slf4j.version>1.6.4</slf4j.version>
 	
-		<bas1.host>10.33.208.25</bas1.host>
-		<sp.keyfile>C:\Users\soleikav\kavan-instance-key</sp.keyfile>
-	<bas.deployDir>/opt/openinfinity/2.0.0/tomcat/webapps</bas.deployDir>
+		<bas1.host>10.33.208.118</bas1.host>
+		<sp.keyfile>/Users/leinpilk/Downloads/instance720.key</sp.keyfile>
+		<bas.deployDir>/opt/openinfinity/2.0.0/tomcat/webapps</bas.deployDir>
 
 
 	</properties>

@@ -45,7 +45,7 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/scripts/jquery.tokeninput.js" />"></script>
 <script
-	src="http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
+	src="http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=places"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/scripts/map.js" />"></script>
 
@@ -74,7 +74,7 @@
 <body>
 	<div id="top-table">
 		<div id="top-container">
-			<div id="logo_div">logo here</div>
+			<div id="logo_div"><img id="logoImg" alt="logo" src="<c:url value="/resources/img/tagcloud-logo.png" />" /></div>
 			<div id="headerMiddle_div">
 				<input id="searchTextField" type="text" placeholder="Find places">
 			</div>
