@@ -18,18 +18,22 @@ import org.openinfinity.tagcloud.web.connection.exception.NullAccessGrantExcepti
 import org.openinfinity.tagcloud.web.connection.exception.NullActiveConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.social.facebook.api.Checkin;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.FacebookProfile;
+import org.springframework.social.facebook.api.LikeOperations;
+import org.springframework.social.facebook.api.Page;
+import org.springframework.social.facebook.api.PlacesOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 
  * 
  * @author: Kavan Soleimanbeigi
+ * @author: Ilkka Leinonen
  */
 @Controller
 public class ConnectionController {
@@ -85,6 +89,20 @@ public class ConnectionController {
 			String facebookId = facebook.userOperations().getUserProfile()
 					.getId();
 			profileService.createByFacebookId(facebookId);
+			
+			PlacesOperations placesOperations = facebook.placesOperations();
+			List<Checkin> checkins = placesOperations.getCheckins();
+			for (Checkin checkin : checkins) {
+				Page page = checkin.getPlace();
+				logList.add("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! checkin page name:  " + page.getName());
+			}
+			LikeOperations likeOperations = facebook.likeOperations();
+			List<Page> interestPages = likeOperations.getInterests();
+			
+			for (Page page : interestPages) {
+				String name = page.getName();
+				logList.add("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! name:  " + name);
+			}
 		}
 		logList.addAll(connectionManager.getConnectionLog());
 		return logList;
@@ -103,6 +121,22 @@ public class ConnectionController {
 					.getSessionFacebook(session_id);
 			String facebookId = facebook.userOperations().getUserProfile()
 					.getId();
+			
+			PlacesOperations placesOperations = facebook.placesOperations();
+			List<Checkin> checkins = placesOperations.getCheckins();
+			for (Checkin checkin : checkins) {
+				Page page = checkin.getPlace();
+				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! checkin page name:  " + page.getName());
+			}
+			LikeOperations likeOperations = facebook.likeOperations();
+			List<Page> interestPages = likeOperations.getInterests();
+			
+			for (Page page : interestPages) {
+				String name = page.getName();
+				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! name:  " + name);
+			}
+			
+			
 			Profile profile = profileService.loadByFacebookId(facebookId);
 			login.setLogged_in(true);
 			login.setUser_object(profile);
