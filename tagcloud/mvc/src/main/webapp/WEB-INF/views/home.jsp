@@ -48,7 +48,6 @@
 	src="http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=places"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/scripts/map.js" />"></script>
-
 <script>
 	$(function() {
 		$("#tabs").tabs();
@@ -90,6 +89,7 @@
 				<div id="tabs">
 					<ul>
 						<li><a href="#search-tab">Search</a></li>
+						<li><a href="#get-directions-tab">Go to..</a></li>
 						<li><a href="#add-target-tab">Add Target</a></li>
 					</ul>
 					<div id="search-tab">
@@ -123,6 +123,18 @@
 								</tr>
 							</table>
 						</form:form>
+					</div>
+					<div id="get-directions-tab">
+						<div id="panel">
+							<b>Mode of Travel: </b>
+							<br />
+							<select id="mode" onchange="calcRoute();">
+								<option value="DRIVING">Driving</option>
+								<option value="WALKING">Walking</option>
+								<option value="BICYCLING">Bicycling</option>
+								<option value="TRANSIT">Transit</option>
+							</select>
+						</div>
 					</div>
 					<div id="add-target-tab">
 						<div id="Instructions">Select location by clicking map</div>

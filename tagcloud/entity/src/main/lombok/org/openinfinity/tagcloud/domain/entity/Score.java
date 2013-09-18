@@ -1,17 +1,12 @@
 package org.openinfinity.tagcloud.domain.entity;
 
-import java.io.Serializable;
-import java.math.BigInteger;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @NoArgsConstructor

@@ -7,11 +7,20 @@ var bounds;
 var placesService;
 var animTimeout;
 
-google.maps.event.addDomListener(window, 'load', initialize);
+
+
+var directionsDisplay;
+
+var directionsService = new google.maps.DirectionsService();
+
+var goToLocation = new google.maps.LatLng(60.172983, 24.940332);
+
+var pos;
 
 function initialize() {
 
-	var pos = new google.maps.LatLng(60.172983, 24.940332);
+	directionsDisplay = new google.maps.DirectionsRenderer();
+	pos = new google.maps.LatLng(60.172983, 24.940332);
 	
 	var mapOptions = {
 		zoom : 13,
@@ -20,6 +29,7 @@ function initialize() {
 	};
 
 	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+	
 	
 	if (navigator.geolocation) {
 	    navigator.geolocation.getCurrentPosition(function(position) {
@@ -39,6 +49,8 @@ function initialize() {
 		} ]
 	});
 
+	directionsDisplay.setMap(map);
+	
 	google.maps.event.addListener(map, 'idle', function() {
 		bounds = map.getBounds();
 		center = map.getCenter();
@@ -58,77 +70,120 @@ function initialize() {
 		$('#tabs')
 				.tabs(
 						{
-							activate : function(event, ui) {
+						activate : function(event, ui) {
 
-								var $activeTab = $("#tabs").tabs('option',
-										'active');
+							var $activeTab = $("#tabs").tabs('option',
+									'active');
 
-								if ($activeTab == 0) {
-									$("#searchModel").submit();
-									document.getElementById('informationBox').innerHTML = "Targets found";
-									google.maps.event.addListener(map, 'idle',
-											function() {
-												bounds = map.getBounds();
-												center = map.getCenter();
-												$("#searchModel").submit();
-											});
+							if ($activeTab == 0) {
+								$("#searchModel").submit();
+								document.getElementById('informationBox').innerHTML = "Targets found";
+								google.maps.event.addListener(map, 'idle',
+										function() {
+											bounds = map.getBounds();
+											center = map.getCenter();
+											$("#searchModel").submit();
+										});
 
-									google.maps.event.clearListeners(map,
-											'click');
-									clearAddedMarker();
-									$('#targetModel')[0].reset();
+								google.maps.event.clearListeners(map,
+										'click');
+								clearAddedMarker();
+								$('#targetModel')[0].reset();
 
-								}
-								if ($activeTab == 1) {
-									$('#targetModel')[0].style.visibility="hidden";
-									clearMarkers();
-									var $list = $("#targetlist");
-									$list.empty();
-									document.getElementById('informationBox').innerHTML = "Targets nearby";
-									google.maps.event.clearListeners(map,
-											'idle');
-									google.maps.event
-											.addListener(
-													map,
-													'click',
-													function(event) {
-														var myLatLng = event.latLng;
-														var lat = myLatLng
-																.lat();
-														var lng = myLatLng
-																.lng();
+							}
+							if ($activeTab == 1) {
+								//clearMarkers();
+								google.maps.event.clearListeners(map, 'idle');
+								google.maps.event.addListener(
+									map,
+									'click',
+									function(event) {
+										var myLatLng = event.latLng;
+										var lat = myLatLng
+												.lat();
+										var lng = myLatLng
+												.lng();
 
-														if (addedMarker) {
-															addedMarker
-																	.setPosition(myLatLng);
-															showAddedMarker();
-														}
-
-														else {
-															addedMarker = new google.maps.Marker(
-																	{
-																		position : myLatLng,
-																		map : map
-																	});
-
-														}
-
-														populateCoordinates(
-																lat, lng);
-
-														$('#targetModel')[0].style.visibility="visible";
-														
-														searchNearbyTargets(
-																lat, lng);
-
+										goToLocation = myLatLng;
+										
+										if (addedMarker) {
+											addedMarker.setPosition(myLatLng);
+											showAddedMarker();
+										} else {
+											addedMarker = new google.maps.Marker(
+													{
+														position : myLatLng,
+														map : map
 													});
 
-								}
+										}
+									});
+
 							}
-						});
+							if ($activeTab == 2) {
+								$('#targetModel')[0].style.visibility="hidden";
+								clearMarkers();
+								var $list = $("#targetlist");
+								$list.empty();
+								document.getElementById('informationBox').innerHTML = "Targets nearby";
+								google.maps.event.clearListeners(map, 'idle');
+								google.maps.event.addListener(
+									map,
+									'click',
+									function(event) {
+										var myLatLng = event.latLng;
+										var lat = myLatLng
+												.lat();
+										var lng = myLatLng
+												.lng();
+
+										if (addedMarker) {
+											addedMarker
+													.setPosition(myLatLng);
+											showAddedMarker();
+										}
+
+										else {
+											addedMarker = new google.maps.Marker(
+													{
+														position : myLatLng,
+														map : map
+													});
+
+										}
+
+										populateCoordinates(
+												lat, lng);
+
+										$('#targetModel')[0].style.visibility="visible";
+										
+										searchNearbyTargets(
+												lat, lng);
+
+									});
+
+							}
+						}
+					});
 	});
 
 }
+
+function calcRoute() {
+	var selectedMode = document.getElementById('mode').value;
+	var request = {
+		origin : pos,
+		destination : goToLocation,
+		travelMode : google.maps.TravelMode[selectedMode]
+	};
+	directionsService.route(request, function(response, status) {
+		if (status == google.maps.DirectionsStatus.OK) {
+			directionsDisplay.setDirections(response);
+		}
+	});
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
 
 function initAutocomplete() {
 	placesService = new google.maps.places.PlacesService(map);	
@@ -171,7 +226,6 @@ function initAutocomplete() {
   		}
     });  
 }
-
 
 function clearMarkers() {
 	for ( var i = 0; i < markers.length; i++) {
