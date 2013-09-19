@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.annotation.Id;
 
+
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
@@ -17,7 +18,6 @@ public class Score implements Entity {
 	@Id
 	private String id;
 	
-	@NonNull
 	private int stars;
 
 	@NonNull
