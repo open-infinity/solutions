@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
-@EqualsAndHashCode(exclude = { "id" })
+@EqualsAndHashCode(exclude = { "id" }, callSuper=false)
 public class Like extends Entity{
 	@Id
 	private String id;

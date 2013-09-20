@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.annotation.Id;
 
+
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
