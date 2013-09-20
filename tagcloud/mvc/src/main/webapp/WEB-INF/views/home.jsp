@@ -125,16 +125,22 @@
 						</form:form>
 					</div>
 					<div id="get-directions-tab">
+						<div id="directionGuidance">Choose destination..</div>
 						<div id="panel">
 							<b>Mode of Travel: </b>
 							<br />
 							<select id="mode" onchange="calcRoute();">
+								<option value="">--</option>
 								<option value="DRIVING">Driving</option>
 								<option value="WALKING">Walking</option>
 								<option value="BICYCLING">Bicycling</option>
 								<option value="TRANSIT">Transit</option>
 							</select>
 						</div>
+						<div id="directionScroller">
+							<div id="directionsPanel"></div>
+    					</div>
+    					<div id="distanceId"><p>Total Distance: <span id="total"></span></p></div>
 					</div>
 					<div id="add-target-tab">
 						<div id="Instructions">Select location by clicking map</div>

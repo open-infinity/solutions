@@ -30,7 +30,6 @@ function initialize() {
 
 	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 	
-	
 	if (navigator.geolocation) {
 	    navigator.geolocation.getCurrentPosition(function(position) {
 	       pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -50,6 +49,7 @@ function initialize() {
 	});
 
 	directionsDisplay.setMap(map);
+	directionsDisplay.setPanel(document.getElementById('directionsPanel'));
 	
 	google.maps.event.addListener(map, 'idle', function() {
 		bounds = map.getBounds();
@@ -92,18 +92,20 @@ function initialize() {
 
 							}
 							if ($activeTab == 1) {
-								//clearMarkers();
+								//var wayPointCounter = 0;
+								$('#panel')[0].style.visibility="hidden";
 								google.maps.event.clearListeners(map, 'idle');
 								google.maps.event.addListener(
 									map,
 									'click',
 									function(event) {
+										//wayPointCounter++;
+										
+										$('#directionGuidance')[0].style.visibility="hidden";
+										$('#panel')[0].style.visibility="visible";
 										var myLatLng = event.latLng;
-										var lat = myLatLng
-												.lat();
-										var lng = myLatLng
-												.lng();
-
+										var lat = myLatLng.lat();
+										var lng = myLatLng.lng();
 										goToLocation = myLatLng;
 										
 										if (addedMarker) {
@@ -111,14 +113,13 @@ function initialize() {
 											showAddedMarker();
 										} else {
 											addedMarker = new google.maps.Marker(
-													{
-														position : myLatLng,
-														map : map
-													});
+											{
+												position : myLatLng,
+												map : map
+											});
 
 										}
 									});
-
 							}
 							if ($activeTab == 2) {
 								$('#targetModel')[0].style.visibility="hidden";
@@ -183,11 +184,21 @@ function calcRoute() {
 	});
 }
 
+//function computeTotalDistance(result) {
+//	  var total = 0;
+//	  var myroute = result.routes[0];
+//	  for (var i = 0; i < myroute.legs.length; i++) {
+//	    total += myroute.legs[i].distance.value;
+//	  }
+//	  total = total / 1000.
+//	  document.getElementById('total').innerHTML = total + ' km';
+//	}
+
+
 google.maps.event.addDomListener(window, 'load', initialize);
 
 function initAutocomplete() {
-	placesService = new google.maps.places.PlacesService(map);	
-	
+	placesService = new google.maps.places.PlacesService(map);		
 	$.widget( "custom.catcomplete", $.ui.autocomplete, {
 		    _renderMenu: function( ul, items ) {
 		      var that = this,
