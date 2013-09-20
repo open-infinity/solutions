@@ -1,15 +1,19 @@
 var map;
-var markers = [];
 var tabIndex = 0;
 var addedMarker;
 var center;
 var bounds;
 var placesService;
 var animTimeout;
-
-
+var markers = [];
+var wayPoints = [];
+var directionMarkers = [];
 
 var directionsDisplay;
+
+var rendererOptions = {
+  draggable: true
+};
 
 var directionsService = new google.maps.DirectionsService();
 
@@ -19,7 +23,7 @@ var pos;
 
 function initialize() {
 
-	directionsDisplay = new google.maps.DirectionsRenderer();
+	directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 	pos = new google.maps.LatLng(60.172983, 24.940332);
 	
 	var mapOptions = {
@@ -50,6 +54,10 @@ function initialize() {
 
 	directionsDisplay.setMap(map);
 	directionsDisplay.setPanel(document.getElementById('directionsPanel'));
+	google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
+		computeTotalDistance(directionsDisplay.directions);
+	});
+
 	
 	google.maps.event.addListener(map, 'idle', function() {
 		bounds = map.getBounds();
@@ -96,30 +104,42 @@ function initialize() {
 								$('#panel')[0].style.visibility="hidden";
 								google.maps.event.clearListeners(map, 'idle');
 								google.maps.event.addListener(
-									map,
-									'click',
-									function(event) {
-										//wayPointCounter++;
-										
-										$('#directionGuidance')[0].style.visibility="hidden";
-										$('#panel')[0].style.visibility="visible";
-										var myLatLng = event.latLng;
-										var lat = myLatLng.lat();
-										var lng = myLatLng.lng();
-										goToLocation = myLatLng;
-										
-										if (addedMarker) {
-											addedMarker.setPosition(myLatLng);
-											showAddedMarker();
-										} else {
-											addedMarker = new google.maps.Marker(
-											{
-												position : myLatLng,
-												map : map
-											});
+								map,
+								'click',
+								function(event) {
+									$('#directionGuidance')[0].style.visibility="hidden";
+									$('#panel')[0].style.visibility="visible";
+									var myLatLng = event.latLng;
+									var lat = myLatLng.lat();
+									var lng = myLatLng.lng();
+									goToLocation = myLatLng;
+									if (addedMarker) {
+										addedMarker.setPosition(myLatLng);
+										showAddedMarker();
+									} else {
+										addedMarker = new google.maps.Marker({
+											position : myLatLng,
+											map : map
+										});
+									}									
+//									$('#directionGuidance')[0].style.visibility="hidden";
+//									$('#panel')[0].style.visibility="visible";
+//									var myLatLng = event.latLng;
+//									var lat = myLatLng.lat();
+//									var lng = myLatLng.lng();
+//									goToLocation = myLatLng;
+//									var directionMarker = new google.maps.Marker({
+//										position : myLatLgn,
+//										map : map
+//									});
+//									directionMarkers[waypointCounter] = myLatLng;
+//									directionMarker.setPosition(directionMarkers[i]);
+//									directionMarker.setMap(map);
+//									directionMarker.push();
+//									populateCoordinates(lat, lng);
+//									wayPointCounter++;
 
-										}
-									});
+								});
 							}
 							if ($activeTab == 2) {
 								$('#targetModel')[0].style.visibility="hidden";
@@ -175,6 +195,7 @@ function calcRoute() {
 	var request = {
 		origin : pos,
 		destination : goToLocation,
+	//	waypoints : wayPoints,
 		travelMode : google.maps.TravelMode[selectedMode]
 	};
 	directionsService.route(request, function(response, status) {
@@ -184,7 +205,19 @@ function calcRoute() {
 	});
 }
 
-//function computeTotalDistance(result) {
+
+function computeTotalDistance(result) {
+	var total = 0;
+	var myroute = result.routes[0];
+	for ( var i = 0; i < myroute.legs.length; i++) {
+		total += myroute.legs[i].distance.value;
+	}
+	total = total / 1000.
+	document.getElementById('total').innerHTML = total + ' km';
+}
+
+
+// function computeTotalDistance(result) {
 //	  var total = 0;
 //	  var myroute = result.routes[0];
 //	  for (var i = 0; i < myroute.legs.length; i++) {
@@ -318,8 +351,6 @@ function placeNewMarkerWithIndex(location, index, target_id) {
 		}
 		
 	});
-	
-	
 
 }
 
@@ -334,8 +365,6 @@ function isScrolledIntoView(elem, view)
 
     return ((elemBottom <= viewBottom) && (elemTop >= viewTop));
 }
-
-
 
 function setMarkerHighlight(index, highlight) {
 	if (highlight) {
