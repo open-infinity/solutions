@@ -1,5 +1,5 @@
 function createDiv(result, index) {
-	var div = $("<div class=\"targetItemDiv\"></div>");
+	var div = $("<li class=\"targetItemDiv\"></li>");
 	div.append("<div>" + (index + 1) + ": " + result.target.text + "</div>");
 	var tags = [];
 	$.each(result.requiredTags, function(index, value) {
@@ -42,22 +42,15 @@ function styleTargetDivs() {
 
 function resizeRightColumn() {
 	var mapHeight = $(window).height() - 70 +"px";
+	
 	document.getElementById("map-canvas").style.height = mapHeight;
 	var listHeight = $(window).height() - 70 - 20 +"px";
-	document.getElementById("scroller").style.height = listHeight;	
-	
-	//var mapwidth = window.getComputedStyle(document.getElementById("headerMiddle_div"),null).getPropertyValue("width");
-	//document.getElementById("map-canvas").style.width = mapwidth;
+	document.getElementById("scroller").style.height = listHeight;
 }
 
 function resizeDirectionsColumn() {
-	var mapHeight = $(window).height() - 50 +"px";
-	document.getElementById("map-canvas").style.height = mapHeight;
-	var listHeight = $(window).height() - 50 - 20 +"px";
+	var listHeight = $(window).height() - 248 - 20 +"px";
 	document.getElementById("directionScroller").style.height = listHeight;	
-	
-	var mapwidth = window.getComputedStyle(document.getElementById("headerMiddle_div"),null).getPropertyValue("width");
-	document.getElementById("map-canvas").style.width = mapwidth;
 }
 
 $(document).ready(function() {

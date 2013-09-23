@@ -127,7 +127,16 @@ body {
 	overflow-y: auto;
 	overflow-x: hidden;
 }
-<<<<<<< HEAD
+
+ul {
+	list-style-type:none;
+	display: block;
+	-webkit-padding-start: 0px;
+}
+
+li {
+	float:left;
+}
 
 #directionScroller {
 	height: 100%;
@@ -136,9 +145,7 @@ body {
 	overflow-x: hidden;
 }
 
-=======
  
->>>>>>> a9e9e21019d6127bcad747bbabdd74f2798611af
 #tabs{
 	height: 100%;
 	width: 96%;

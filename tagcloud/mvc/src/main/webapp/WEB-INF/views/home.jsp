@@ -150,7 +150,7 @@
 		<div id="bc-col3">
 			<div id="informationBox">Targets found</div>
  			<div id="scroller">
- 				<div id="targetlist"></div>
+ 				<ul id="targetlist"></ul>
  			</div>
 		</div>
 	</section>
@@ -161,3 +161,5 @@
 </body>
 
 </html>
+
+ 
