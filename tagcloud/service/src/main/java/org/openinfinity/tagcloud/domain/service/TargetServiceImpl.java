@@ -63,6 +63,15 @@ public class TargetServiceImpl extends
 		return targetRepository.searchLike(input);
 	}
 	
+	@Override
+	public List<Target> searchFromTags(String tag) {
+		return targetRepository.searchFromTags(tag);
+	}	
+	
+	@Override
+	public List<Target> searchAll() {
+		return targetRepository.searchAll();
+	}
   
 	@Override
 	public Collection<Target> loadByTag(Tag tag) {

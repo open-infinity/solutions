@@ -42,12 +42,13 @@ public class Target implements TextEntity {
 	@GeoSpatialIndexed(bits=30, collection="target")
 	private double[] location = new double[2];
 	
+	private int facebookLikes;
+	
 	public Target(String text, double longitude, double latitude) {
 		super();
 		this.text = text;
 		setLocation(longitude, latitude);
 	}
-	
 	
 	public void setLocation(double longitude, double latitude) {
 		location[0] = longitude;

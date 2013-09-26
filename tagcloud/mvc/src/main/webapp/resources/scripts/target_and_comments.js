@@ -28,7 +28,7 @@ function getLoadingElement(id, style) {
 	return loading_div;
 }
 function init() {
-	getAndPrintTargetListInConsole();
+	//getAndPrintTargetListInConsole();
 	target_id = getURLParameter("target_id");
 	if (target_id != null) {
 
@@ -152,6 +152,7 @@ function isUserLoggedIn() {
 			}
 		}
 	});
+	console.log("*** isUserLoggedIn: " + logged_in);
 	return logged_in;
 }
 /**

@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.openinfinity.tagcloud.web.connection.config.ConnectionConfig;
 import org.openinfinity.tagcloud.web.connection.config.LoggingPolicy;
 import org.openinfinity.tagcloud.web.connection.entity.ActiveConnection;
@@ -17,6 +18,7 @@ import org.openinfinity.tagcloud.web.connection.entity.ConnectionCredential;
 import org.openinfinity.tagcloud.web.connection.exception.InvalidConnectionCredentialException;
 import org.openinfinity.tagcloud.web.connection.exception.NullAccessGrantException;
 import org.openinfinity.tagcloud.web.connection.exception.NullActiveConnectionException;
+import org.openinfinity.tagcloud.web.controller.FacebookController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.facebook.api.Facebook;
@@ -35,6 +37,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ConnectionManagerImpl implements ConnectionManager {
+	
+	private static final Logger LOGGER = Logger.getLogger(ConnectionManagerImpl.class);
 
 	private HashMap<String, ActiveConnection> connection_map;
 	private List<String> connectionLog;
@@ -88,7 +92,9 @@ public class ConnectionManagerImpl implements ConnectionManager {
 	public void connect(HttpServletRequest request, HttpServletResponse response)
 			throws InvalidConnectionCredentialException,
 			NullActiveConnectionException, NullAccessGrantException {
+		LOGGER.debug("*** connect: in ");
 		String auth_code = this.getFacebookAuthorizationCode(request);
+		//LOGGER.debug("*** connect: auth_code: " + auth_code);
 		if (this.isUserLoggedIn(request.getSession().getId())) {
 			this.handlePostConnectionRedirections(request, response);
 		} else if (auth_code == null || auth_code.isEmpty()) {
@@ -100,6 +106,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 			connectionLog.add("ConnectionManager/connect> confused!");
 			return;
 		}
+		LOGGER.debug("*** connect: out: " + connectionLog.toString());
 	}
 
 	@Override
@@ -190,14 +197,23 @@ public class ConnectionManagerImpl implements ConnectionManager {
 
 	@Override
 	public boolean isUserLoggedIn(String session_id) {
+		//LOGGER.debug("*** isUserLoggedIn: " + session_id);
 		if (session_id == null) {
+			//LOGGER.debug("*** isUserLoggedIn: false");
 			return false;
 		}
 		ActiveConnection conn = this.connection_map.get(session_id);
+		//LOGGER.debug("*** isUserLoggedIn: conn " + conn);
+		if (conn != null) {
+			//LOGGER.debug("*** isUserLoggedIn: conn.getAccessGrant() " + conn.getAccessGrant());
+			//LOGGER.debug("*** isUserLoggedIn: conn.getFacebook() " + conn.getFacebook());
+		}
 		if (conn != null && conn.getAccessGrant() != null
 				&& conn.getFacebook() != null) {
+			//LOGGER.debug("*** isUserLoggedIn: true");
 			return true;
 		}
+		//LOGGER.debug("*** isUserLoggedIn: false");
 		return false;
 	}
 
@@ -208,6 +224,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 	 */
 	@Override
 	public void setRedirectUrl(HttpServletRequest request, String url) {
+		//LOGGER.debug("*** setRedirectUrl");
 		ActiveConnection conn = this.getSessionActiveConnection(request
 				.getSession().getId());
 		CachedRequest cache = new CachedRequest();
@@ -255,6 +272,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 	}	
 	private void handlePostConnectionRedirections(HttpServletRequest request,
 			HttpServletResponse response) {
+		LOGGER.debug("*** handlePostConnectionRedirections: ");
 		String session_id = request.getSession().getId();
 		try {
 			connectionLog.add("redirect needed? "
@@ -284,6 +302,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		}
 		conn.setCachedrequest(new CachedRequestBuilder()
 				.buildCachedRequestFromRequest(request));
+		LOGGER.debug("*** cacheThisRequest: put ");
 		this.connection_map.put(session_id, conn);
 	}
 
@@ -323,7 +342,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 			HttpServletResponse response)
 			throws InvalidConnectionCredentialException,
 			NullActiveConnectionException, NullAccessGrantException {
-
+		LOGGER.debug("*** facebook_connect: ");
 		String authurl = this.createAuthUrl();
 		try {
 			response.sendRedirect(authurl);
@@ -339,6 +358,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		ActiveConnection conn = connection_map.get(session_id);
 		if (conn == null) {
 			conn = new ActiveConnection();
+			//LOGGER.debug("*** getSessionActiveConnection: put " + session_id);
 			connection_map.put(session_id, conn);
 		}
 		return conn;
@@ -347,6 +367,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 	private void saveNewConnection(HttpServletRequest request, String auth_code)
 			throws InvalidConnectionCredentialException,
 			NullAccessGrantException, NullActiveConnectionException {
+		LOGGER.debug("*** saveNewConnection: ");
 		this.createNewConnectionSession(this.connection_map, request, true);
 		ActiveConnection new_connection = this.connection_map.get(request
 				.getSession().getId());
@@ -396,6 +417,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 				&& old_connection.getCachedRequest() != null) {
 			new_connection.setCachedrequest(old_connection.getCachedRequest());
 		}
+		//LOGGER.debug("*** createNewConnectionSession: put ");
 		this.connection_map.put(request.getSession().getId(), new_connection);
 	}
 
@@ -413,12 +435,14 @@ public class ConnectionManagerImpl implements ConnectionManager {
 			Facebook facebook, AccessGrant accessGrant)
 			throws NullActiveConnectionException, NullAccessGrantException,
 			InvalidConnectionCredentialException {
+		LOGGER.debug("*** login: ");
 		if (conn == null) {
 			throw new NullActiveConnectionException(
 					"login need not null ActiveConnection object");
 		}
 		conn.setAccessGrant(accessGrant);
 		conn.setFacebook(facebook);
+		//LOGGER.debug("*** login: put ");
 		this.connection_map.put(session_id, conn);
 	}
 
@@ -473,7 +497,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 		params.setRedirectUri(this.credential.getAuth_redirect_link());
 		String authorizeUrl = oauthOperations.buildAuthorizeUrl(
 				GrantType.AUTHORIZATION_CODE, params);
-
+		//LOGGER.debug("*** createAuthUrl: " + authorizeUrl);
 		return authorizeUrl;
 	}
 

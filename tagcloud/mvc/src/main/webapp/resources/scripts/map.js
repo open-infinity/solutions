@@ -296,27 +296,37 @@ function populateCoordinates(lat, lng) {
 }
 
 function placeNewMarkerWithIndex(location, index, target_id) {
-
-	var marker = new google.maps.Marker({
-		position : location,
-		map : map,
-		icon : "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
-				+ (index + 1) + "|88BBFF|000000",
-		ind : index
-	});
+	var innerListItem = $("#targetlist").children().eq(index);
+	var marker;
+	if (innerListItem.hasClass("facebook")) {
+		marker = new google.maps.Marker({
+			position : location,
+			map : map,
+			icon : "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
+					+ (index + 1) + "|FF0000|000000",
+			ind : index
+		});
+	} else {
+		marker = new google.maps.Marker({
+			position : location,
+			map : map,
+			icon : "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
+					+ (index + 1) + "|88BBFF|000000",
+			ind : index
+		});
+	}
 
 	if(target_id){
 		marker.target = target_id;
 	}
 	
-
 	markers.push(marker);
 
 	google.maps.event.addListener(marker, 'mouseover', function(event) {
-		setMarkerHighlight(index, true);
-		setTargetDivHighlight($("#targetlist").children().eq(index), true);
 		var parentDiv = $("#scroller");
 		var innerListItem = $("#targetlist").children().eq(index);
+		setMarkerHighlight(index, true);
+		setTargetDivHighlight($("#targetlist").children().eq(index), true);
 		
 		if(!isScrolledIntoView(innerListItem, parentDiv)){
 			var scrollTopValue = parentDiv.scrollTop() + (innerListItem.position().top - parentDiv.position().top) - (parentDiv.height()/2) + (innerListItem.height()/2);
@@ -327,12 +337,8 @@ function placeNewMarkerWithIndex(location, index, target_id) {
 					duration : 1000,
 					queue : false
 				});
-			}, 350);			
-			
-				
-		}
-		
-			
+			}, 350);				
+		}	
 		
 	});
 
@@ -340,7 +346,7 @@ function placeNewMarkerWithIndex(location, index, target_id) {
 		setMarkerHighlight(index, false);
 		setTargetDivHighlight($("#targetlist").children().eq(index), false);
 		if(animTimeout){
-			clearTimeout(animTimeout)
+			clearTimeout(animTimeout);
 		}
 	});
 	
@@ -367,14 +373,23 @@ function isScrolledIntoView(elem, view)
 }
 
 function setMarkerHighlight(index, highlight) {
-	if (highlight) {
-		markers[index]
-				.setIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
-						+ (index + 1) + "|BBDDFF|000000");
+	var innerListItem = $("#targetlist").children().eq(index);
+	if (innerListItem.hasClass("facebook")) {
+		if (highlight) {
+			markers[index].setIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
+				+ (index + 1) + "|F08080|000000");
+		} else {
+			markers[index].setIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
+				+ (index + 1) + "|FF0000|000000");
+		}
 	} else {
-		markers[index]
-				.setIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
-						+ (index + 1) + "|88BBFF|000000");
+		if (highlight) {
+			markers[index].setIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
+				+ (index + 1) + "|BBDDFF|000000");
+		} else {
+			markers[index].setIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
+				+ (index + 1) + "|88BBFF|000000");
+		}
 	}
 }
 

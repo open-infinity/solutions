@@ -1,5 +1,6 @@
 var current_facebook_profile;
 function setConnectionButtons() {
+	//console.log("*** setConnectionButtons");
 	if (isUserLoggedIn()) {
 		postLoginView();
 	} else {
@@ -25,17 +26,20 @@ function hasError(data) {
 	return ((data.status != null && data.status != "200") || (data.is_error != null && data.is_error == true));
 }
 function preLoginView() {
+	console.log("*** preLoginView");
 	$("#login_div img").css('display', 'block');
 	$("#login_div img").click(function() {
 		window.location = "login?next=/tagcloud"
 	});
 }
 function postLoginView() {
+	console.log("*** postLoginView");
 	$("#login_div img").css('display', 'none');
 	current_facebook_profile = getUserFacebookProfile_synchronized();
 	loggedInUserInfoView();
 }
 function loggedInUserInfoView() {
+	console.log("*** loggedInUserInfoView");
 	var div = $("<div id= '#home_user_div'> </div>");
 	var photo = $("<img alt='user image' src='/tagcloud/facebook/photo/"
 			+ current_facebook_profile.id
@@ -49,6 +53,7 @@ function loggedInUserInfoView() {
 	$("#login_div").html($(div));
 }
 function getUserFacebookProfile_synchronized() {
+	console.log("*** getUserFacebookProfile_synchronized");
 	var facebook_profile = null;
 	$.ajax({
 		type : 'GET',

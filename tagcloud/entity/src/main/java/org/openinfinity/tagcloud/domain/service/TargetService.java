@@ -11,7 +11,6 @@ import org.openinfinity.tagcloud.domain.entity.query.TagQuery;
 
 public interface TargetService extends AbstractTextEntityCrudServiceInterface<Target> {
 	
-
 	public static final String UNIQUE_EXCEPTION_TAG_ALREADY_INCLUDED = "localized.exception.tag.already.included";
 
 	public static final String UNIQUE_EXCEPTION_TAG_NOT_INCLUDED = "localized.exception.tag.not.included";
@@ -22,11 +21,9 @@ public interface TargetService extends AbstractTextEntityCrudServiceInterface<Ta
 
 	List<Target> searchLike(String input);
 
+	List<Target> searchFromTags(String tag);
 	
+	List<Target> searchAll();
 
     //void removeTagFromTarget(Tag tag, Target target);
-
-
-    
-    
 }

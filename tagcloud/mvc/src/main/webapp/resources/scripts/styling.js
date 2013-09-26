@@ -1,5 +1,10 @@
 function createDiv(result, index) {
-	var div = $("<li class=\"targetItemDiv\"></li>");
+	var div;
+	if (result.target.facebookLikes == 1 && isUserLoggedIn()) {
+		div = $("<li class=\"targetItemDiv facebook\"></li>");
+	} else {
+		div = $("<li class=\"targetItemDiv\"></li>");
+	}
 	div.append("<div>" + (index + 1) + ": " + result.target.text + "</div>");
 	var tags = [];
 	$.each(result.requiredTags, function(index, value) {
@@ -15,22 +20,28 @@ function createDiv(result, index) {
 	
 	div.append("<div class=\"recommendation_tags\">"+tags.join(", ")+"</div>");
 	div.append("<div>User Score: " + result.target.score + "</div>");
+	if (result.target.facebookLikes == 1 && isUserLoggedIn()) {
+		div.append("<div>Liked in facebook</div>");
+	}
 	var t_id = result.target.id;
 	$(div).click(function (){ window.location= "target?target_id="+t_id;});
 	div.css('cursor', 'pointer');
+	if (result.target.facebookLikes == 1 && isUserLoggedIn()) {
+		div.css('border', '3px solid red');
+	}
 	return div;
 }
 
 function setTargetDivHighlight(div, highlighted) {
 	if (highlighted) {
 		div.css('background-color', '#BBDDFF');
-		
 	} else {
 		div.css('background-color', '#88BBFF');
 	}
 }
 
 function styleTargetDivs() {
+	console.log("*** styleTargetDivs");
 	$(".targetItemDiv").hover(function() {
 		setTargetDivHighlight($(this), true);
 		setMarkerHighlight($(this).index(), true);

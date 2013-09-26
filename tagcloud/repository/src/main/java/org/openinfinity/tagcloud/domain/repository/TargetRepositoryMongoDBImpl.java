@@ -95,10 +95,22 @@ public class TargetRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBIm
 	@Override
 	public List<Target> searchLike(String input) {
 		Query query = new Query(Criteria.where("text").regex("\\b"+input+"\\.*", "i"));
-		List<Target> tags = mongoTemplate.find(query, Target.class);
-		return tags;
+		List<Target> targets = mongoTemplate.find(query, Target.class);
+		return targets;
 	}
 	
-
+	@Override
+	public List<Target> searchFromTags(String tag) {
+		Query query = new Query(Criteria.where("tags").elemMatch(Criteria.where("text").is(tag)));
+		List<Target> targets = mongoTemplate.find(query, Target.class);
+		return targets;
+	}
+	
+	@Override
+	public List<Target> searchAll() {
+		Query query = new Query();
+		List<Target> targets = mongoTemplate.find(query, Target.class);
+		return targets;
+	}
 	
 }

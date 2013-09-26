@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.openinfinity.core.annotation.AuditTrail;
 import org.openinfinity.core.annotation.Log;
 import org.openinfinity.core.aspect.ArgumentStrategy;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping(value = "/facebook")
 public class FacebookController {
+	
+	private static final Logger LOGGER = Logger.getLogger(FacebookController.class);
 
 	@Autowired
 	ConnectionManager connectionManager;
@@ -37,6 +40,7 @@ public class FacebookController {
 	public @ResponseBody
 	ResponseObject<FacebookProfile> facebookProfile(
 			@PathVariable("fb_id") String fb_id, HttpServletRequest request) {
+		LOGGER.debug("*** facebookProfile");
 		ResponseObject<FacebookProfile> obj = new ResponseObject<FacebookProfile>();
 		Facebook facebook = connectionManager.getPublicFacebook();
 		obj.setSuccess("succuss",
@@ -51,6 +55,7 @@ public class FacebookController {
 	public @ResponseBody
 	ResponseObject<FacebookProfile> userFacebookProfile(
 			HttpServletRequest request) {
+		LOGGER.debug("*** userFacebookProfile");
 		ResponseObject<FacebookProfile> obj = new ResponseObject<FacebookProfile>();
 		Facebook facebook = connectionManager.getSessionFacebook(request
 				.getSession().getId());
