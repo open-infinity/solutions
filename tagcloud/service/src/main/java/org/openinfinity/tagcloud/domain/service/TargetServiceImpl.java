@@ -17,10 +17,12 @@ package org.openinfinity.tagcloud.domain.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
-import org.openinfinity.tagcloud.domain.entity.Profile;
+import org.apache.log4j.Logger;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.NearbyTarget;
@@ -39,6 +41,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class TargetServiceImpl extends
 		AbstractTextEntityCrudServiceImpl<Target> implements TargetService {
+	
+	private static final Logger LOGGER = Logger.getLogger(TargetServiceImpl.class);
+	
+	private Map<String, Target> facebookTargets;
 
 	@Autowired
 	private TargetRepository targetRepository;
@@ -81,6 +87,7 @@ public class TargetServiceImpl extends
     @Override
 	public List<Recommendation> loadByQuery(TagQuery tagQuery) {
 		List<Target> targets = targetRepository.loadByCoordinates(tagQuery.getLongitude(), tagQuery.getLatitude(), tagQuery.getRadius());
+		updateTargetsWithFacebook(targets);
 		List<Recommendation> results = requireTags(targets, tagQuery);
 		if(tagQuery.getNearby().size()>0) {
 			results = nearbySearch(targetRepository.loadByCoordinates(tagQuery.getLongitude(), tagQuery.getLatitude(), tagQuery.getRadius() +NearbyTarget.MAX_DISTANCE), results, tagQuery.getNearby());
@@ -93,7 +100,21 @@ public class TargetServiceImpl extends
         }
 		return results.subList(0, Math.min(15, results.size()));
 	}
-
+    
+    @Override
+    public void setFacebookTargets(List<Target> targets) {
+    	if (facebookTargets == null) { 
+    		facebookTargets = new HashMap<String, Target>();
+    	} else {
+    		facebookTargets.clear();
+    	}
+    	if (targets != null) {
+			for (Target target : targets) {
+				facebookTargets.put(target.getId(), target);
+			}
+		}
+    	LOGGER.debug("*** setFacebookTargets size: " + facebookTargets.size());
+    }
 
     private void checkPreferredTags(List<Recommendation> results, TagQuery tagQuery) {
         for(Recommendation result:results){
@@ -123,7 +144,7 @@ public class TargetServiceImpl extends
 
 	private List<Recommendation> nearbySearch(List<Target> allTargets,
 			List<Recommendation> results, List<Tag> nearbyTags) {
-
+		LOGGER.debug("*** nearbySearch");
 		for (Target target : allTargets) {
 			List<Tag> foundNearbyTags = new ArrayList<Tag>();
 			for (Tag tag : nearbyTags) {
@@ -183,6 +204,19 @@ public class TargetServiceImpl extends
 	private double calcDistance(Target t1, Target t2) {
 		return Utils.calcDistanceGCS(t1.getLocation()[0], t1.getLocation()[1],
 				t2.getLocation()[0], t2.getLocation()[1]);
+	}
+	
+	private void updateTargetsWithFacebook(List<Target> targets) {
+		int count = 0;
+		if (facebookTargets != null && facebookTargets.size() > 0) {
+			for (Target target : targets) {
+				if (facebookTargets.containsKey(target.getId())) {
+					target.setFacebookLikes(1);
+					++count;
+				}
+			}
+		}
+		LOGGER.debug("*** updateTargetsWithFacebook count: " + count);
 	}
 
 }

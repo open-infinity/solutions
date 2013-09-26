@@ -1,5 +1,6 @@
 package org.openinfinity.tagcloud.web.connection;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class ConnectionController {
 	
-	private static final Logger LOGGER = Logger.getLogger(FacebookController.class);
+	private static final Logger LOGGER = Logger.getLogger(ConnectionController.class);
 
 	@Autowired
 	private ConnectionManager connectionManager;
@@ -76,14 +77,14 @@ public class ConnectionController {
 	public String doLogout(@Param("facebook") String facebook,@Param("next") String next,
 			HttpServletRequest request, HttpServletResponse response) {
 		LOGGER.debug("*** doLogout");
-		List<Target> targets = targetService.searchAll();
-		LOGGER.debug("*** doLogout targets.size" + targets.size());
-		if (targets != null) {
-			for (Target target : targets) {
-				target.setFacebookLikes(0);
-				targetService.update(target);
-			}
-		}
+//		List<Target> targets = targetService.searchAll();
+//		LOGGER.debug("*** doLogout targets.size" + targets.size());
+//		if (targets != null) {
+//			for (Target target : targets) {
+//				target.setFacebookLikes(0);
+//				targetService.update(target);
+//			}
+//		}
 		
 		String manager_redirect_url = null;
 		if (connectionManager.isUserLoggedIn(request.getSession().getId())) {
@@ -137,7 +138,7 @@ public class ConnectionController {
 	@RequestMapping(value = check_connection_path)
 	public @ResponseBody
 	ResponseObject<LoginObject<Profile>> loginTest(HttpServletRequest req) {
-		LOGGER.debug("*** loginTest in");
+		//LOGGER.debug("*** loginTest in");
 		String session_id = req.getSession().getId();
 		List<String> logList = new LinkedList<String>();
 		ResponseObject<LoginObject<Profile>> res_obj = new ResponseObject<LoginObject<Profile>>();
@@ -149,12 +150,12 @@ public class ConnectionController {
 			String facebookId = facebook.userOperations().getUserProfile()
 					.getId();
 			
-			PlacesOperations placesOperations = facebook.placesOperations();
-			List<Checkin> checkins = placesOperations.getCheckins();
-			for (Checkin checkin : checkins) {
-				Page page = checkin.getPlace();
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! checkin page name:  " + page.getName());
-			}
+//			PlacesOperations placesOperations = facebook.placesOperations();
+//			List<Checkin> checkins = placesOperations.getCheckins();
+//			for (Checkin checkin : checkins) {
+//				Page page = checkin.getPlace();
+//				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! checkin page name:  " + page.getName());
+//			}
 //			LikeOperations likeOperations = facebook.likeOperations();
 //			List<Page> interestPages = likeOperations.getInterests();
 //			LOGGER.debug("*** loginTest: interestPages: " + interestPages.size());
@@ -298,26 +299,28 @@ public class ConnectionController {
 	}
 	
 	private void updateTargets(List<Page> interestPages, List<String> logList) {
+		List<Target> targets = new ArrayList<Target>();
 		for (Page page : interestPages) {
 			String name = page.getName();
 			logList.add("*** name:  " + name);
-			List<Target> targets = targetService.searchLike(name.toLowerCase());
-			if (targets != null) {
-				for (Target target : targets) {
+			List<Target> targets1 = targetService.searchLike(name.toLowerCase());
+			if (targets1 != null) {
+				for (Target target : targets1) {
 					target.setFacebookLikes(1);
-					targetService.update(target);
 				}
 			}
 			
-			targets = targetService.searchFromTags(name.toLowerCase());
+			List<Target> targets2 = targetService.searchFromTags(name.toLowerCase());
 			//LOGGER.debug("*** updateTargets size" + targets.size());
-			if (targets != null) {
-				for (Target target : targets) {
+			if (targets2 != null) {
+				for (Target target : targets2) {
 					target.setFacebookLikes(1);
-					targetService.update(target);
 				}
 			}
+			targets.addAll(targets1);
+			targets.addAll(targets2);
 		}
+		targetService.setFacebookTargets(targets);
 	}
 
 }

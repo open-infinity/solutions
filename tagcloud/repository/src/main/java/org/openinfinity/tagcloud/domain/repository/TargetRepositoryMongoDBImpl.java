@@ -18,6 +18,7 @@ package org.openinfinity.tagcloud.domain.repository;
 
 import java.util.*;
 
+import org.apache.log4j.Logger;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.CoordinateBounds;
@@ -35,8 +36,12 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class TargetRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Target> implements TargetRepository {
+	
+	private static final Logger LOGGER = Logger.getLogger(TargetRepositoryMongoDBImpl.class);
+	
     @Override
     public List<Target> loadByCoordinates(double longitude, double latitude, double radius) {
+    	//LOGGER.debug("*** loadByCoordinates A in");
         Point location = new Point(longitude, latitude);
         NearQuery query = NearQuery.near(location).maxDistance(new Distance(radius/1000, Metrics.KILOMETERS));
         GeoResults<Target> targets = mongoTemplate.geoNear(query, Target.class);
@@ -45,6 +50,7 @@ public class TargetRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBIm
 
     @Override
     public List<Target> loadByCoordinates(CoordinateBounds b, double radius) {
+    	//LOGGER.debug("*** loadByCoordinates B in");
         double centerLng = (b.getnELng()+b.getsWLng())/2;
         double centerLat = (b.getnELat()+b.getsWLat())/2;
         Point location = new Point(centerLng, centerLat);
@@ -69,6 +75,7 @@ public class TargetRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBIm
 
 
     private List<Target> getContentFromGeoResults(GeoResults<Target> geoResults) {
+    	//LOGGER.debug("*** getContentFromGeoResults in");
 		List<Target> list = new ArrayList<Target>();
 		for (GeoResult<Target> result : geoResults.getContent()) {
 			list.add(result.getContent());
