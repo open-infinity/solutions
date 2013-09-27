@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/facebook")
 public class FacebookController {
 	
-	private static final Logger LOGGER = Logger.getLogger(FacebookController.class);
+	//private static final Logger LOGGER = Logger.getLogger(FacebookController.class);
 
 	@Autowired
 	ConnectionManager connectionManager;
@@ -40,7 +40,7 @@ public class FacebookController {
 	public @ResponseBody
 	ResponseObject<FacebookProfile> facebookProfile(
 			@PathVariable("fb_id") String fb_id, HttpServletRequest request) {
-		LOGGER.debug("*** facebookProfile");
+		//LOGGER.debug("*** facebookProfile");
 		ResponseObject<FacebookProfile> obj = new ResponseObject<FacebookProfile>();
 		Facebook facebook = connectionManager.getPublicFacebook();
 		obj.setSuccess("succuss",
@@ -55,7 +55,7 @@ public class FacebookController {
 	public @ResponseBody
 	ResponseObject<FacebookProfile> userFacebookProfile(
 			HttpServletRequest request) {
-		LOGGER.debug("*** userFacebookProfile");
+		//LOGGER.debug("*** userFacebookProfile");
 		ResponseObject<FacebookProfile> obj = new ResponseObject<FacebookProfile>();
 		Facebook facebook = connectionManager.getSessionFacebook(request
 				.getSession().getId());

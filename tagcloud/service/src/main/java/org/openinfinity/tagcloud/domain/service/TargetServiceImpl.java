@@ -102,18 +102,19 @@ public class TargetServiceImpl extends
 	}
     
     @Override
-    public void setFacebookTargets(List<Target> targets) {
+    public void setFacebookTargets(List<Target> targets, boolean clear) {
     	if (facebookTargets == null) { 
     		facebookTargets = new HashMap<String, Target>();
-    	} else {
+    	} else if (clear) {
     		facebookTargets.clear();
     	}
     	if (targets != null) {
 			for (Target target : targets) {
 				facebookTargets.put(target.getId(), target);
+				//LOGGER.debug("*** put: " + target.getId() + " " + target.getText());
 			}
 		}
-    	LOGGER.debug("*** setFacebookTargets size: " + facebookTargets.size());
+    	//LOGGER.debug("*** setFacebookTargets size: " + facebookTargets.size());
     }
 
     private void checkPreferredTags(List<Recommendation> results, TagQuery tagQuery) {
@@ -207,16 +208,14 @@ public class TargetServiceImpl extends
 	}
 	
 	private void updateTargetsWithFacebook(List<Target> targets) {
-		int count = 0;
 		if (facebookTargets != null && facebookTargets.size() > 0) {
 			for (Target target : targets) {
 				if (facebookTargets.containsKey(target.getId())) {
-					target.setFacebookLikes(1);
-					++count;
+					Target facebookTarget = facebookTargets.get(target.getId());
+					target.setFacebookLikes(facebookTarget.getFacebookLikes());
 				}
 			}
 		}
-		LOGGER.debug("*** updateTargetsWithFacebook count: " + count);
 	}
 
 }

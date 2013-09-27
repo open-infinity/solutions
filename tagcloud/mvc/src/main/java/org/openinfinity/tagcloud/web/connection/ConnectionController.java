@@ -20,16 +20,16 @@ import org.openinfinity.tagcloud.web.connection.entity.ResponseObject;
 import org.openinfinity.tagcloud.web.connection.exception.InvalidConnectionCredentialException;
 import org.openinfinity.tagcloud.web.connection.exception.NullAccessGrantException;
 import org.openinfinity.tagcloud.web.connection.exception.NullActiveConnectionException;
-import org.openinfinity.tagcloud.web.controller.FacebookController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.social.facebook.api.Checkin;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.FacebookProfile;
+import org.springframework.social.facebook.api.FriendOperations;
 import org.springframework.social.facebook.api.LikeOperations;
-import org.springframework.social.facebook.api.Location;
 import org.springframework.social.facebook.api.Page;
 import org.springframework.social.facebook.api.PlacesOperations;
+import org.springframework.social.facebook.api.Reference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -102,7 +102,7 @@ public class ConnectionController {
 	public @ResponseBody
 	List<String> FacebookConnect(HttpServletRequest request,
 			HttpServletResponse response) {
-		LOGGER.debug("*** FacebookConnect");
+		//LOGGER.debug("*** FacebookConnect");
 		List<String> logList = new LinkedList<String>();
 		logList.add("Connecting...");
 		this.continueToConnection(request, response, logList);
@@ -122,6 +122,15 @@ public class ConnectionController {
 				Page page = checkin.getPlace();
 				logList.add("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! checkin page name:  " + page.getName());
 			}
+			
+			targetService.setFacebookTargets(null, true);
+			FriendOperations friendOperations = facebook.friendOperations();
+			List<Reference> frends = friendOperations.getFriends();
+			LOGGER.debug("*** FacebookConnect: frends " + frends.size());
+			if (frends.size() > 0) {
+				updateFrendTargets(frends, facebook);
+			}
+			
 			LikeOperations likeOperations = facebook.likeOperations();
 			List<Page> interestPages = likeOperations.getInterests();
 			LOGGER.debug("*** FacebookConnect: interestPages: " + interestPages.size());
@@ -131,7 +140,7 @@ public class ConnectionController {
 			//LOGGER.debug("*** FacebookConnect: loglist" + logList.toString());
 		}
 		logList.addAll(connectionManager.getConnectionLog());
-		LOGGER.debug("*** FacebookConnect: out" + logList.toString());
+		//LOGGER.debug("*** FacebookConnect: out" + logList.toString());
 		return logList;
 	}
 
@@ -303,14 +312,14 @@ public class ConnectionController {
 		for (Page page : interestPages) {
 			String name = page.getName();
 			logList.add("*** name:  " + name);
-			List<Target> targets1 = targetService.searchLike(name.toLowerCase());
+			List<Target> targets1 = targetService.searchLike(name);
 			if (targets1 != null) {
 				for (Target target : targets1) {
 					target.setFacebookLikes(1);
 				}
 			}
 			
-			List<Target> targets2 = targetService.searchFromTags(name.toLowerCase());
+			List<Target> targets2 = targetService.searchFromTags(name);
 			//LOGGER.debug("*** updateTargets size" + targets.size());
 			if (targets2 != null) {
 				for (Target target : targets2) {
@@ -320,7 +329,31 @@ public class ConnectionController {
 			targets.addAll(targets1);
 			targets.addAll(targets2);
 		}
-		targetService.setFacebookTargets(targets);
+		targetService.setFacebookTargets(targets, false);
+	}
+	
+	private void updateFrendTargets(List<Reference> frends, Facebook facebook) {
+		LikeOperations likeOperations = facebook.likeOperations();
+		List<Target> targets = new ArrayList<Target>();
+		for (Reference frend : frends) {
+			LOGGER.debug("*** frend " + frend.getId() + " " + frend.getName());
+			List<Page> interestPages = likeOperations.getInterests(frend.getId());
+			LOGGER.debug("*** interestPages size: " + interestPages.size());
+			if (interestPages.size() > 0) {
+				for (Page page : interestPages) {
+					String name = page.getName();
+					//LOGGER.debug("*** interestPages name: " + name);
+					targets = targetService.searchFromTags(name);
+					if (targets != null) {
+						for (Target target : targets) {
+							target.setFacebookLikes(2);
+							//LOGGER.debug("*** target name: " + target.getText());
+						}
+					}
+					targetService.setFacebookTargets(targets, false);
+				}
+			}
+		}
 	}
 
 }

@@ -25,7 +25,7 @@ public interface TargetService extends AbstractTextEntityCrudServiceInterface<Ta
 	
 	List<Target> searchAll();
 	
-	void setFacebookTargets(List<Target> targets);
+	void setFacebookTargets(List<Target> targets, boolean clear);
 
     //void removeTagFromTarget(Tag tag, Target target);
 }

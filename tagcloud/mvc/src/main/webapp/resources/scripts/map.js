@@ -306,6 +306,14 @@ function placeNewMarkerWithIndex(location, index, target_id) {
 					+ (index + 1) + "|FF0000|000000",
 			ind : index
 		});
+	} else if (innerListItem.hasClass("facebookFrend")) {
+		marker = new google.maps.Marker({
+			position : location,
+			map : map,
+			icon : "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
+					+ (index + 1) + "|FFA500|000000",
+			ind : index
+		});
 	} else {
 		marker = new google.maps.Marker({
 			position : location,
@@ -381,6 +389,14 @@ function setMarkerHighlight(index, highlight) {
 		} else {
 			markers[index].setIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
 				+ (index + 1) + "|FF0000|000000");
+		}
+	} else if (innerListItem.hasClass("facebookFrend")) {
+		if (highlight) {
+			markers[index].setIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
+				+ (index + 1) + "|FFDA9A|000000");
+		} else {
+			markers[index].setIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
+				+ (index + 1) + "|FFA500|000000");
 		}
 	} else {
 		if (highlight) {

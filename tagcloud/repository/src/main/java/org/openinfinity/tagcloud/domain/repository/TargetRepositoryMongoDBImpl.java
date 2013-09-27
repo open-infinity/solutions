@@ -37,7 +37,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class TargetRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBImpl<Target> implements TargetRepository {
 	
-	private static final Logger LOGGER = Logger.getLogger(TargetRepositoryMongoDBImpl.class);
+	//private static final Logger LOGGER = Logger.getLogger(TargetRepositoryMongoDBImpl.class);
 	
     @Override
     public List<Target> loadByCoordinates(double longitude, double latitude, double radius) {
@@ -108,7 +108,7 @@ public class TargetRepositoryMongoDBImpl extends AbstractCrudRepositoryMongoDBIm
 	
 	@Override
 	public List<Target> searchFromTags(String tag) {
-		Query query = new Query(Criteria.where("tags").elemMatch(Criteria.where("text").is(tag)));
+		Query query = new Query(Criteria.where("tags").elemMatch(Criteria.where("text").in(tag, tag.toLowerCase())));
 		List<Target> targets = mongoTemplate.find(query, Target.class);
 		return targets;
 	}
