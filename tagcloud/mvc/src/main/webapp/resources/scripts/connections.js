@@ -26,7 +26,7 @@ function hasError(data) {
 	return ((data.status != null && data.status != "200") || (data.is_error != null && data.is_error == true));
 }
 function preLoginView() {
-	console.log("*** preLoginView");
+	//console.log("*** preLoginView");
 	$("#login_div img").css('display', 'block');
 	$("#login_div img").click(function() {
 		window.location = "login?next=/tagcloud"

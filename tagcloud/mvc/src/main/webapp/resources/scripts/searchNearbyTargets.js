@@ -8,8 +8,9 @@ function searchNearbyTargets(lat, lng) {
 		var $list = $("#targetlist");
 		$list.empty();
 		clearMarkers();
+		var logged_in = isUserLoggedIn();
 		$.each(resultJson.results, function(index, value) {
-			$list.append(createDiv(value, index));
+			$list.append(createDiv(value, index, logged_in));
 			var loc = new google.maps.LatLng(value.target.location[1],
 					value.target.location[0]);
 
