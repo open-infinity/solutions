@@ -98,7 +98,7 @@ public class TargetServiceImpl extends
         for(Recommendation recommendation : results){
             recommendationService.updateRecommendationScore(recommendation, tagQuery.getUser(), tagQuery.getFriendFacebookIds());
         }
-		return results.subList(0, Math.min(15, results.size()));
+		return results.subList(0, Math.min(20, results.size()));
 	}
     
     @Override

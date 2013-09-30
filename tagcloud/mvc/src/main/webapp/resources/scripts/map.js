@@ -24,7 +24,12 @@ var pos;
 function initialize() {
 
 	directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
-	pos = new google.maps.LatLng(60.172983, 24.940332);
+	if (document.getElementById("latitude").getAttribute("value") > 0.0) {
+		pos = new google.maps.LatLng(document.getElementById("latitude").getAttribute("value"), 
+			document.getElementById("longitude").getAttribute("value"));
+	} else {
+		pos = new google.maps.LatLng(60.172983, 24.940332);
+	}
 	
 	var mapOptions = {
 		zoom : 13,
@@ -34,7 +39,7 @@ function initialize() {
 
 	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 	
-	if (navigator.geolocation) {
+	if (navigator.geolocation && document.getElementById("latitude").getAttribute("value") == 0.0) {
 	    navigator.geolocation.getCurrentPosition(function(position) {
 	       pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 	       mapOptions.center = pos;
@@ -62,6 +67,7 @@ function initialize() {
 	google.maps.event.addListener(map, 'idle', function() {
 		bounds = map.getBounds();
 		center = map.getCenter();
+		populateCoordinates(map.getCenter().lat(), map.getCenter().lng());
 		$("#searchModel").submit();
 	});
 
@@ -69,10 +75,8 @@ function initialize() {
 	var options = {
 		types : [ 'geocode' ]
 	};
-
 	
 	initAutocomplete();
-
 	
 	$(function() {
 		$('#tabs')
@@ -90,6 +94,7 @@ function initialize() {
 										function() {
 											bounds = map.getBounds();
 											center = map.getCenter();
+											populateCoordinates(map.getCenter().lat(), map.getCenter().lng());
 											$("#searchModel").submit();
 										});
 
