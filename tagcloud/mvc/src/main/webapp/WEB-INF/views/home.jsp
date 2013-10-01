@@ -7,9 +7,11 @@
 	
 	<link rel="stylesheet" type="text/css" href="/tagcloud/resources/styles/styles.css" media="screen">
 	<link rel="stylesheet" href="/tagcloud/resources/styles/display-table-style.css" type="text/css">
+	<link rel="stylesheet" type="text/css" href="/tagcloud/resources/styles/styles-narrow.css" media="(max-aspect-ratio: 1/1)">
 	<link rel="stylesheet" href="/tagcloud/resources/styles/token-input-facebook.css" type="text/css">
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
-	
+	<link rel="stylesheet" href="/tagcloud/resources/styles/accordion.css" type="text/css">
+
 	<style>
 	  .ui-autocomplete-category {
 	    font-weight: bold;
@@ -29,7 +31,10 @@
 	
 	<script>
 		$(function() {
-			$("#tabs").tabs();
+			$("#accordion").accordion({
+				heightStyle: "content",
+				collapsible: true
+			});
 		});
 	</script>
 	
@@ -58,14 +63,12 @@
 		</div>
 	</header>
 	
-	<section>
+	<section id="section">
 		<div id="bc-col1">
-			<div id="tabs">
-				<ul>
-					<li><a href="#search-tab">Search</a></li>
-					<li><a href="#get-directions-tab">Go to..</a></li>
-					<li><a href="#add-target-tab">Add Target</a></li>
-				</ul>
+			<div id="accordion">
+				<h3>
+					<a href="#">Search</a>
+				</h3>
 				<div id="search-tab">
 					<p>I want to go to a place that...</p>
 					<form id="searchModel" action="/tagcloud" method="post">
@@ -94,6 +97,9 @@
 						</table>
 					</form>
 				</div>
+				<h3>
+					<a href="#">Go to...</a>
+				</h3>
 				<div id="get-directions-tab">
 					<div id="directionGuidance">Choose destination..</div>
 					<div id="panel">
@@ -110,8 +116,10 @@
 					<div id="directionScroller">
 						<div id="directionsPanel"></div>
    					</div>
-   					<div id="distanceId"><p>Total Distance: <span id="total"></span></p></div>
 				</div>
+				<h3>
+					<a href="#">Add target</a>
+				</h3>
 				<div id="add-target-tab">
 					<div id="Instructions">Select location by clicking map</div>
 					<div id="statusbox"></div>
@@ -156,7 +164,7 @@
 	</section>
 
 	<footer id="footer">
-		<b>Copyright &copy; 2013 Tieto Ltd</b>
+		<b>Copyright &copy; 2013 Tieto Plc</b>
 	</footer>
 </body>
 
