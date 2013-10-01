@@ -63,16 +63,42 @@ function styleTargetDivs() {
 }
 
 function resizeRightColumn() {
-	var mapHeight = $(window).height() - 70 +"px";
-	
-	document.getElementById("map-canvas").style.height = mapHeight;
-	var listHeight = $(window).height() - 70 - 20 +"px";
-	document.getElementById("scroller").style.height = listHeight;
+	var headerHeight = $("#header").height();
+	var footerHeight = $("#footer").height();
+	document.getElementById("section").style.height = ($(window).height()
+			- headerHeight - footerHeight)
+			+ "px";
+	var sectionHeight = $("#section").height();
+
+	var col3Height = $("#bc-col3").height();
+	if ($(window).height() <= $(window).width()) {
+		document.getElementById("map-canvas").style.height = sectionHeight
+				+ "px";
+	} else {
+		document.getElementById("map-canvas").style.height = (sectionHeight - col3Height)
+				+ "px";
+	}
+
+	var infoHeight = document.getElementById("informationBox").clientHeight;
+	var targetScrollerHeight = col3Height - infoHeight;
+	document.getElementById("scroller").style.height = targetScrollerHeight
+			+ "px";
 }
 
 function resizeDirectionsColumn() {
-	var listHeight = $(window).height() - 248 - 20 +"px";
-	document.getElementById("directionScroller").style.height = listHeight;	
+	var totalHeaderHeight = 0;
+	$(".ui-accordion-header").each(function(i, header) {
+		totalHeaderHeight += (header.clientHeight + 2);
+	});
+
+	var dircetionsScrollerHeight = ($("#section").outerHeight(true)
+			- $("#directionGuidance").outerHeight(true)
+			- $("#panel").outerHeight(true) - totalHeaderHeight);
+	if ($(window).height() >= $(window).width()) {
+		dircetionsScrollerHeight -= $("#bc-col3").height();
+	}
+	document.getElementById("directionScroller").style.height = dircetionsScrollerHeight
+			+ "px";
 }
 
 $(document).ready(function() {
@@ -83,4 +109,10 @@ $(document).ready(function() {
 $(window).resize(function() {
 	resizeRightColumn();
 	resizeDirectionsColumn();
+});
+
+$(document).ready(function() {
+	$("#accordion > h3").click(function() {
+		resizeDirectionsColumn();
+	});
 });
