@@ -79,12 +79,12 @@ function initialize() {
 	initAutocomplete();
 	
 	$(function() {
-		$('#tabs')
-				.tabs(
+		$('#accordion')
+				.accordion(
 						{
 						activate : function(event, ui) {
 
-							var $activeTab = $("#tabs").tabs('option',
+							var $activeTab = $("#accordion").accordion('option',
 									'active');
 
 							if ($activeTab == 0) {
