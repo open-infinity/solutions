@@ -31,7 +31,7 @@ function createDiv(result, index, logged_in) {
 	});
 	
 	div.append("<div class=\"recommendation_tags\">"+tags.join(", ")+"</div>");
-	div.append("<div>User Score: " + result.target.score.toFixed(0) + "</div>");
+	div.append("<div>User Score: " + result.target.score.toFixed(1) + "</div>");
 	var t_id = result.target.id;
 	$(div).click(function (){ window.location= "target?target_id="+t_id;});
 	div.css('cursor', 'pointer');
