@@ -1,20 +1,23 @@
 function createDiv(result, index, logged_in) {
 	var div;
 	if (result.target.facebookLikes == 1 && logged_in) {
-		div = $("<li class=\"targetItemDiv facebook\"></li>");
+		div = $("<li class=\"targetItemDiv facebook\" title=\"Click to open\"></li>");
 	} else if (result.target.facebookLikes == 2 && logged_in) {
-		div = $("<li class=\"targetItemDiv facebookFrend\"></li>");
+		div = $("<li class=\"targetItemDiv facebookFrend\" title=\"Click to open\"></li>");
 	} else {
-		div = $("<li class=\"targetItemDiv\"></li>");
+		div = $("<li class=\"targetItemDiv\" title=\"Click to open\"></li>");
 	}
 	var image = "";
 	if (result.target.facebookLikes == 1 && logged_in) {
-		image = "<img id=\"facebook-img\" alt=\"I Like this in facebook\" src=\"/tagcloud/resources/img/facebook-like.png\" height=\"16\" width=\"16\">";
+		image = "<img id=\"facebook-img\" alt=\"I Like this in facebook\" " +
+				"src=\"/tagcloud/resources/img/facebook-like.png\" height=\"16\" width=\"16\" ";
+		image = image.concat(" title=", "\"From my facebook interests\">");
 	} else if (result.target.facebookLikes == 2 && logged_in) {
-		image = "<img id=\"facebook-img\" alt=\"My friends like this in facebook\" src=\"/tagcloud/resources/img/friends.png\" height=\"20\" width=\"20\">";
+		image = "<img id=\"facebook-img\" alt=\"My friends like this in facebook\" " +
+				"src=\"/tagcloud/resources/img/friends.png\" height=\"20\" width=\"20\" ";
+		image = image.concat(" title=\"", result.target.facebookFriends, " likes this in facebook\">");
 	}
-	div.append("<div>" + (index + 1) + ": " + result.target.text + image
-		+ "</div>");
+	div.append("<div>" + (index + 1) + ": " + result.target.text + image + "</div>");
 	var tags = [];
 	$.each(result.requiredTags, function(index, value) {
 		tags.push(value.text);

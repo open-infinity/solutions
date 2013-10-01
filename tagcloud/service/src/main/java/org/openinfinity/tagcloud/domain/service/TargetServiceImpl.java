@@ -213,6 +213,7 @@ public class TargetServiceImpl extends
 				if (facebookTargets.containsKey(target.getId())) {
 					Target facebookTarget = facebookTargets.get(target.getId());
 					target.setFacebookLikes(facebookTarget.getFacebookLikes());
+					target.setFacebookFriends(facebookTarget.getFacebookFriends());
 				}
 			}
 		}

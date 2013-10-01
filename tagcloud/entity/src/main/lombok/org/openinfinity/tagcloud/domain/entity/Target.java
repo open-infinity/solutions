@@ -44,6 +44,8 @@ public class Target implements TextEntity {
 	
 	private int facebookLikes;
 	
+	private String facebookFriends = new String(); 
+	
 	public Target(String text, double longitude, double latitude) {
 		super();
 		this.text = text;
@@ -81,8 +83,13 @@ public class Target implements TextEntity {
 	public String toString() {
 		return "Target, id="+id+", text="+text;
 	}
-
-
+	
+	public void addFacebookFrend(String frend) {
+		if (!facebookFriends.isEmpty()) {
+			facebookFriends = facebookFriends.concat(", ");
+		} 
+		facebookFriends = facebookFriends.concat(frend);
+	}
 
 	private void calcScore() {
 		int size = scores.size();
@@ -92,7 +99,5 @@ public class Target implements TextEntity {
 		}
 		score = 1.0*summ/size; 
 	}
-
-
 
 }

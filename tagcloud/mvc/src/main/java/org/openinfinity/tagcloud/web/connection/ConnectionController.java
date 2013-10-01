@@ -347,7 +347,8 @@ public class ConnectionController {
 					if (targets != null) {
 						for (Target target : targets) {
 							target.setFacebookLikes(2);
-							//LOGGER.debug("*** target name: " + target.getText());
+							target.addFacebookFrend(frend.getName());
+							//LOGGER.debug("*** target friend: " + target.getFacebookFriends());
 						}
 					}
 					targetService.setFacebookTargets(targets, false);

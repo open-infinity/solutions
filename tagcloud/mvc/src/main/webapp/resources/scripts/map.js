@@ -309,7 +309,8 @@ function placeNewMarkerWithIndex(location, index, target_id) {
 			map : map,
 			icon : "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
 					+ (index + 1) + "|FF0000|000000",
-			ind : index
+			ind : index,
+			title: "Click to open"
 		});
 	} else if (innerListItem.hasClass("facebookFrend")) {
 		marker = new google.maps.Marker({
@@ -317,7 +318,8 @@ function placeNewMarkerWithIndex(location, index, target_id) {
 			map : map,
 			icon : "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
 					+ (index + 1) + "|FFA500|000000",
-			ind : index
+			ind : index,
+			title: "Click to open"
 		});
 	} else {
 		marker = new google.maps.Marker({
@@ -325,7 +327,8 @@ function placeNewMarkerWithIndex(location, index, target_id) {
 			map : map,
 			icon : "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
 					+ (index + 1) + "|88BBFF|000000",
-			ind : index
+			ind : index,
+			title: "Click to open"
 		});
 	}
 
