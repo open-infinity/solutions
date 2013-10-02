@@ -52,7 +52,6 @@ function setTargetDivHighlight(div, highlighted) {
 }
 
 function styleTargetDivs() {
-	console.log("*** styleTargetDivs");
 	$(".targetItemDiv").hover(function() {
 		setTargetDivHighlight($(this), true);
 		setMarkerHighlight($(this).index(), true);

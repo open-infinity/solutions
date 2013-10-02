@@ -14,7 +14,7 @@ function searchNearbyTargets(lat, lng) {
 			var loc = new google.maps.LatLng(value.target.location[1],
 					value.target.location[0]);
 
-			placeNewMarkerWithIndex(loc, index);
+			placeNewMarkerWithIndex(value, loc, index);
 		});
 
 		styleTargetDivs();

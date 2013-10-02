@@ -152,7 +152,7 @@ function isUserLoggedIn() {
 			}
 		}
 	});
-	console.log("*** isUserLoggedIn: " + logged_in);
+	//console.log("*** isUserLoggedIn: " + logged_in);
 	return logged_in;
 }
 /**

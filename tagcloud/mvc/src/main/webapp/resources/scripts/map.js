@@ -31,8 +31,13 @@ function initialize() {
 		pos = new google.maps.LatLng(60.172983, 24.940332);
 	}
 	
+	var currentZoom = 13;
+	if (document.getElementById("map-zoom").getAttribute("value") > 0) {
+		currentZoom = parseInt(document.getElementById("map-zoom").getAttribute("value"));
+	}
+	
 	var mapOptions = {
-		zoom : 13,
+		zoom : currentZoom,
 		center : pos,
 		mapTypeId : google.maps.MapTypeId.ROADMAP
 	};
@@ -67,7 +72,7 @@ function initialize() {
 	google.maps.event.addListener(map, 'idle', function() {
 		bounds = map.getBounds();
 		center = map.getCenter();
-		populateCoordinates(map.getCenter().lat(), map.getCenter().lng());
+		populateCoordinates(map.getCenter().lat(), map.getCenter().lng(), map.getZoom());
 		$("#searchModel").submit();
 	});
 
@@ -94,7 +99,7 @@ function initialize() {
 										function() {
 											bounds = map.getBounds();
 											center = map.getCenter();
-											populateCoordinates(map.getCenter().lat(), map.getCenter().lng());
+											populateCoordinates(map.getCenter().lat(), map.getCenter().lng(), map.getZoom());
 											$("#searchModel").submit();
 										});
 
@@ -141,7 +146,7 @@ function initialize() {
 //									directionMarker.setPosition(directionMarkers[i]);
 //									directionMarker.setMap(map);
 //									directionMarker.push();
-//									populateCoordinates(lat, lng);
+//									populateCoordinates(lat, lng, map.getZoom());
 //									wayPointCounter++;
 
 								});
@@ -158,33 +163,27 @@ function initialize() {
 									'click',
 									function(event) {
 										var myLatLng = event.latLng;
-										var lat = myLatLng
-												.lat();
-										var lng = myLatLng
-												.lng();
+										var lat = myLatLng.lat();
+										var lng = myLatLng.lng();
 
 										if (addedMarker) {
-											addedMarker
-													.setPosition(myLatLng);
+											addedMarker.setPosition(myLatLng);
 											showAddedMarker();
 										}
 
 										else {
 											addedMarker = new google.maps.Marker(
-													{
-														position : myLatLng,
-														map : map
-													});
-
+												{
+													position : myLatLng,
+													map : map
+												});
 										}
 
-										populateCoordinates(
-												lat, lng);
+										populateCoordinates(lat, lng, map.getZoom());
 
 										$('#targetModel')[0].style.visibility="visible";
 										
-										searchNearbyTargets(
-												lat, lng);
+										searchNearbyTargets(lat, lng);
 
 									});
 
@@ -217,8 +216,8 @@ function computeTotalDistance(result) {
 	for ( var i = 0; i < myroute.legs.length; i++) {
 		total += myroute.legs[i].distance.value;
 	}
-	total = total / 1000.
-	document.getElementById('total').innerHTML = total + ' km';
+	total = total / 1000;
+	//document.getElementById('total').innerHTML = total + ' km';
 }
 
 
@@ -295,12 +294,13 @@ function showAddedMarker() {
 	}
 }
 
-function populateCoordinates(lat, lng) {
+function populateCoordinates(lat, lng, zoom) {
 	document.getElementById("latitude").setAttribute("value", lat);
 	document.getElementById("longitude").setAttribute("value", lng);
+	document.getElementById("map-zoom").setAttribute("value", zoom);
 }
 
-function placeNewMarkerWithIndex(location, index, target_id) {
+function placeNewMarkerWithIndex(result, location, index, target_id) {
 	var innerListItem = $("#targetlist").children().eq(index);
 	var marker;
 	if (innerListItem.hasClass("facebook")) {
@@ -309,8 +309,7 @@ function placeNewMarkerWithIndex(location, index, target_id) {
 			map : map,
 			icon : "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
 					+ (index + 1) + "|FF0000|000000",
-			ind : index,
-			title: "Click to open"
+			ind : index
 		});
 	} else if (innerListItem.hasClass("facebookFrend")) {
 		marker = new google.maps.Marker({
@@ -318,8 +317,7 @@ function placeNewMarkerWithIndex(location, index, target_id) {
 			map : map,
 			icon : "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
 					+ (index + 1) + "|FFA500|000000",
-			ind : index,
-			title: "Click to open"
+			ind : index
 		});
 	} else {
 		marker = new google.maps.Marker({
@@ -327,10 +325,43 @@ function placeNewMarkerWithIndex(location, index, target_id) {
 			map : map,
 			icon : "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="
 					+ (index + 1) + "|88BBFF|000000",
-			ind : index,
-			title: "Click to open"
+			ind : index
 		});
 	}
+	
+	var tags = [];
+	$.each(result.target.tags, function(index, value) {
+		if(tags.length >= 5) return false;
+		if(jQuery.inArray(value.text, tags) == -1) tags.push(value.text); 
+	});
+	
+	var boxText = document.createElement("div");
+    boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: yellow; padding: 5px;";
+    boxText.innerHTML = "<b>" + result.target.text + "</b>" + "<br>" + 
+    	"<div style=\"color: gray\">" + tags.join(", ") + "</div>" +
+    	"User score: " + result.target.score.toFixed(1) + 
+    	"<br><i>Click to open</i>";
+            
+    var myOptions = {
+             content: boxText
+            ,disableAutoPan: false
+            ,maxWidth: 0
+            ,pixelOffset: new google.maps.Size(-80, 0)
+            ,zIndex: null
+            ,boxStyle: { 
+              background: "no-repeat"
+              ,opacity: 0.75
+              ,width: (tags.length >= 4) ? "220px" : "160px" 
+             }
+            ,closeBoxMargin: "10px 2px 2px 2px"
+            ,closeBoxURL: ""
+            ,infoBoxClearance: new google.maps.Size(1, 1)
+            ,isHidden: false
+            ,pane: "floatPane"
+            ,enableEventPropagation: false
+    };
+
+    var infoBox = new InfoBox(myOptions);
 
 	if(target_id){
 		marker.target = target_id;
@@ -343,6 +374,7 @@ function placeNewMarkerWithIndex(location, index, target_id) {
 		var innerListItem = $("#targetlist").children().eq(index);
 		setMarkerHighlight(index, true);
 		setTargetDivHighlight($("#targetlist").children().eq(index), true);
+		infoBox.open(map, marker);
 		
 		if(!isScrolledIntoView(innerListItem, parentDiv)){
 			var scrollTopValue = parentDiv.scrollTop() + (innerListItem.position().top - parentDiv.position().top) - (parentDiv.height()/2) + (innerListItem.height()/2);
@@ -361,6 +393,7 @@ function placeNewMarkerWithIndex(location, index, target_id) {
 	google.maps.event.addListener(marker, 'mouseout', function(event) {
 		setMarkerHighlight(index, false);
 		setTargetDivHighlight($("#targetlist").children().eq(index), false);
+		infoBox.close(map, marker);
 		if(animTimeout){
 			clearTimeout(animTimeout);
 		}

@@ -27,6 +27,7 @@
 	<script type="text/javascript" src="/tagcloud/resources/scripts/json.min.js"></script>
 	<script type="text/javascript" src="/tagcloud/resources/scripts/jquery.tokeninput.js"></script>
 	<script src="http://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=true&amp;libraries=places"></script>
+	<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
 	<script type="text/javascript" src="/tagcloud/resources/scripts/map.js"></script>
 	
 	<script>
@@ -154,6 +155,7 @@
 		</div>
 		<div id="bc-col2">
 			<div id="map-canvas"></div>
+			<input id="map-zoom" name="map-zoom" type="hidden" value="0"></input>
 		</div>
 		<div id="bc-col3">
 			<div id="informationBox">Targets found</div>

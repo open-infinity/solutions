@@ -33,13 +33,13 @@ function preLoginView() {
 	});
 }
 function postLoginView() {
-	console.log("*** postLoginView");
+	//console.log("*** postLoginView");
 	$("#login_div img").css('display', 'none');
 	current_facebook_profile = getUserFacebookProfile_synchronized();
 	loggedInUserInfoView();
 }
 function loggedInUserInfoView() {
-	console.log("*** loggedInUserInfoView");
+	//console.log("*** loggedInUserInfoView");
 	var div = $("<div id= '#home_user_div'> </div>");
 	var photo = $("<img alt='user image' src='/tagcloud/facebook/photo/"
 			+ current_facebook_profile.id
@@ -53,7 +53,7 @@ function loggedInUserInfoView() {
 	$("#login_div").html($(div));
 }
 function getUserFacebookProfile_synchronized() {
-	console.log("*** getUserFacebookProfile_synchronized");
+	//console.log("*** getUserFacebookProfile_synchronized");
 	var facebook_profile = null;
 	$.ajax({
 		type : 'GET',

@@ -64,7 +64,7 @@ public class ConnectionController {
 	@RequestMapping(value = login_path)
 	public String authTest(HttpServletRequest request,
 			HttpServletResponse response) {
-		LOGGER.debug("*** authTest in");
+		//LOGGER.debug("*** authTest in");
 		String next = request.getParameter("next");
 		if (next != null && !next.isEmpty()) {
 			connectionManager.setRedirectUrl(request, next);
@@ -76,7 +76,7 @@ public class ConnectionController {
 	@RequestMapping(value = logout_path)
 	public String doLogout(@Param("facebook") String facebook,@Param("next") String next,
 			HttpServletRequest request, HttpServletResponse response) {
-		LOGGER.debug("*** doLogout");
+//		LOGGER.debug("*** doLogout");
 //		List<Target> targets = targetService.searchAll();
 //		LOGGER.debug("*** doLogout targets.size" + targets.size());
 //		if (targets != null) {
@@ -117,7 +117,7 @@ public class ConnectionController {
 			PlacesOperations placesOperations = facebook.placesOperations();
 			//LOGGER.debug("*** FacebookConnect: placesOperations: " + placesOperations);
 			List<Checkin> checkins = placesOperations.getCheckins();
-			LOGGER.debug("*** FacebookConnect: checkins: " + checkins.size());
+			//LOGGER.debug("*** FacebookConnect: checkins: " + checkins.size());
 			for (Checkin checkin : checkins) {
 				Page page = checkin.getPlace();
 				logList.add("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! checkin page name:  " + page.getName());
@@ -126,14 +126,14 @@ public class ConnectionController {
 			targetService.setFacebookTargets(null, true);
 			FriendOperations friendOperations = facebook.friendOperations();
 			List<Reference> frends = friendOperations.getFriends();
-			LOGGER.debug("*** FacebookConnect: frends " + frends.size());
+			//LOGGER.debug("*** FacebookConnect: frends " + frends.size());
 			if (frends.size() > 0) {
 				updateFrendTargets(frends, facebook);
 			}
 			
 			LikeOperations likeOperations = facebook.likeOperations();
 			List<Page> interestPages = likeOperations.getInterests();
-			LOGGER.debug("*** FacebookConnect: interestPages: " + interestPages.size());
+			//LOGGER.debug("*** FacebookConnect: interestPages: " + interestPages.size());
 			if (interestPages.size() > 0) {
 				updateTargets(interestPages, logList);
 			}
@@ -336,9 +336,9 @@ public class ConnectionController {
 		LikeOperations likeOperations = facebook.likeOperations();
 		List<Target> targets = new ArrayList<Target>();
 		for (Reference frend : frends) {
-			LOGGER.debug("*** frend " + frend.getId() + " " + frend.getName());
+			//LOGGER.debug("*** frend " + frend.getId() + " " + frend.getName());
 			List<Page> interestPages = likeOperations.getInterests(frend.getId());
-			LOGGER.debug("*** interestPages size: " + interestPages.size());
+			//LOGGER.debug("*** interestPages size: " + interestPages.size());
 			if (interestPages.size() > 0) {
 				for (Page page : interestPages) {
 					String name = page.getName();

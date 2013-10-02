@@ -93,7 +93,7 @@ public class HomeController {
 	public String home(Locale locale, Model model) {
 		model.addAttribute("searchModel", new SearchModel());
 		model.addAttribute("targetModel", new TargetModel());
-		LOGGER.error("home get");
+		//LOGGER.error("home get");
 		return "home";
 	}
 
