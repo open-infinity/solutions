@@ -1,9 +1,14 @@
+.ui-accordion {
+	box-shadow: 8px 8px 6px rgba(0, 0, 0, 0.7);
+}
+
 .ui-accordion .ui-accordion-header {
   cursor: pointer;
   position: relative;
   margin-top: 1px;
   zoom: 1;
   padding-left: 1.2em;
+  opacity: 0.9;
 }
 .ui-accordion .ui-accordion-li-fix {
   display: inline;

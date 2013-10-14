@@ -1,21 +1,32 @@
 .targetItemDiv {
 	background-color: #88BBFF;
-	border-radius: 20px 20px;
 	border-bottom-right-radius: 20px 20px;
-	-moz-border-radius: 20px 20px;
 	-moz-border-radius-bottomright: 20px 20px;
-	width: 85%;
+	-moz-border-radius: 20px 20px;
+	border-radius: 20px 20px;
 	border-color: black;
 	border-style: ridge;
 	border-width: 2px 1px 1px 2px;
 	border-color: grey;
 	padding: 10px;
+	margin-right: 2%;
 	margin-bottom: 10px;
-    float: center;
+	float: center;
+	box-shadow: 8px 8px 6px rgba(0, 0, 0, 0.7);
+	opacity: 0.9;
+	z-index: 10;
+	-webkit-transition: all 0.25s ease;
+	-moz-transition: all 0.25s ease;
+	-o-transition: all 0.25s ease;
+	transition: all 0.25s ease;
 }
 
-.recommendation_tags{
-	color:grey;
+.targetItemDiv:hover {
+	opacity: 1.0;
+}
+
+.recommendation_tags {
+	color: grey;
 }
 
 header {
@@ -33,18 +44,22 @@ section {
 }
 
 #bc-col1 {
-	background-color: white;
-	width: 22%;
-	height: 100%;
+	/* 	background-color: white; */
+	width: 25%;
+	/* 	height: 100%; */
 	float: left;
 	vertical-align: top;
+	position: fixed;
+	left: 2px;
+	z-index: 10;
 }
 
 #bc-col2 {
-	width: 58%;
+	width: 100%;
 	height: 100%;
 	float: left;
 	vertical-align: top;
+	z-index: -10;
 }
 
 #map-canvas {
@@ -54,16 +69,18 @@ section {
 }
 
 #bc-col3 {
-	width: 20%;
-	height: 100%;
-	float: right;
+	max-width: 25%;
+	height: inherit;
 	vertical-align: top;
+	position: fixed;
+	right: 2px;
 }
 
 footer {
 	width: 100%;
+	height: 20px;
 	background-color: lightgrey;
-	color: rgb(153,204,51);
+	color: rgb(153, 204, 51);
 	margin-right: auto;
 	margin-left: auto;
 	overflow: hidden;

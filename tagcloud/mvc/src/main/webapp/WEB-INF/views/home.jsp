@@ -5,12 +5,12 @@
 	<meta charset="utf-8">
 	<title>Tagcloud</title>
 	
-	<link rel="stylesheet" type="text/css" href="/tagcloud/resources/styles/styles.css" media="screen">
-	<link rel="stylesheet" href="/tagcloud/resources/styles/display-table-style.css" type="text/css">
-	<link rel="stylesheet" type="text/css" href="/tagcloud/resources/styles/styles-narrow.css" media="(max-aspect-ratio: 1/1)">
-	<link rel="stylesheet" href="/tagcloud/resources/styles/token-input-facebook.css" type="text/css">
+	<link rel="stylesheet" href="/tagcloud/resources/styles/styles.css" media="screen">
+	<link rel="stylesheet" href="/tagcloud/resources/styles/display-table-style.css">
+	<link rel="stylesheet" href="/tagcloud/resources/styles/styles-narrow.css" media="(max-aspect-ratio: 1/1)">
+	<link rel="stylesheet" href="/tagcloud/resources/styles/token-input-facebook.css">
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
-	<link rel="stylesheet" href="/tagcloud/resources/styles/accordion.css" type="text/css">
+	<link rel="stylesheet" href="/tagcloud/resources/styles/accordion.css">
 
 	<style>
 	  .ui-autocomplete-category {
@@ -21,14 +21,14 @@
 	  }
 	</style>
 	
-	<script type="text/javascript" src="/tagcloud/resources/scripts/jquery.min.js"></script>
+	<script src="/tagcloud/resources/scripts/jquery.min.js"></script>
 	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-	<script type="text/javascript" src="/tagcloud/resources/scripts/json.min.js"></script>
-	<script type="text/javascript" src="/tagcloud/resources/scripts/jquery.tokeninput.js"></script>
+	<script src="/tagcloud/resources/scripts/json.min.js"></script>
+	<script src="/tagcloud/resources/scripts/jquery.tokeninput.js"></script>
 	<script src="http://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=true&amp;libraries=places"></script>
-	<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
-	<script type="text/javascript" src="/tagcloud/resources/scripts/map.js"></script>
+	<script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
+	<script src="/tagcloud/resources/scripts/map.js"></script>
 	
 	<script>
 		$(function() {
@@ -39,12 +39,12 @@
 		});
 	</script>
 	
-	<script type="text/javascript" src="/tagcloud/resources/scripts/tagpicker.js"></script>
-	<script type="text/javascript" src="/tagcloud/resources/scripts/searchNearbyTargets.js"></script>
-	<script type="text/javascript" src="/tagcloud/resources/scripts/validation_script.js"></script>
-	<script type="text/javascript" src="/tagcloud/resources/scripts/styling.js"></script>
-	<script type="text/javascript" src="/tagcloud/resources/scripts/connections.js"></script>
-	<script type="text/javascript" src="/tagcloud/resources/scripts/mainscript.js"></script>
+	<script src="/tagcloud/resources/scripts/tagpicker.js"></script>
+	<script src="/tagcloud/resources/scripts/searchNearbyTargets.js"></script>
+	<script src="/tagcloud/resources/scripts/validation_script.js"></script>
+	<script src="/tagcloud/resources/scripts/styling.js"></script>
+	<script src="/tagcloud/resources/scripts/connections.js"></script>
+	<script src="/tagcloud/resources/scripts/mainscript.js"></script>
 </head>
 
 <body>
@@ -158,7 +158,6 @@
 			<input id="map-zoom" name="map-zoom" type="hidden" value="0"></input>
 		</div>
 		<div id="bc-col3">
-			<div id="informationBox">Targets found</div>
  			<div id="scroller">
  				<ul id="targetlist"></ul>
  			</div>
