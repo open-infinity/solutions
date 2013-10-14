@@ -181,7 +181,6 @@ function initialize() {
 									clearMarkers();
 									var $list = $("#targetlist");
 									$list.empty();
-									document.getElementById('informationBox').innerHTML = "Targets nearby";
 									google.maps.event.clearListeners(map,
 											'idle');
 									google.maps.event
@@ -409,39 +408,43 @@ function placeNewMarkerWithIndex(result, location, index, target_id) {
 	markers.push(marker);
 
 	// scroll target list item to visible area after a mouseover
-	google.maps.event.addListener(marker, 'mouseover', function(event) {
-		var parentDiv = $("#scroller");
-		var innerListItem = $("#targetlist").children().eq(index);
-		setMarkerHighlight(index, true);
-		setTargetDivHighlight($("#targetlist").children().eq(index), true);
-		infoBox.open(map, marker);
+	google.maps.event.addListener(marker, 'mouseover',
+			function(event) {
+				var parentDiv = $("#scroller");
+				var innerListItem = $("#targetlist").children().eq(index);
+				setMarkerHighlight(index, true);
+				setTargetDivHighlight($("#targetlist").children().eq(index),
+						true);
+				infoBox.open(map, marker);
 
-		if (!isScrolledIntoView(innerListItem, parentDiv)) {
-			var scrollTopValue = parentDiv.scrollTop()
-					+ (innerListItem.position().top - parentDiv.position().top)
-					- (parentDiv.height() / 2) + (innerListItem.height() / 2);
-			animTimeout = setTimeout(function() {
-				parentDiv.animate({
-					scrollTop : scrollTopValue
-				}, {
-					duration : 1000,
-					queue : false
-				});
-			}, 350);
+				if (!isScrolledIntoView(innerListItem, parentDiv)) {
+					var scrollTopValue = parentDiv.scrollTop()
+							+ (innerListItem.position().top - parentDiv
+									.position().top) - (parentDiv.height() / 2)
+							+ (innerListItem.height() / 2);
+					animTimeout = setTimeout(function() {
+						parentDiv.animate({
+							scrollTop : scrollTopValue
+						}, {
+							duration : 1000,
+							queue : false
+						});
+					}, 350);
 
-			var scrollLeftValue = parentDiv.scrollLeft()
-					+ (innerListItem.position().left - parentDiv.position().left)
-					- (parentDiv.width() / 2) + (innerListItem.width() / 2);
-			animTimeout = setTimeout(function() {
-				parentDiv.animate({
-					scrollLeft : scrollLeftValue
-				}, {
-					duration : 1000,
-					queue : false
-				});
-			}, 350);
-		}
-	});
+					var scrollLeftValue = parentDiv.scrollLeft()
+							+ (innerListItem.position().left - parentDiv
+									.position().left) - (parentDiv.width() / 2)
+							+ (innerListItem.width() / 2);
+					animTimeout = setTimeout(function() {
+						parentDiv.animate({
+							scrollLeft : scrollLeftValue
+						}, {
+							duration : 1000,
+							queue : false
+						});
+					}, 350);
+				}
+			});
 
 	google.maps.event.addListener(marker, 'mouseout', function(event) {
 		setMarkerHighlight(index, false);
