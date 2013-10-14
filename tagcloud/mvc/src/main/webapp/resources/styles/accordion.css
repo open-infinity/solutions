@@ -46,7 +46,12 @@
   overflow: auto;
   display: none;
   zoom: 1;
+  opacity: 0.9;
 }
 .ui-accordion .ui-accordion-content-active {
   display: block;
+}
+
+input[type="text"] {
+	width: 100%;
 }
