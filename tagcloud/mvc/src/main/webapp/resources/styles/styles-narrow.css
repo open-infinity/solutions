@@ -1,11 +1,10 @@
 .targetItemDiv {
- 	width: auto;
+	width: auto;
 	display: table-cell;
 	min-width: 120px;
-	font-size: 0.8em;
+	font-size: 0.9em;
 	margin-right: 8px;
 }
-
 
 section {
 	width: 100%;
@@ -25,15 +24,56 @@ section {
 	vertical-align: top;
 }
 
+@media ( max-width : 1024px) {
+	#directionsPanel {
+		font-size: 0.8em;
+	}
+	.targetItemDiv {
+		font-size: 0.8em;
+	}
+	.ui-accordion {
+		font-size: 0.9em;
+	}
+}
+
+@media ( max-width : 800px) {
+	#directionsPanel {
+		font-size: 0.7em;
+	}
+	.targetItemDiv {
+		font-size: 0.7em;
+	}
+	.ui-accordion {
+		font-size: 0.8em;
+	}
+}
+
+@media ( max-width : 640px) {
+	#directionsPanel {
+		font-size: 0.6em;
+	}
+	.targetItemDiv {
+		font-size: 0.6em;
+	}
+	.ui-accordion {
+		font-size: 0.7em;
+	}
+}
+
 #map-canvas {
 	width: 100%;
 	float: left;
 }
 
 #bc-col3 {
+	height: auto;
 	max-width: 100%;
-	height: 20%;
-	float: left;
+	max-height: 25%;
+	left: 2px;
 	bottom: 20px;
 	position: fixed;
+}
+
+#targetlist {
+	margin-bottom: 1%;
 }

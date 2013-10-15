@@ -4,13 +4,6 @@
 <head>
 	<meta charset="utf-8">
 	<title>Tagcloud</title>
-	
-	<link rel="stylesheet" href="/tagcloud/resources/styles/styles.css" media="screen">
-	<link rel="stylesheet" href="/tagcloud/resources/styles/display-table-style.css">
-	<link rel="stylesheet" href="/tagcloud/resources/styles/styles-narrow.css" media="(max-aspect-ratio: 1/1)">
-	<link rel="stylesheet" href="/tagcloud/resources/styles/token-input-facebook.css">
-	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
-	<link rel="stylesheet" href="/tagcloud/resources/styles/accordion.css">
 
 	<style>
 	  .ui-autocomplete-category {
@@ -39,6 +32,13 @@
 		});
 	</script>
 	
+	<link rel="stylesheet" href="/tagcloud/resources/styles/styles.css" media="screen">
+	<link rel="stylesheet" href="/tagcloud/resources/styles/display-table-style.css">
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+	<link rel="stylesheet" href="/tagcloud/resources/styles/token-input-facebook.css">
+	<link rel="stylesheet" href="/tagcloud/resources/styles/accordion.css">
+	<link rel="stylesheet" href="/tagcloud/resources/styles/styles-narrow.css" media="(max-aspect-ratio: 1/1)">
+
 	<script src="/tagcloud/resources/scripts/tagpicker.js"></script>
 	<script src="/tagcloud/resources/scripts/searchNearbyTargets.js"></script>
 	<script src="/tagcloud/resources/scripts/validation_script.js"></script>

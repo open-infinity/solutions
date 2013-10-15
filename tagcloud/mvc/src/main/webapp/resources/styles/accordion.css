@@ -1,55 +1,60 @@
 .ui-accordion {
 	box-shadow: 8px 8px 6px rgba(0, 0, 0, 0.7);
+	opacity: 0.9;
+	font-size: 1.1em;
 }
 
 .ui-accordion .ui-accordion-header {
-  cursor: pointer;
-  position: relative;
-  margin-top: 1px;
-  zoom: 1;
-  padding-left: 1.2em;
-  opacity: 0.9;
+	cursor: pointer;
+	position: relative;
+	margin-top: 1px;
+	zoom: 1;
+	padding-left: 1.2em;
 }
+
 .ui-accordion .ui-accordion-li-fix {
-  display: inline;
-  padding-left: 1.2em;
+	display: inline;
+	padding-left: 1.2em;
 }
+
 .ui-accordion .ui-accordion-header-active {
-  border-bottom: 0 !important;
+	border-bottom: 0 !important;
 }
+
 .ui-accordion .ui-accordion-header a {
-  display: block;
-  font-size: 1em;
-  padding: .5em .5em .5em .7em;
+	display: block;
+	padding: .5em .5em .5em .7em;
 }
+
 /* IE7-/Win - Fix extra vertical space in lists */
 .ui-accordion a {
-  zoom: 1;
+	zoom: 1;
 }
+
 .ui-accordion-icons .ui-accordion-header a {
-  padding-left: 1.2em;
+	padding-left: 1.2em;
 }
+
 .ui-accordion .ui-accordion-header .ui-icon {
-  position: absolute;
-  left: .5em;
-  top: 50%;
-  margin-top: -8px;
+	position: absolute;
+	left: .5em;
+	top: 50%;
+	margin-top: -8px;
 }
+
 .ui-accordion .ui-accordion-content {
-  padding: 0px 1%;
-  width 98%
-  border-top: 0;
-  margin-top: -2px;
-  position: relative;
-  top: 1px;
-  margin-bottom: 2px;
-  overflow: auto;
-  display: none;
-  zoom: 1;
-  opacity: 0.9;
+	padding: 0px 1%; width 98% border-top : 0;
+	margin-top: -2px;
+	position: relative;
+	top: 1px;
+	margin-bottom: 2px;
+	overflow: auto;
+	display: none;
+	zoom: 1;
 }
+
 .ui-accordion .ui-accordion-content-active {
-  display: block;
+	display: block;
 }
 
 input[type="text"] {
