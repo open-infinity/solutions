@@ -66,10 +66,6 @@ function initialize() {
 
 	directionsDisplay.setMap(map);
 	directionsDisplay.setPanel(document.getElementById('directionsPanel'));
-	// google.maps.event.addListener(directionsDisplay, 'directions_changed',
-	// function() {
-	// computeTotalDistance(directionsDisplay.directions);
-	// });
 
 	// when the map is ready
 	google.maps.event.addListener(map, 'idle', function() {

@@ -6,7 +6,6 @@ ul.token-input-list-facebook {
     width: 100%;
     border: 1px solid #8496ba;
     cursor: text;
-    font-size: 12px;
     font-family: Verdana;
     min-height: 1px;
     z-index: 999;
@@ -20,9 +19,8 @@ ul.token-input-list-facebook {
 ul.token-input-list-facebook li input {
     border: 0;
     width: 50px;
-    padding: 3px 8px;
+    padding: 2px 8px;
     background-color: white;
-    margin: 2px 0;
     -webkit-appearance: caret;
 }
 

@@ -27,7 +27,7 @@ function hasError(data) {
 }
 function preLoginView() {
 	//console.log("*** preLoginView");
-	$("#login_div img").css('display', 'block');
+//	$("#login_div img").css('display', 'block');
 	$("#login_div img").click(function() {
 		window.location = "login?next=/tagcloud"
 	});

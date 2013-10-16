@@ -38,20 +38,44 @@ header {
 	overflow: hidden;
 }
 
+header #noscriptBanner {
+	top: 0;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background-color: red;
+	color: white;
+	font-weight: bold;
+	text-align: center;
+	z-index: 10000;
+	font-weight: bold;
+}
+
+#loginImg {
+	display: table-cell;
+}
+
+#loginImg-med,#loginImg-s {
+	display: none;
+}
+
 section {
 	width: 100%;
 	height: 100%;
 }
 
 #bc-col1 {
-	/* 	background-color: white; */
 	width: 25%;
-	/* 	height: 100%; */
 	float: left;
 	vertical-align: top;
 	position: fixed;
 	left: 2px;
 	z-index: 10;
+}
+
+#search-tab p {
+	margin-bottom: 2%;
+	margin-top: 2%;
 }
 
 #bc-col2 {
@@ -69,6 +93,55 @@ section {
 #directionsPanel {
 	font-size: 0.9em;
 }
+
+@media ( max-width : 1024px) {
+	#directionsPanel {
+		font-size: 0.8em;
+	}
+	.targetItemDiv {
+		font-size: 0.8em;
+	}
+	.ui-accordion {
+		font-size: 0.9em;
+	}
+}
+
+@media ( max-width : 800px) {
+	#loginImg-med {
+		display: table-cell;
+	}
+	#loginImg,#loginImg-s {
+		display: none;
+	}
+#directionsPanel {
+		font-size: 0.7em;
+	}
+	.targetItemDiv {
+		font-size: 0.7em;
+	}
+	.ui-accordion {
+		font-size: 0.8em;
+	}
+}
+
+@media ( max-width : 640px) {
+	#loginImg-s {
+		display: table-cell;
+	}
+	#loginImg,#loginImg-med {
+		display: none;
+	}
+	#directionsPanel {
+		font-size: 0.6em;
+	}
+	.targetItemDiv {
+		font-size: 0.6em;
+	}
+	.ui-accordion {
+		font-size: 0.7em;
+	}
+}
+
 #map-canvas {
 	width: 100%;
 	height: 100%;

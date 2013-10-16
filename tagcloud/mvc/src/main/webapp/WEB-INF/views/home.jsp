@@ -2,53 +2,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>Tagcloud</title>
+<meta charset="utf-8">
+<title>Tagcloud</title>
 
-	<style>
-	  .ui-autocomplete-category {
-	    font-weight: bold;
-	    padding: .2em .4em;
-	    margin: .8em 0 .2em;
-	    line-height: 1.5;
-	  }
-	</style>
-	
-	<script src="/tagcloud/resources/scripts/jquery.min.js"></script>
-	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-	<script src="/tagcloud/resources/scripts/json.min.js"></script>
-	<script src="/tagcloud/resources/scripts/jquery.tokeninput.js"></script>
-	<script src="http://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=true&amp;libraries=places"></script>
-	<script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
-	<script src="/tagcloud/resources/scripts/map.js"></script>
-	
-	<script>
-		$(function() {
-			$("#accordion").accordion({
-				heightStyle: "content",
-				collapsible: true
-			});
+<style>
+.ui-autocomplete-category {
+	font-weight: bold;
+	padding: .2em .4em;
+	margin: .8em 0 .2em;
+	line-height: 1.5;
+}
+</style>
+
+<script src="/tagcloud/resources/scripts/jquery.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="/tagcloud/resources/scripts/json.min.js"></script>
+<script src="/tagcloud/resources/scripts/jquery.tokeninput.js"></script>
+<script src="http://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=true&amp;libraries=places"></script>
+<script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
+<script src="/tagcloud/resources/scripts/map.js"></script>
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<script>
+	$(function() {
+		$("#accordion").accordion({
+			heightStyle: "content",
+			collapsible: true
 		});
-	</script>
-	
-	<link rel="stylesheet" href="/tagcloud/resources/styles/styles.css" media="screen">
-	<link rel="stylesheet" href="/tagcloud/resources/styles/display-table-style.css">
-	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
-	<link rel="stylesheet" href="/tagcloud/resources/styles/token-input-facebook.css">
-	<link rel="stylesheet" href="/tagcloud/resources/styles/accordion.css">
-	<link rel="stylesheet" href="/tagcloud/resources/styles/styles-narrow.css" media="(max-aspect-ratio: 1/1)">
+	});
+</script>
 
-	<script src="/tagcloud/resources/scripts/tagpicker.js"></script>
-	<script src="/tagcloud/resources/scripts/searchNearbyTargets.js"></script>
-	<script src="/tagcloud/resources/scripts/validation_script.js"></script>
-	<script src="/tagcloud/resources/scripts/styling.js"></script>
-	<script src="/tagcloud/resources/scripts/connections.js"></script>
-	<script src="/tagcloud/resources/scripts/mainscript.js"></script>
+<link rel="stylesheet" href="/tagcloud/resources/styles/styles.css" media="screen">
+<link rel="stylesheet" href="/tagcloud/resources/styles/display-table-style.css">
+<link rel="stylesheet" href="/tagcloud/resources/styles/token-input-facebook.css">
+<link rel="stylesheet" href="/tagcloud/resources/styles/accordion.css">
+<link rel="stylesheet" href="/tagcloud/resources/styles/styles-narrow.css" media="(max-aspect-ratio: 1/1)">
+
+<script src="/tagcloud/resources/scripts/tagpicker.js"></script>
+<script src="/tagcloud/resources/scripts/searchNearbyTargets.js"></script>
+<script src="/tagcloud/resources/scripts/validation_script.js"></script>
+<script src="/tagcloud/resources/scripts/styling.js"></script>
+<script src="/tagcloud/resources/scripts/connections.js"></script>
+<script src="/tagcloud/resources/scripts/mainscript.js"></script>
 </head>
 
 <body>
 	<header id="header">
+		<noscript id="noscriptBanner">
+			<div>
+				<p>Sorry, but Tagcloud works only with JavaScript enabled</p>
+			</div>
+		</noscript>
+
 		<div id="top-table">
 			<div id="top-container">
 				<div id="logo_div">
@@ -57,13 +63,15 @@
 				<div id="headerMiddle_div">
 					<input id="searchTextField" type="text" placeholder="Find places">
 				</div>
-				<div id="login_div">
+				<div id="login_div"> <!-- CSS decides which img to show -->
 					<img id="loginImg" alt="login_facebook" src="/tagcloud/resources/img/login-facebook.png">
+					<img id="loginImg-med" alt="login_facebook" src="/tagcloud/resources/img/login-facebook-med.png">
+					<img id="loginImg-s" alt="login_facebook" src="/tagcloud/resources/img/login-facebook-s.png">
 				</div>
 			</div>
 		</div>
 	</header>
-	
+
 	<section id="section">
 		<div id="bc-col1">
 			<div id="accordion">
@@ -104,9 +112,7 @@
 				<div id="get-directions-tab">
 					<div id="directionGuidance">Choose destination..</div>
 					<div id="panel">
-						<b>Mode of Travel: </b>
-						<br />
-						<select id="mode" onchange="calcRoute();">
+						<b>Mode of Travel: </b> <br /> <select id="mode" onchange="calcRoute();">
 							<option value="">--</option>
 							<option value="DRIVING">Driving</option>
 							<option value="WALKING">Walking</option>
@@ -116,7 +122,7 @@
 					</div>
 					<div id="directionScroller">
 						<div id="directionsPanel"></div>
-   					</div>
+					</div>
 				</div>
 				<h3>
 					<a href="#">Add target</a>
@@ -129,16 +135,16 @@
 							<table id="targetTable">
 								<tr>
 									<td><label for="text">Name</label></td>
-									<td><input id="text" name="text" type="text" value=""/></td>
+									<td><input id="text" name="text" type="text" value="" /></td>
 									<td></td>
 								</tr>
 								<tr>
-									<td><input id="latitude" name="latitude" type="hidden" value="0.0"/></td>
+									<td><input id="latitude" name="latitude" type="hidden" value="0.0" /></td>
 									<td></td>
 									<td></td>
 								</tr>
 								<tr>
-									<td><input id="longitude" name="longitude" type="hidden" value="0.0"/></td>
+									<td><input id="longitude" name="longitude" type="hidden" value="0.0" /></td>
 									<td></td>
 									<td></td>
 								</tr>
@@ -158,9 +164,9 @@
 			<input id="map-zoom" name="map-zoom" type="hidden" value="0"></input>
 		</div>
 		<div id="bc-col3">
- 			<div id="scroller">
- 				<ul id="targetlist"></ul>
- 			</div>
+			<div id="scroller">
+				<ul id="targetlist"></ul>
+			</div>
 		</div>
 	</section>
 
@@ -171,4 +177,4 @@
 
 </html>
 
- 
+
