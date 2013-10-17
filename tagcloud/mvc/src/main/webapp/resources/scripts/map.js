@@ -50,7 +50,7 @@ function initialize() {
 			pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 			mapOptions.center = pos;
 			map.setCenter(pos);
-		}, function() {
+		}, function() { // TODO: error handling function
 		});
 	}
 
@@ -72,6 +72,8 @@ function initialize() {
 		bounds = map.getBounds();
 		center = map.getCenter();
 		setMapControls();
+		if(navigator.geolocation)
+			navigator.geolocation.watchPosition(drawMyPositionMarker);
 		populateCoordinates(map.getCenter().lat(), map.getCenter().lng(), map.getZoom());
 		$("#searchModel").submit();
 	});
@@ -85,9 +87,23 @@ function initialize() {
 	accrodionActivation();
 }
 
-// handle accordion heading selections
+function drawMyPositionMarker() {
+	console.debug("CHANGED!");
+	var myPosition = navigator.geolocation.getCurrentPosition(function(position) {
+		newPos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+		var myPosMarker = new google.maps.Marker({
+			position: newPos,
+			icon: '/tagcloud/resources/img/myLoc.png'
+		});
+		myPosMarker.setMap(map);
+	}, function() {
+	});
+}
+
+// handle accordion heading events
 function accrodionActivation() {
-	
+
+	// preset things before showing the accord
 	$('#accordion').accordion({
 		beforeActivate: function(event, ui) {
 			// heading 0
@@ -100,11 +116,12 @@ function accrodionActivation() {
 		}
 	});
 
+	// handle accordion headings' activation
 	$('#accordion').accordion({
 		activate: function(event, ui) {
 			var $activeTab = $("#accordion").accordion('option', 'active');
 
-			if($activeTab == 0) {
+			if($activeTab == 0) { // Search
 				$("#searchModel").submit();
 				google.maps.event.addListener(map, 'idle', function() {
 					bounds = map.getBounds();
@@ -117,8 +134,8 @@ function accrodionActivation() {
 				clearAddedMarker();
 				$('#targetModel')[0].reset();
 			}
-			if($activeTab == 1) {
-				// var wayPointCounter = 0;
+
+			if($activeTab == 1) { // Go to..
 				google.maps.event.clearListeners(map, 'idle');
 				google.maps.event.addListener(map, 'click', function(event) {
 					$('#directionGuidance')[0].style.visibility = "hidden";
@@ -138,12 +155,13 @@ function accrodionActivation() {
 					}
 				});
 			}
-			if($activeTab == 2) {
+
+			if($activeTab == 2) { // Add Target
 				clearMarkers();
 				var $list = $("#targetlist");
 				$list.empty();
 				google.maps.event.clearListeners(map, 'idle');
-				
+
 				google.maps.event.addListener(map, 'click', function(event) {
 					var myLatLng = event.latLng;
 					var lat = myLatLng.lat();
@@ -212,7 +230,7 @@ function initAutocomplete() {
 	$("#searchTextField").focusout(function() {
 		$("#searchTextField").attr('placeholder', 'Find places');
 	})
-	
+
 	$("#searchTextField").catcomplete({
 		delay: 0,
 		source: "/tagcloud/target/autocomplete",
