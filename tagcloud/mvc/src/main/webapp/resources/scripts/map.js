@@ -88,16 +88,54 @@ function initialize() {
 }
 
 function drawMyPositionMarker() {
-	console.debug("CHANGED!");
-	var myPosition = navigator.geolocation.getCurrentPosition(function(position) {
-		newPos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-		var myPosMarker = new google.maps.Marker({
-			position: newPos,
-			icon: '/tagcloud/resources/img/myLoc.png'
-		});
-		myPosMarker.setMap(map);
-	}, function() {
+	var options = {
+		enableHighAccuracy: true,
+		maximumAge: 0,
+		timeout: 10000,
+	}
+	var myPosition = navigator.geolocation.getCurrentPosition(locationSuccess, locationError, options);
+}
+
+function locationSuccess(position) {
+	newPos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+	var myPosMarker = new google.maps.Marker({
+		position: newPos,
+		icon: '/tagcloud/resources/img/myLoc.png'
 	});
+	
+//  DOES NOT WORK PROPERLY IN WEB BROWSERS YET!	
+//	var myPosAccuracy = new google.maps.Circle({
+//		center: newPos,
+//		radius: position.coords.accuracy, // in meters
+//		strokeColor: "#0000FF",
+//		strokeOpacity: 0.2,
+//		strokeWeight: 2,
+//		fillColor: "#0000FF",
+//		fillOpacity: 0.1
+//	});
+//	myPosAccuracy.setMap(map);
+	
+	myPosMarker.setMap(map);
+}
+
+function locationError(error) {
+	var errorText;
+	switch(error.code) {
+	case error.PERMISSION_DENIED:
+		errorText = "User denied the request for Geolocation."
+		break;
+	case error.POSITION_UNAVAILABLE:
+		errorText = "Location information is unavailable."
+		break;
+	case error.TIMEOUT:
+		errorText = "The request to get user location timed out."
+		break;
+	case error.UNKNOWN_ERROR:
+		errorText = "An unknown error occurred."
+		break;
+	}
+	if(errorText)
+		console.log("map.js: locationError = " + errorText);
 }
 
 // handle accordion heading events
