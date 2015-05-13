@@ -1,4 +1,4 @@
-
+	
 /*
  * Copyright (c) 2013 the original author or authors.
  *
@@ -16,13 +16,19 @@
  */
 package org.openinfinity.tagcloud.domain.repository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.openinfinity.tagcloud.domain.entity.Tag;
 import org.openinfinity.tagcloud.domain.entity.Target;
 import org.openinfinity.tagcloud.domain.entity.query.CoordinateBounds;
-import org.springframework.data.mongodb.core.geo.*;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.GeoResult;
+import org.springframework.data.geo.GeoResults;
+import org.springframework.data.geo.Metrics;
+import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.index.GeospatialIndex;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.NearQuery;

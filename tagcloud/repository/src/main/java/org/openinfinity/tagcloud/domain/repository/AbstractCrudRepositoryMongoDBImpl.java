@@ -56,6 +56,6 @@ public abstract class AbstractCrudRepositoryMongoDBImpl<T extends Entity> implem
 	}
 	
 	private Class<T> getGenericClassType(){
-        return GenericTypeResolver.resolveTypeArguments(getClass(), AbstractCrudRepositoryMongoDBImpl.class)[0];
+        return (Class<T>) GenericTypeResolver.resolveTypeArguments(getClass(), AbstractCrudRepositoryMongoDBImpl.class)[0];
     }
 }

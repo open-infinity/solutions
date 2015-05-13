@@ -5,17 +5,16 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.openinfinity.tagcloud.domain.entity.Entity;
 
-import org.apache.james.mime4j.message.Entity;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(exclude = { "id" }, callSuper=false)
-public class Like extends Entity{
+public class Like implements Entity {
 	@Id
 	private String id;
 	
